@@ -1,6 +1,8 @@
 ---
 weight: 1
 author: Vincent Vanlaer
+sidebar:
+  exclude: true
 ---
 
 # How to format labs
