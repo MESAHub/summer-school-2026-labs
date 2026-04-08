@@ -5,8 +5,8 @@ cubic_interpolation_in_Z = .false.
 kap_file_prefix = 'gs98'    ! 'gs98' 'a09'  'OP_a09' 'OP_gs98'
 kap_CO_prefix   = 'gs98_co' ! 'gs98_co' 'a09_co'
 kap_lowT_prefix = 'lowT_fa05_gs98'
-use_Type2_opacities = .false. ! keep same fixed-Z opacity setup as labs 1 and 2
-Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
+use_Type2_opacities = .false. ! if envelope model only
+Zbase = 0.004d0 
 
 /
 
@@ -20,14 +20,14 @@ Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
    !required_termination_code_string = 'Successful test: evolve through 5 pulsation cycles.'
 
    load_saved_model = .true.
-   load_model_filename = 'mod_dir/YOUR_MODEL.mod'
-
+   load_model_filename = 'rsp_cepheid_9M_cycle40.mod'
+   
    change_v_flag = .true.
    new_v_flag = .true.
 
    set_initial_dt = .true.
    years_for_initial_dt = -1
-   seconds_for_initial_dt = 1d7
+   seconds_for_initial_dt = 1d5
 
    set_initial_cumulative_energy_error = .true.
    new_cumulative_energy_error = 0d0
@@ -40,11 +40,9 @@ Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
 
    pgstar_flag = .true.
 
-! on first pass, uncomment below if you are loading from an evolution model.
+! on first pass, uncomment below if you are loading from and evolution model.
    remove_initial_center_by_temperature = 2d6
    remove_center_set_zero_v_center = .true. ! set center v = 0
-
-   initial_zfracs = 3
 
 / !end of star_job namelist
 
@@ -57,7 +55,7 @@ Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
    !max_model_number = 3000
 
    ! controls for analyzing pulsations using GYRE in MESA
-   x_logical_ctrl(37) = .true. ! turn on GYRE
+   x_logical_ctrl(37) = .true. ! if true, then run GYRE
 
 
    x_integer_ctrl(1) = 1000 ! gyre interval to check
@@ -65,7 +63,7 @@ Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
 
    x_logical_ctrl(7) = .true. ! doing pulses
    x_integer_ctrl(7) = -1 ! 3 ! which period to check (<= 0 means don't check any)
-   x_ctrl(7) = -1d0 ! expected period in days; <= 0 uses the dynamical time until a period is measured
+   x_ctrl(7) = 12d0 ! expected period (in days) 
    x_ctrl(8) = -1 ! min_deltaR_for_periods (Rsun)
    x_ctrl(9) = 1d0 ! KE_growth_avg_abs_frac_new ! for averaging growth rates across steps.
    x_ctrl(10) = 0.1 ! min_period_div_target
@@ -86,8 +84,8 @@ Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
    ! option 1
    x_logical_ctrl(23) = .true. ! .true. = Remesh for TDC
    TDC_hydro_use_mass_interp_face_values = .false.
-   TDC_hydro_nz = 180
-   TDC_hydro_nz_outer = 80
+   TDC_hydro_nz = 250 
+   TDC_hydro_nz_outer = 120 
    TDC_hydro_T_anchor = 11d3
    TDC_hydro_dq_1_factor = 2d0
    remesh_for_TDC_pulsations_log_core_zoning = .false. ! .false means do rsp style core
@@ -95,7 +93,7 @@ Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
    ! option 2, set okay_to_remesh = .true.
    ! and only partially remesh from evol model for a few timesteps.
    okay_to_remesh = .false. ! freeze mesh after initial remesh.
-   x_logical_ctrl(24) = .false. ! only used if okay_to_remesh = .true.
+   x_logical_ctrl(24) = .true. ! if true turn off remesh at the following model number
    x_ctrl(12) = 200 ! model number to turn off remesh ( only if if okay_to_remesh = .true.)
 
    ! if you use option 2 not TDC_hydro remesh, uncomment the items below.
@@ -120,29 +118,26 @@ Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
    include_mlt_corr_to_TDC = .false. ! true K. 1986 model, no mlt limiting
    TDC_include_eturb_in_energy_equation = .true.
    use_rsp_form_of_scale_height = .true.
-   mixing_length_alpha = 1.77d0
+   mixing_length_alpha = 1.5d0
    TDC_alpha_M = 0.25d0
    use_ledoux_criterion = .true.
    alt_scale_height_flag = .false. ! ignore eggleton, not compatible with rsp_form_of_Hp
    TDC_num_innermost_cells_forced_nonturbulent = 2 ! for envelope models only.
 
 ! timesteps for saturation
-
+      
   ! TDC Pulsation timestepping.
-   ! x_ctrl(17/18) are base max timestep caps before/during pulsation.
-   ! After x_ctrl(13), run_star_extras also limits dt using the
-   ! dynamical time or measured pulsation period.
-   x_ctrl(13) = 100 ! model number to drop timestep
-   x_ctrl(17) = 1d5 ! dt before pulse, seconds
-   x_ctrl(18) = 1d5 ! After a pulse begins, limit the timestep to this (in seconds).
+   x_ctrl(13) = 100! model number to drop timestep
+   x_ctrl(17) = 2d3 ! dt before pulse, seconds
+   x_ctrl(18) = 4.5d3 ! After a pulse begins, limit the timestep to this (in seconds).
 
    ! have used these values to do run to saturation, but may not be necessary ~ Bill P.
-   dt_div_min_dr_div_cs_limit = 10d0! set less than 1d0 in high L/M stars.
+   dt_div_min_dr_div_cs_limit = 2d0! set less than 1d0 in high L/M stars.
    dt_div_min_dr_div_cs_hard_limit = 100d0! i don't like hard limits ~ EbF
    min_abs_u_div_cs_for_dt_div_min_dr_div_cs_limit = 0.8d0
    min_q_for_dt_div_min_dr_div_cs_limit = 0d0
    max_q_for_dt_div_min_dr_div_cs_limit = 1d0
-   min_k_for_dt_div_min_dr_div_cs_limit = 1
+   min_k_for_dt_div_min_dr_div_cs_limit = 1 
    min_abs_du_div_cs_for_dt_div_min_dr_div_cs_limit = 0.001d0
 
 ! OUTER BC for TDC Pulsations
@@ -151,7 +146,7 @@ Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
 ! velocity time centering for v_flag only.
    steps_before_use_velocity_time_centering = 300 ! no v centering when commented
    use_P_d_1_div_rho_form_of_work_when_time_centering_velocity = .true.
-
+   
    include_P_in_velocity_time_centering = .true. ! set to false for u_flag
    P_theta_for_velocity_time_centering = 0.5d0
 
@@ -164,7 +159,7 @@ Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
 
 ! controls for shock capturing, relaxed for pulsations
    ! main purpose is to force radiative in shock face
-    max_abs_du_div_cs_for_convection = 10d0
+    max_abs_du_div_cs_for_convection = 10d0 
     max_v_div_cs_for_convection = 1d2
     max_v_for_convection = 1d4
 
@@ -184,9 +179,9 @@ Zbase = 0.006d0 ! LMC metallicity used by the Friday Cepheid models
 
     photo_digits = 8
     photo_interval = 1000
-    profile_interval = 10000
-    history_interval = 100
-    terminal_interval = 100
+    profile_interval = 10000 
+    history_interval = 1
+    terminal_interval = 10
     max_num_profile_models = 1000000 ! 100 ! RECOMMENDED 10000
 
 ! terminal output

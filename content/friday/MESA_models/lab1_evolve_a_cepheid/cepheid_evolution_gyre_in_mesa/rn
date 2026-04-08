@@ -1,7 +1,17 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-rm -f restart_photo
+# uncomment the following line to skip the optional inlists
+# MESA_SKIP_OPTIONAL=t
+
+# this provides the definition of do_one (run one part of test)
+# do_one [inlist] [output model] [LOGS directory]
+source "${MESA_DIR}/star/test_suite/test_suite_helpers"
 
 date "+DATE: %Y-%m-%d%nTIME: %H:%M:%S"
-./star
+
+do_one inlist_to_he_dep_header final.mod
+
 date "+DATE: %Y-%m-%d%nTIME: %H:%M:%S"
+
+echo 'finished'
+

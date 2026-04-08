@@ -17,13 +17,6 @@
 !
 ! ***********************************************************************
 
-!!! Solutions for the bonus task of Lab 2 for Friday's lab at the 2026 MESA Summer school
-!!! This file runs RSP-LNA using the parameters specified in the inlist. 
-!!! It then saves the following in RSP.dat:
-!!! Lab 1 model number, M, L, Teff, RSP Wesenheit index, RSP F/F1 periods,
-!!! and RSP F/F1 growth rates
-!!! This run_star_extras is designed to append to the file when called from the bonus bash script.
-
 module run_star_extras
 
       use star_lib
@@ -34,10 +27,12 @@ module run_star_extras
 
       implicit none
 
-      logical :: need_to_write_LNA_data
-      character(len=*), parameter :: lna_output_file = 'RSP.dat'
+      include "test_suite_extras_def.inc"
+      logical :: need_to_write_LINA_data
 
       contains
+
+      include "test_suite_extras.inc"
 
 
       subroutine extras_controls(id, ierr)
@@ -67,90 +62,32 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-!         call test_suite_startup(s, restart, ierr)
+         call test_suite_startup(s, restart, ierr)
          if (.not. restart) then
-            need_to_write_LNA_data = .true.
+            need_to_write_LINA_data = len_trim(s% x_character_ctrl(10)) > 0
          else  ! it is a restart
-            need_to_write_LNA_data = .false.
+            need_to_write_LINA_data = .false.
          end if
-
       end subroutine extras_startup
 
 
       integer function extras_start_step(id)
-         use colors_def, only: Colors_General_Info, get_colors_ptr
-         use colors_lib, only: how_many_colors_history_columns, data_for_colors_history_columns
          integer, intent(in) :: id
          integer :: ierr, io, i
          type (star_info), pointer :: s
-         real(dp) :: m_div_h, min_m_div_h, max_m_div_h, V_mag, I_mag, R_VI, W_VI
-         type(colors_general_info), pointer :: colors_settings => null()
-         integer :: num_colors_cols
-         character (len = maxlen_history_column_name), pointer, dimension(:) :: colors_col_names
-         real(dp), pointer, dimension(:) :: colors_col_vals
-      
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
          extras_start_step = keep_going
-
-         ! Get Colors information 
-         R_VI = 1.55 ! Hard coded to agree with the value used in Smolec et al. 2026   
-         W_VI = 0d0 ! Maybe pick more obvious null value? 
-         call get_colors_ptr(s% colors_handle, colors_settings, ierr)
-         if(ierr/=0) return
-
-         num_colors_cols = how_many_colors_history_columns(s% colors_handle)
-         nullify(colors_col_names)
-         nullify(colors_col_vals)
-
-         if (num_colors_cols > 0) then
-            allocate(&
-               colors_col_names(num_colors_cols), colors_col_vals(num_colors_cols), stat = ierr)
-
-            colors_col_names(1:num_colors_cols) = 'unknown'
-            colors_col_vals(1:num_colors_cols) = -1d99
-
-            ! Here we compute [Fe/H], and then call colors to compute history columns.
-
-            min_m_div_h = minval(colors_settings% lu_meta)
-            max_m_div_h = maxval(colors_settings% lu_meta)
-
-            ! Map the current photospheric Z/X onto the atmosphere table metallicity axis.
-            if (s% X(s% photosphere_cell_k) > 0d0 .and. s% Z(s% photosphere_cell_k) > 0d0) then
-               m_div_h = log10((s% Z(s% photosphere_cell_k)/s% X(s% photosphere_cell_k)) / &
-                  colors_settings% z_over_x_ref)
-               m_div_h = max(min_m_div_h, min(max_m_div_h, m_div_h))
-            else
-               m_div_h = min_m_div_h
-            end if
-
-            call data_for_colors_history_columns(s% photosphere_T, s% photosphere_logg, s% photosphere_r*Rsun, m_div_h, &
-               s% model_number, s% colors_handle, num_colors_cols, colors_col_names, colors_col_vals, ierr)
-
-            do i = 1, num_colors_cols
-               if(trim(colors_col_names(i))=='V') then
-                  V_mag = colors_col_vals(i) 
-               else if (trim(colors_col_names(i)) == 'I') then 
-                  I_mag = colors_col_vals(i) 
-               end if
-            end do
-            W_VI = I_mag - R_VI*(V_mag-I_mag)  
-            write(*,*) "Wesenheit Index:     ", W_VI
- 
-         end if 
-
-         if (need_to_write_LNA_data) then
+         if (need_to_write_LINA_data) then
             io = 61
-            open(io,file=lna_output_file,status='unknown', position='append')
-            write(io, '(i12,8(1x,e20.10))') s% model_number, s% RSP_mass, s% RSP_L, s% RSP_Teff, W_VI, &
-               s% rsp_LINA_periods(1)/86400.d0, s% rsp_LINA_growth_rates(1), &
-               s% rsp_LINA_periods(2)/86400.d0, s% rsp_LINA_growth_rates(2)
+            open(io,file=trim(s% x_character_ctrl(10)),status='unknown')
+            write(io, '(99d16.5)') s% RSP_mass, s% RSP_L, s% RSP_Teff, &
+               (s% rsp_LINA_periods(i), s% rsp_LINA_growth_rates(i), i=1, s% RSP_nmodes)
             close(io)
-            write(*,*) 'write ' // lna_output_file
-            need_to_write_LNA_data = .false.
+            write(*,*) 'write ' // trim(s% x_character_ctrl(10))
+            need_to_write_LINA_data = .false.
          end if
-
       end function extras_start_step
 
 
@@ -158,13 +95,34 @@ module run_star_extras
       integer function extras_finish_step(id)
          integer, intent(in) :: id
          integer :: ierr
+         real(dp) :: target_period, rel_run_E_err
          type (star_info), pointer :: s
-
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         extras_finish_step = keep_going   
-
+         extras_finish_step = keep_going
+         if (s% x_integer_ctrl(1) <= 0) return
+         if (s% rsp_num_periods < s% x_integer_ctrl(1)) return
+         write(*,'(A)')
+         write(*,'(A)')
+         write(*,'(A)')
+         target_period = s% x_ctrl(1)
+         rel_run_E_err = s% cumulative_energy_error/s% total_energy
+         write(*,*) 'rel_run_E_err', rel_run_E_err
+         if (s% total_energy /= 0d0 .and. abs(rel_run_E_err) > 1d-5) then
+            write(*,*) '*** BAD rel_run_E_error ***', &
+            s% cumulative_energy_error/s% total_energy
+         else if (abs(s% rsp_period/(24*3600) - target_period) > 1d-2) then
+            write(*,*) '*** BAD ***', s% rsp_period/(24*3600) - target_period, &
+               s% rsp_period/(24*3600), target_period
+         else
+            write(*,*) 'good match for period', &
+               s% rsp_period/(24*3600), target_period
+         end if
+         write(*,'(A)')
+         write(*,'(A)')
+         write(*,'(A)')
+         extras_finish_step = terminate
       end function extras_finish_step
 
 
@@ -176,7 +134,7 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         !call test_suite_after_evolve(s, ierr)
+         call test_suite_after_evolve(s, ierr)
       end subroutine extras_after_evolve
 
 
@@ -199,7 +157,7 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         how_many_extra_history_columns = 0
+         how_many_extra_history_columns = 8
       end function how_many_extra_history_columns
 
 
@@ -213,6 +171,15 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
+         i = 1
+         names(i) = 'num_periods'; vals(i) = s% RSP_num_periods; i=i+1
+         names(i) = 'period'; vals(i) = s% RSP_period/(24*3600); i=i+1
+         names(i) = 'growth'; vals(i) = s% rsp_GREKM_avg_abs; i=i+1
+         names(i) = 'max_v_div_cs'; vals(i) = 0; i=i+1
+         names(i) = 'delta_R'; vals(i) = s% rsp_DeltaR; i=i+1
+         names(i) = 'delta_Teff'; vals(i) = 0; i=i+1
+         names(i) = 'delta_logL'; vals(i) = s% rsp_DeltaMag/2.5d0; i=i+1
+         names(i) = 'delta_Mag'; vals(i) = 0; i=i+1
       end subroutine data_for_extra_history_columns
 
 
@@ -224,7 +191,7 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         how_many_extra_profile_columns = 0
+         how_many_extra_profile_columns = 1
       end function how_many_extra_profile_columns
 
 
@@ -240,6 +207,14 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-       end subroutine data_for_extra_profile_columns
+         names(1) = 'sign_Lc'
+         do k=1,nz
+            if (abs(s% Lc(k)) < 1d-6) then
+               vals(k,1) = 0d0
+            else
+               vals(k,1) = sign(1d0,s% Lc(k))
+            end if
+         end do
+      end subroutine data_for_extra_profile_columns
 
       end module run_star_extras

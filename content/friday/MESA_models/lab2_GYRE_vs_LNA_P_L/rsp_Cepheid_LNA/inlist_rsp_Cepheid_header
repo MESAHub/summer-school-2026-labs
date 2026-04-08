@@ -46,6 +46,3 @@
       extra_pgstar_inlist_name(2)= 'inlist_rsp_Cepheid'
 
 / ! end of pgstar namelist
-
-&colors
-/
