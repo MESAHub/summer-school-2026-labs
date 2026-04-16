@@ -23,13 +23,13 @@
 
 &kap
 
-kap_file_prefix = 'gs98'    ! 'gs98' 'a09'  'OP_a09' 'OP_gs98'
-kap_CO_prefix   = 'gs98_co' ! 'gs98_co' 'a09_co'
-use_Type2_opacities = .true.
-Zbase = 0.002d0 
-kap_lowT_prefix = 'lowT_fa05_gs98'
-cubic_interpolation_in_X = .false.
-cubic_interpolation_in_Z = .false.
+   kap_file_prefix = 'gs98'    ! 'gs98' 'a09'  'OP_a09' 'OP_gs98'
+   kap_CO_prefix   = 'gs98_co' ! 'gs98_co' 'a09_co'
+   use_Type2_opacities = .true.
+   Zbase = 0.002d0 
+   kap_lowT_prefix = 'lowT_fa05_gs98'
+   cubic_interpolation_in_X = .false.
+   cubic_interpolation_in_Z = .false.
 
 /
 
@@ -38,28 +38,28 @@ cubic_interpolation_in_Z = .false.
 
 &controls
 
-initial_mass = 4.5d0
-!initial_Y = 0.267d0
-!initial_Z = 0.003d0 
+   initial_mass = 4.5d0
+   !initial_Y = 0.267d0
+   !initial_Z = 0.003d0 
 
 
 ! GYRE output controls
-      !write_pulse_data_with_profile = .true.
-      pulse_data_format = 'GYRE'
-      
-      x_logical_ctrl(37) = .true. ! if true, then run GYRE
+   !write_pulse_data_with_profile = .true.
+   pulse_data_format = 'GYRE'
+   
+   x_logical_ctrl(37) = .true. ! if true, then run GYRE
 
-      x_integer_ctrl(1) = 10 ! output GYRE info at this step interval
-      x_logical_ctrl(1) = .false. ! save GYRE info whenever save profile
+   x_integer_ctrl(1) = 10 ! output GYRE info at this step interval
+   x_logical_ctrl(1) = .false. ! save GYRE info whenever save profile
 
-      x_integer_ctrl(2) = 3 ! max number of modes to output per call
-      x_logical_ctrl(2) = .false. ! output eigenfunction files
+   x_integer_ctrl(2) = 3 ! max number of modes to output per call
+   x_logical_ctrl(2) = .false. ! output eigenfunction files
 
-      x_integer_ctrl(3) = 0 ! mode l (e.g. 0 for p modes, 1 for g modes)
-         ! should match gyre.in mode l
-      x_integer_ctrl(4) = 1 ! order
-      x_ctrl(1) = 0.158d-05 ! freq ~ this (Hz)
-      x_ctrl(2) = 0.33d+03 ! growth < this (days)
+   x_integer_ctrl(3) = 0 ! mode l (e.g. 0 for p modes, 1 for g modes)
+      ! should match gyre.in mode l
+   x_integer_ctrl(4) = 1 ! order
+   x_ctrl(1) = 0.158d-05 ! freq ~ this (Hz)
+   x_ctrl(2) = 0.33d+03 ! growth < this (days)
 
 
 ! stop when the center mass fraction of h1 drops below this limit
@@ -117,22 +117,22 @@ initial_mass = 4.5d0
 
 
 ! output
-log_directory = 'LOGS_evolution'
+   log_directory = 'LOGS_evolution'
+
+   photo_digits = 8
+   photo_interval = 100
+
+   profile_interval = 999999         ! sofia: was 200
+
+   history_interval = 5              ! sofia: was 1
+   terminal_interval = 10
+   max_num_profile_models = 1000000 ! 100 ! RECOMMENDED 10000
 
 
-
-    photo_digits = 8
-    photo_interval = 100
-    profile_interval = 200 
-    history_interval = 1
-    terminal_interval = 10
-    max_num_profile_models = 1000000 ! 100 ! RECOMMENDED 10000
-
-
-    num_trace_history_values = 2
-    trace_history_value_name(1) = 'log_rel_run_E_err'
-    trace_history_value_name(2) = 'rel_E_err'
-    warn_when_large_rel_run_E_err = 1d-2
+   num_trace_history_values = 2
+   trace_history_value_name(1) = 'log_rel_run_E_err'
+   trace_history_value_name(2) = 'rel_E_err'
+   warn_when_large_rel_run_E_err = 1d-2
 
  ! debugging
    report_solver_progress = .false.
