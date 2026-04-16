@@ -176,8 +176,10 @@ include 'gyre_in_mesa_extras_finish_step.inc'
       integer, intent(in) :: id
       integer :: ierr, k
       type(star_info), pointer :: s
-      character(len=64) :: name
+      character(len=150) :: name
       integer :: Teff
+      real(dp) :: mass
+      integer :: lumi
       include 'formats'
       ierr = 0
       call star_ptr(id, s, ierr)
@@ -193,9 +195,12 @@ include 'gyre_in_mesa_extras_finish_step.inc'
      end if
 
      Teff = int(s% Teff)
+     mass = s% m(1) / Msun
+     lumi = int(s% L(1) / Lsun)
+
      ! Skeleton for spitting out .mod files
       if ((s% center_h1 < 1d-12 .and. safe_log10(s% power_he_burn) >1d0) .and. mod(s% model_number,1)==0) then
-         write(name, '(a,i0,a,i0, a)') 'mod_dir/', s%model_number, '_', Teff, '.mod'
+         write(name, '(a,i0,a,f6.4,a,i0,a,i0,a)') 'mod_dir/', s%model_number, '_', mass, '_', Teff, '_', lumi, '.mod'
          call star_write_model(id, name, ierr)
          !s% need_to_save_profiles_now = .true.
       end if
