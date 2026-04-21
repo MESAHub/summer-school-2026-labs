@@ -297,10 +297,10 @@ contains
          type (star_info), pointer :: s
          real(dp), allocatable     :: global_data(:)
          real(dp), allocatable     :: point_data(:,:)
-
+         character(len=150) :: name
          logical :: call_gyre, need_to_save_model 
-         integer :: gyre_interval, max_mode_num, mode_l, ipar(3) 
-         real(dp) :: save_mod_Teff_limit, rpar(1) 
+         integer :: gyre_interval, max_mode_num, mode_l, ipar(3), Teff, lumi
+         real(dp) :: save_mod_Teff_limit, rpar(1), mass
 
          ierr = 0
          call star_ptr(id, s, ierr)
@@ -376,9 +376,13 @@ contains
             O2_period = s% xtra1_array(3) 
             O2_growth = s% xtra2_array(3) 
 
+            Teff = int(s% Teff)
+            mass = s% m(1) / Msun
+            lumi = int(s% L(1) / Lsun)
+
             ! Decide if we need to save a model based on Teff limit set in x_ctrl(1) 
-            if (s% Teff > save_mod_Teff_limit .and. mod(s% model_number,1)==0) then 
-               write(name, '(a,i0,a,f7.5,a,i0,a,i0,a)') 'mod_dir/', s%model_number, '_',mass, '_', Teff, '_',lum, '.mod'
+            if (Teff > save_mod_Teff_limit .and. mod(s% model_number,1)==0) then 
+               write(name, '(a,i0,a,f6.4,a,i0,a,i0,a)') 'mod_dir/', s%model_number, '_', mass, '_', Teff, '_', lumi, '.mod'               
                call star_write_model(id, name, ierr)
             end if 
             
