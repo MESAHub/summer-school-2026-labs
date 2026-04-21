@@ -62,7 +62,7 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         call test_suite_startup(s, restart, ierr)
+!         call test_suite_startup(s, restart, ierr)
          if (.not. restart) then
             need_to_write_LINA_data = len_trim(s% x_character_ctrl(10)) > 0
          else  ! it is a restart
@@ -81,9 +81,9 @@ module run_star_extras
          extras_start_step = keep_going
          if (need_to_write_LINA_data) then
             io = 61
-            open(io,file=trim(s% x_character_ctrl(10)),status='unknown')
+            open(io,file=trim(s% x_character_ctrl(10)),status='unknown', position='append')
             write(io, '(99d16.5)') s% RSP_mass, s% RSP_L, s% RSP_Teff, &
-               (s% rsp_LINA_periods(i), s% rsp_LINA_growth_rates(i), i=1, s% RSP_nmodes)
+               (s% rsp_LINA_periods(i)/86400.d0, s% rsp_LINA_growth_rates(i), i=1, s% RSP_nmodes)
             close(io)
             write(*,*) 'write ' // trim(s% x_character_ctrl(10))
             need_to_write_LINA_data = .false.
@@ -101,28 +101,6 @@ module run_star_extras
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
          extras_finish_step = keep_going
-         if (s% x_integer_ctrl(1) <= 0) return
-         if (s% rsp_num_periods < s% x_integer_ctrl(1)) return
-         write(*,'(A)')
-         write(*,'(A)')
-         write(*,'(A)')
-         target_period = s% x_ctrl(1)
-         rel_run_E_err = s% cumulative_energy_error/s% total_energy
-         write(*,*) 'rel_run_E_err', rel_run_E_err
-         if (s% total_energy /= 0d0 .and. abs(rel_run_E_err) > 1d-5) then
-            write(*,*) '*** BAD rel_run_E_error ***', &
-            s% cumulative_energy_error/s% total_energy
-         else if (abs(s% rsp_period/(24*3600) - target_period) > 1d-2) then
-            write(*,*) '*** BAD ***', s% rsp_period/(24*3600) - target_period, &
-               s% rsp_period/(24*3600), target_period
-         else
-            write(*,*) 'good match for period', &
-               s% rsp_period/(24*3600), target_period
-         end if
-         write(*,'(A)')
-         write(*,'(A)')
-         write(*,'(A)')
-         extras_finish_step = terminate
       end function extras_finish_step
 
 
@@ -134,7 +112,7 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         call test_suite_after_evolve(s, ierr)
+         !call test_suite_after_evolve(s, ierr)
       end subroutine extras_after_evolve
 
 
@@ -157,7 +135,7 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         how_many_extra_history_columns = 8
+         how_many_extra_history_columns = 0
       end function how_many_extra_history_columns
 
 
@@ -171,15 +149,6 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         i = 1
-         names(i) = 'num_periods'; vals(i) = s% RSP_num_periods; i=i+1
-         names(i) = 'period'; vals(i) = s% RSP_period/(24*3600); i=i+1
-         names(i) = 'growth'; vals(i) = s% rsp_GREKM_avg_abs; i=i+1
-         names(i) = 'max_v_div_cs'; vals(i) = 0; i=i+1
-         names(i) = 'delta_R'; vals(i) = s% rsp_DeltaR; i=i+1
-         names(i) = 'delta_Teff'; vals(i) = 0; i=i+1
-         names(i) = 'delta_logL'; vals(i) = s% rsp_DeltaMag/2.5d0; i=i+1
-         names(i) = 'delta_Mag'; vals(i) = 0; i=i+1
       end subroutine data_for_extra_history_columns
 
 
@@ -191,7 +160,7 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         how_many_extra_profile_columns = 1
+         how_many_extra_profile_columns = 0
       end function how_many_extra_profile_columns
 
 
@@ -207,14 +176,6 @@ module run_star_extras
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         names(1) = 'sign_Lc'
-         do k=1,nz
-            if (abs(s% Lc(k)) < 1d-6) then
-               vals(k,1) = 0d0
-            else
-               vals(k,1) = sign(1d0,s% Lc(k))
-            end if
-         end do
-      end subroutine data_for_extra_profile_columns
+       end subroutine data_for_extra_profile_columns
 
       end module run_star_extras
