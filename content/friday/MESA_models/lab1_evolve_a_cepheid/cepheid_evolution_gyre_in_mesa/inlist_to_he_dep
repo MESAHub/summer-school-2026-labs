@@ -27,7 +27,7 @@
    kap_file_prefix = 'gs98'    ! 'gs98' 'a09'  'OP_a09' 'OP_gs98'
    kap_CO_prefix   = 'gs98_co' ! 'gs98_co' 'a09_co'
    use_Type2_opacities = .true.
-   Zbase = 0.002d0
+   Zbase = 0.002d0 
    kap_lowT_prefix = 'lowT_fa05_gs98'
    cubic_interpolation_in_X = .false.
    cubic_interpolation_in_Z = .false.
@@ -39,15 +39,13 @@
 
 &controls
 
-   initial_mass = 8.5d0
-   !initial_Y = 0.267d0
-   !initial_Z = 0.003d0
+   initial_mass = 4.5d0
 
 
 ! GYRE output controls
    !write_pulse_data_with_profile = .true.
    pulse_data_format = 'GYRE'
-
+   
    x_logical_ctrl(37) = .true. ! if true, then run GYRE
 
    x_integer_ctrl(1) = 10 ! output GYRE info at this step interval
