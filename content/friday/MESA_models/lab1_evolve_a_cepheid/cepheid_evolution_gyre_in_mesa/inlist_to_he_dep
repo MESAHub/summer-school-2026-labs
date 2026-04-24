@@ -17,6 +17,7 @@
    relax_initial_Y = .true.
    new_Y = 0.2545
    create_pre_main_sequence_model = .false. ! load from ZAMS and relax Z
+   initial_zfracs = 3
 
    pgstar_flag = .true.
 / !end of star_job namelist
@@ -39,8 +40,6 @@
 &controls
 
    initial_mass = 4.5d0
-   !initial_Y = 0.267d0
-   !initial_Z = 0.003d0 
 
 
 ! GYRE output controls
@@ -75,12 +74,12 @@
 ! convection controls
     steps_before_use_TDC = 0
     MLT_option = 'TDC'
-    include_mlt_corr_to_TDC = .false. 
-    mixing_length_alpha = 2d0 !1.5d0
+    include_mlt_corr_to_TDC = .false.
+    mixing_length_alpha = 1.77d0
     use_ledoux_criterion = .true.
     alpha_semiconvection = 1d0
     thermohaline_coeff = 0d0
- 
+
 ! wind model section: ! for M < 10
    cool_wind_full_on_T    = 9.99d9
    hot_wind_full_on_T     = 1d10
@@ -156,6 +155,6 @@ History_Track2_file_flag = .false.
  TRho_Profile_xmin = -12.0
  TRho_Profile_xmax = 7d0!5d0!10.0
  TRho_Profile_ymin = 2.5
- TRho_Profile_ymax = 9d0!8.5d0!10.0    
+ TRho_Profile_ymax = 9d0!8.5d0!10.0
 
 / ! end of pgstar namelist
