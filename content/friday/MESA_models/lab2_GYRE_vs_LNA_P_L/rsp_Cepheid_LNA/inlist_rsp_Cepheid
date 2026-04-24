@@ -41,7 +41,7 @@
     RSP_nz = 150
     RSP_nz_outer = 40
     RSP_T_anchor = 11d3
-    RSP_T_inner = 2d6 
+    RSP_T_inner = 2d6
     RSP_T_anchor_tolerance = 1d-4
 
 ! solver

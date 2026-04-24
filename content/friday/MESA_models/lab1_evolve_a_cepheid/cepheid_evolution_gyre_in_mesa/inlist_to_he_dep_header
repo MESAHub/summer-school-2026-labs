@@ -42,3 +42,6 @@
       extra_pgstar_inlist_name(2)= 'inlist_to_he_dep'
 
 / ! end of pgstar namelist
+
+&colors
+/
