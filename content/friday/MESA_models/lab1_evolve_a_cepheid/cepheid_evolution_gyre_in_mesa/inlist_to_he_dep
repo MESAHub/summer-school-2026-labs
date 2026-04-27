@@ -1,34 +1,38 @@
 
 &star_job
-
+   ! options to save a model at the end of the evolution
    save_model_when_terminate = .true.
    save_model_filename = 'he_dep.mod'
    required_termination_code_string = ''
+
+   ! we don't create a pre-MS model
+   ! instead, we relax a ZAMS model to the desired Z = 0.002
+   ! when we relax from pre-MS model, default z_frac = 3, gs98.
+   create_pre_main_sequence_model = .false. ! load from ZAMS and relax Z
+   relax_initial_Z = .true.
+   new_Z = 2d-3
+   relax_initial_Y = .true.
+   new_Y = 0.2545
+   
+   ! enable the use of the pgstar window
+   pgstar_flag = .true.
+
 
    ! if you'd like to evolve with a relaxed atmosphere.
    relax_to_this_tau_factor = 1d-3
    dlogtau_factor = 0.1d0
    relax_tau_factor = .false.
-
-   ! instead of create_pre-ms, we relax a zams model.
-   ! when we relax from pre-ms model, default z_frac = 3, gs98.
-   relax_initial_Z = .true.
-   new_Z = 2d-3
-   relax_initial_Y = .true.
-   new_Y = 0.2545
-   create_pre_main_sequence_model = .false. ! load from ZAMS and relax Z
-   initial_zfracs = 3
-
-   pgstar_flag = .true.
 / !end of star_job namelist
 
 &kap
 
+   ! choose the opacity tables 
    kap_file_prefix = 'gs98'    ! 'gs98' 'a09'  'OP_a09' 'OP_gs98'
    kap_CO_prefix   = 'gs98_co' ! 'gs98_co' 'a09_co'
    use_Type2_opacities = .true.
    Zbase = 0.002d0 
    kap_lowT_prefix = 'lowT_fa05_gs98'
+
    cubic_interpolation_in_X = .false.
    cubic_interpolation_in_Z = .false.
 
@@ -39,31 +43,31 @@
 
 &controls
 
+   ! ====== TODO: set the initial mass here! ======
    initial_mass = 4.5d0
 
 
-! GYRE output controls
+   ! stop when the center mass fraction of h1 drops below this limit
+   xa_central_lower_limit_species(1) = 'he4'
+   xa_central_lower_limit(1) = 1d-8
+
+   ! GYRE output controls
    !write_pulse_data_with_profile = .true.
    pulse_data_format = 'GYRE'
    
-   x_logical_ctrl(37) = .true. ! if true, then run GYRE
+   x_logical_ctrl(37) = .true.   ! if true, then run GYRE
 
-   x_integer_ctrl(1) = 10 ! output GYRE info at this step interval
-   x_logical_ctrl(1) = .false. ! save GYRE info whenever save profile
+   x_integer_ctrl(1) = 10        ! output GYRE info at this step interval
+   x_logical_ctrl(1) = .false.   ! save GYRE info whenever save profile
 
-   x_integer_ctrl(2) = 3 ! max number of modes to output per call
-   x_logical_ctrl(2) = .false. ! output eigenfunction files
+   x_integer_ctrl(2) = 3         ! max number of modes to output per call
+   x_logical_ctrl(2) = .false.   ! output eigenfunction files
 
-   x_integer_ctrl(3) = 0 ! mode l (e.g. 0 for p modes, 1 for g modes)
-      ! should match gyre.in mode l
-   x_integer_ctrl(4) = 1 ! order
-   x_ctrl(1) = 0.158d-05 ! freq ~ this (Hz)
-   x_ctrl(2) = 0.33d+03 ! growth < this (days)
-
-
-! stop when the center mass fraction of h1 drops below this limit
-    xa_central_lower_limit_species(1) = 'he4'
-    xa_central_lower_limit(1) = 1d-8
+   x_integer_ctrl(3) = 0         ! mode l (e.g. 0 for p modes, 1 for g modes)
+                                    ! should match gyre.in mode l
+   x_integer_ctrl(4) = 1         ! order
+   x_ctrl(1) = 0.158d-05         ! freq ~ this (Hz)
+   x_ctrl(2) = 0.33d+03          ! growth < this (days)
 
 
 ! see run_star_extras for stopping condition
@@ -140,9 +144,9 @@
 
 &pgstar
 
-Grid1_file_dir = 'png_evolution'
-History_Track1_file_flag = .false.
-History_Track2_file_flag = .false.
+ Grid1_file_dir = 'png_evolution'
+ History_Track1_file_flag = .false.
+ History_Track2_file_flag = .false.
 
  pgstar_interval = 10
 
