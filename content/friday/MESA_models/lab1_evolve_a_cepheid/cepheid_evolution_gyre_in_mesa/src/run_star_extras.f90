@@ -302,10 +302,20 @@ contains
          integer :: gyre_interval, max_mode_num, mode_l, ipar(3), Teff, lumi
          real(dp) :: save_mod_Teff_limit, rpar(1), mass
 
+         real(dp) :: logTeff     ! log value of the effective temperature
+
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
          extras_finish_step = keep_going
+
+         ! ====== TODO: add stopping condition based on effective temperature! ======
+         !logTeff = safe_log10(s% Teff)
+         !if(logTeff .le. 3.7d0) then
+         !   extras_finish_step = terminate
+         !   write(*, *) '===== you have reached the end of the RGB! ===='
+         !   s% termination_code = t_extras_finish_step
+         !end if
 
          call_gyre = .false. ! Assume we don't need to call GYRE 
 
@@ -389,7 +399,7 @@ contains
          end if
 
 
-         extras_finish_step = keep_going
+         !extras_finish_step = keep_going    ! sofia: why is this here in the first place??
          ! to save a profile,
             ! s% need_to_save_profiles_now = .true.
          ! to update the star log,

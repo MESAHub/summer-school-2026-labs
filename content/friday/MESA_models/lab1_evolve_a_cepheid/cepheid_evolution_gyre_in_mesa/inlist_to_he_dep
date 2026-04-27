@@ -36,20 +36,23 @@
    cubic_interpolation_in_X = .false.
    cubic_interpolation_in_Z = .false.
 
-/
+/ !end of kap namelist
 
 &eos
-/
+/ !end of eos namelist
+
+&colors
+/ ! end of colors namelist
 
 &controls
 
    ! ====== TODO: set the initial mass here! ======
    initial_mass = 4.5d0
 
-
-   ! stop when the center mass fraction of h1 drops below this limit
+   ! ====== TODO: add a stopping condition here! ======
+   ! we want the second part of the run to stop when the mass fraction of he4 drops below 1d-4
    xa_central_lower_limit_species(1) = 'he4'
-   xa_central_lower_limit(1) = 1d-8
+   xa_central_lower_limit(1) = 1d-4
 
    ! GYRE output controls
    !write_pulse_data_with_profile = .true.
@@ -125,7 +128,7 @@
    photo_digits = 8
    photo_interval = 100
 
-   profile_interval = 999999         ! sofia: was 200
+   profile_interval = 20         ! sofia: was 200
 
    history_interval = 5              ! sofia: was 1
    terminal_interval = 10
