@@ -309,7 +309,7 @@ contains
          if (ierr /= 0) return
          extras_finish_step = keep_going
 
-         ! ====== TODO: add stopping condition based on effective temperature! ======
+         ! ====== TODO: add stopping condition for effective temperature! ======
          !logTeff = safe_log10(s% Teff)
          !if(logTeff .le. 3.7d0) then
          !   extras_finish_step = terminate

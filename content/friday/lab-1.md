@@ -26,8 +26,8 @@ Here's how to creade your working directory and then move inside it.
 ```bash
 mkdir -p ~/MESA_ss_2026/friday
 cd ~/MESA_ss_2026/friday
-
 ```
+
 The mkdir -p command creates a directory and includes all the needed parent directories. So if the parent directory does not exist, it will be created automatically.
 {{< /details >}}
 
@@ -44,9 +44,150 @@ Here's how to unzip the input folder
 unzip lab1_input.zip 
 cd lab1_input
 ```
+{{< /details >}}
 
+## Let's evolve a star!
+**Task 1**: change the initial mass of the star.  
 
+Discuss among the people at your table and pick an initial mass in the range $3$-$8\,M_\odot$ (please consider only $0.5\,M_\odot$ steps if you want a non-integer value).
 
+> [!IMPORTANT]
+> Make sure that each person at your table has chosen a different initial mass value: you will need to compare your results later!
+
+Now you have to give instructions to MESA about the value of initial mass you just chose. Open the ```inlist_to_he_dep``` file with your favourite text editor, and have a look at it: try to find the correct spot to define the initial mass!
+
+{{< details title="Answer 1" closed="true" >}}
+
+You should look for the ```&controls``` namelist in the ```inlist_to_he_dep``` file, and you will find something like this:
+
+```fortran
+   ! ====== TODO: set the initial mass here! ======
+   initial_mass = 4.5d0
+```
+Change the value of the ```initial_mass``` variable with the number you just chose!
+{{< /details >}}
+
+However, a MESA run is not ready to start until we know **when to stop**!
+
+**Task 2**: Implementing a custom stopping condition in the ```run_star_extras.f90``` file.
+In this first part of the run, we want to stop the simulation when the star is at the base of the Red Giant Branch (RGB), and the most efficient way to do it is to consider a stopping condition based on the effective temperature of the star.
+
+However, in MESA there is no pre-defined stopping condition that could do it, so you need to implement it yourself, and the best way to do it is to play with the ```run_star_extras.f90``` file!
+
+First thing first: open the ```run_star_extras.f90``` file with your favourite text editor and look for the ```extras_finish_step``` subroutine. This subroutine will be called during each evolutionary step, to control if the conditions to stop the evolution are met.
+
+Now some important information:
+* The temperature you want your model to stop at is $\log(T_{\mathrm{eff}}) \simeq 3.7 $
+* We have already created a variable for you called ```logTeff``` in the code
+* In fortran the 'less than something' operator can be written as ```.le.```
+* The syntax to make an ```if``` statement in fortran is the following:
+```fortran
+if (condition_you_want_to_meet) then
+    what_happens
+endif
+```
+Try and code it yourself, but if you are have some trouble don't hesitate to click on the answer below!
+
+{{< details title="Answer 2" closed="true" >}}
+
+Here's how to implement the stopping condition based on the effective temperature of the star:
+```fortran
+! == TODO: add stopping condition for effective temperature! ==
+         logTeff = safe_log10(s% Teff)
+         if(logTeff .le. 3.7d0) then
+            extras_finish_step = terminate
+            write(*, *) '== end of the RGB! =='
+            s% termination_code = t_extras_finish_step
+         end if
+```
+{{< /details >}}
+
+To check that everything is working correctly, let's first **compile** the model using
+```bash
+./mk
+```
+
+If no errors or warnings pop up, you are all set! Now run the model using
+```bash
+./rn
+```
+
+During this first run you will see the star evolving through the main sequence up to the base of the RGB.
+
+## Oh no the run has stopped...what do we do? Restart it!
+So now the star has reached the base of the RGB but we want it to evolve until the end of Helium burning.
+
+However with the current stopping condition we cannot progress past this point...we need to change it and choose a different one!
+
+**Task1**: Comment or remove the previous stopping condition.
+
+Open again the ```run_star_extras.f90``` file and look for the stopping condition you just implemented. Once you find it, take extra care in commenting every line that you wrote!
+
+> [!TIP]
+> To comment lines in fortran, simply add a ```!``` at the beginning of the line.
+
+Now, since we are changing the ```run_star_extras.f90``` file, we also need to change the executable. In order to effectively remove the stopping condition based on the temperature, we need to delete the previous ```star``` file from the folder. Now make a new executable file using 
+```bash
+./mk
+```
+
+**Task 2**: Setting a new stopping condition.
+
+In this second part of the run, we want to stop the simulation when Helium is depleted in the core of the star. Luckily, in this case MESA provides a pre-made stopping condition for when the mass fraction of an isotope goes below a user-set value. Can you find it in the documentation?
+
+> [!TIP]
+> Have a look at the ```controls``` section [here](https://docs.mesastar.org/en/latest/reference/controls.html#).
+
+> [!TIP]
+> Alternatively you can take a look at the ```controls.defaults``` file in ```$MESA_DIR/star/defaults```.
+
+Once you have found the right command, implement the stopping condition in the code!
+
+In this case, we want to stop the simulation when the mass fraction of leftover Helium in the core goes below ```1d-4```.
+
+{{< details title="Answer 2" closed="true" >}}
+
+Here's how to implement the stopping condition based on the amount of leftover Helium in the core:
+```fortran
+   ! == TODO: add a stopping condition here! ==
+   ! we want the second part of the run to stop when
+   ! the mass fraction of he4 drops below 1d-4
+   xa_central_lower_limit_species(1) = 'he4'
+   xa_central_lower_limit(1) = 1d-4
+```
+{{< /details >}}
+
+Amazing! Now you are ready to continue your simulation!
+> [!NOTE]
+> Since the changes that we made in the ```inlist_to_he_dep``` are not concerning the underlying physics of the model, we **don't need** to **make a new executable**!
+
+**Task 3**: Restart the model.
+
+A very powerful feature of MESA is the possibility to restart a simulation from previous steps in the evolution.
+
+This lab is a perfect example of this: we have just run a simulation for a star that has reached the base of the RGB. If we want to evolve it further (like up to Helium depletion), there is no need to make a new simulation from scratch: just **restart** the one you have just stopped!
+
+The way to do it is by using ```photos``` files. These are files written by MESA in binary code, like 'snapshots' taken during the evolution of the star. You can find them in the ```photos/``` directory.
+
+> [!CAUTION]
+> These files are **machine-specific**: so no, you cannot share your photo file with your group mate and expect to obtain the same result!
+
+What we want to do now is to restart our simulation from the last photo MESA took at the end of the previous simulation.
+
+Look into the output from your terminal; you should see something like this
+```bash
+save photos/x00000384 for model 384
+termination code: xa_central_lower_limit
+```
+Copy this number: this is the file name of the last photo file we are looking for!
+
+Now you are ready to restart your run using
+
+```bash
+./re x00000384
+```
+> [!CAUTION]
+> You need to change the number after ```./re``` with the file name of your last photo file!
 -----
 -----
 -----
