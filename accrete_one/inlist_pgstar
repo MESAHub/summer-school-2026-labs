@@ -53,6 +53,9 @@
   show_Trho_profile_burn_labels = .true.
   TRho_profile_txt_scale = 1.2
 
+  !!! TRho
+  TRho_txt_scale = 1.2
+
   !!! abundance profile
   abundance_xaxis_name = 'logRho'
   abundance_xmin = 9d0
