@@ -28,7 +28,7 @@ module run_star_extras
       implicit none
 
       include "test_suite_extras_def.inc"
-      logical :: need_to_write_LINA_data
+      logical :: need_to_write_LNA_data
 
       contains
 
@@ -64,9 +64,9 @@ module run_star_extras
          if (ierr /= 0) return
 !         call test_suite_startup(s, restart, ierr)
          if (.not. restart) then
-            need_to_write_LINA_data = len_trim(s% x_character_ctrl(10)) > 0
+            need_to_write_LNA_data = len_trim(s% x_character_ctrl(10)) > 0
          else  ! it is a restart
-            need_to_write_LINA_data = .false.
+            need_to_write_LNA_data = .false.
          end if
       end subroutine extras_startup
 
@@ -79,14 +79,14 @@ module run_star_extras
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
          extras_start_step = keep_going
-         if (need_to_write_LINA_data) then
+         if (need_to_write_LNA_data) then
             io = 61
             open(io,file=trim(s% x_character_ctrl(10)),status='unknown', position='append')
             write(io, '(99d16.5)') s% RSP_mass, s% RSP_L, s% RSP_Teff, &
                (s% rsp_LINA_periods(i)/86400.d0, s% rsp_LINA_growth_rates(i), i=1, s% RSP_nmodes)
             close(io)
             write(*,*) 'write ' // trim(s% x_character_ctrl(10))
-            need_to_write_LINA_data = .false.
+            need_to_write_LNA_data = .false.
          end if
       end function extras_start_step
 
