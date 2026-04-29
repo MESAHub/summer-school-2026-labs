@@ -648,14 +648,14 @@
    !## mass fractions near surface
 
       ! the following controls automatically add columns for all of the isos that are in the current net
-      !add_surface_abundances
+      add_surface_abundances
       !add_log_surface_abundances
 
       ! individual surface mass fractions (as many as desired)
       !surface h1
       !surface he4
-      surface c12
-      surface o16
+      !surface c12
+      !surface o16
       ! etc.
 
       ! individual log10 surface mass fractions (as many as desired)
