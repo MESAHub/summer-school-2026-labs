@@ -191,7 +191,13 @@ Here **add link to partial solutions** you will find partially complete solution
 
 #### Show me how it's done
 
-Here **add link to full solutions** you will find a complete set of solutions with comments explaining the code. Read through the code to understand what is happening and then run it using your results from lab 1.
+{{< details title="Small changes to the solutions files you still need to make" closed="true" >}}
+
+Here **add link to full solutions** you will find a complete set of solutions with comments explaining the code. Read through the code to understand what is happening and then run it using your results from lab 1. 
+
+If you use these solutions files directly, you still need to pass the correct path for your `mod_dir` from lab 1 in `batch_LNA.sh`, and set `RSP_X` and `RSP_Z` to the correct values in `inlist_rsp_Cepheid` (using the same values as the main part of the lab).
+
+{{< /details >}}
 
 ## Eb's prior information
 
