@@ -4,7 +4,7 @@
 mod_dir="/home/lbuchele/work/MESASummerSchool2026/summer-school-2026-labs_Friday/content/friday/MESA_models/lab1_evolve_a_cepheid/cepheid_evolution_gyre_in_mesa/mod_dir/"
 
 # Set output file 
-out_file='RSP.out'
+out_file='RSP.dat'
 
 # Get list of mod files
 mod_files=`ls $mod_dir/*.mod`
@@ -14,7 +14,7 @@ mod_files=`ls $mod_dir/*.mod`
 rm $out_file
 
 # Write a header in our output file 
-echo 'star_mass	luminosity	effective_temperature	F_period	F_growth	O1_period	O1_growth	O2_period	O2_growth' < $out_file
+echo 'star_mass	luminosity	effective_temperature	F_period	F_growth	O1_period	O1_growth	O2_period	O2_growth' > $out_file
 
 # Loop over each mod_file 
 for file in $mod_files 

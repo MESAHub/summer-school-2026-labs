@@ -5,12 +5,12 @@ linkTitle: Lab 2
 ---
 ## Background
 
-In lab 1, we evolved a star through the instability strip and used GYRE (on-the-fly within MESA) to calculate the expected periods and growth rates of the fundamental radial mode $(l = 0, n = 0)$. However, when doing non-adiabatic calculations GYRE uses the frozen convection approximation. This approximation assumes that the oscillations do not perturb the convective flux. While this approximation is reasonable for smaller amplitude pulsations, the large amplitude of the pulsations in Cepheids do perturb the convective flux. To account for this, we’ll now use a different pulsation tool included in MESA: the Radial Stellar Pulsations (RSP) code. We will also be constructing a graph that shows the period-luminosity relationship that makes Cepheid stars so important for measuring astronomical distances.
+In lab 1, we evolved a star through the instability strip and used GYRE (on-the-fly within MESA) to calculate the expected periods and growth rates of the fundamental radial mode $(l = 0, n = 0)$. However, when doing non-adiabatic calculations GYRE uses the frozen convection approximation. This approximation assumes that the oscillations do not perturb the convective flux. While this approximation is reasonable for smaller amplitude pulsations, the large amplitude of the pulsations in Cepheids do perturb the convective flux. To account for this, we’ll now use a different pulsation tool included in MESA: the Radial Stellar Pulsations (RSP) code. Specifically, we'll use RSP's linear non-adiabatic  functionality (RSP-LNA). We will also be constructing a graph that shows the period-luminosity relationship that makes Cepheid stars so important for measuring astronomical distances.
 
 ## Science Goals
 
 1. Determine the period-luminosity relation from our models
-2. Check the agreement between GYRE non-adiabatic calculations and RSP linear non-adiabatic calculations
+2. Check the agreement between GYRE non-adiabatic calculations and RSP-LNA
 
 ## MESA Goals
 
@@ -23,7 +23,7 @@ For this lab we’ll be using the models that you saved from Lab 1. If your run 
 
 ### Add GYRE values to shared spreadsheet for several models
 
-First things first, let’s look for models where we expect pulsations in the fundamental mode to be excited. These are the modes with positive growth rates. Recall, that in lab 1 we saved the growth rates of several modes in the history file. When choosing your starting model for this lab, please also choose a model number where a `.mod` file was saved. This is to ensure that you are looking at models where RSP can also be used. Once you have found a model with a positive growth rate (and a `.mod` file): please add the period, luminosity, and growth rate to this spreadsheet: **add spreadsheet link here**. As more people add their models, we should see a clear relationship between the period and luminosity values.
+First things first, let’s look for models where we expect pulsations in the fundamental mode to be excited. These are the modes with positive growth rates. Recall, that in lab 1 we saved the growth rates of the fundamental radial mode (and the first and second overtones) in the history file. In addition to looking for a model with a positive growth rate, please also choose a model number where a `.mod` file was saved. This is to ensure that you are looking at models where RSP can also be used and so that you can evolve the non-linear pulsations for this model in lab 3. Once you have found a model with a positive growth rate (and a `.mod` file): please add the period, luminosity, and growth rate to this spreadsheet: **add spreadsheet link here**. As more people add their models, we should see a clear relationship between the period and luminosity values.
 
 ### Set up RSP work directory
 
@@ -31,7 +31,7 @@ Although we are using the results of lab 1, we want to create a new working dire
 
 ### Set up RSP inlist
 
-Now we will do some linear non-adiabatic (LNA) analysis using the RSP code included in MESA. To use this functionality we need to set `create_RSP_model = .true.` in the `star_job` section of `inlist_rsp_Cepheid`. For consistency with the GYRE results obtained in lab 1, we keep the same settings in both the `eos` and `kap` sections of the inlist. Most of the inlist parameters used by RSP are found in the `controls` section of the inlist. Take a minute to look at the documentation of these controls [found here](https://docs.mesastar.org/en/26.4.1/reference/controls.html#radial-stellar-pulsations-rsp). The first few controls are marked as "must set". This is because, rather than taking a full stellar model as GYRE does, RSP uses the stellar mass, luminosity, effective temperature, and envelope composition to build a static model of the stellar envelope.
+To use RSP within MESA, we need to set `create_RSP_model = .true.` in the `star_job` section of `inlist_rsp_Cepheid`. For consistency with the GYRE results obtained in lab 1, we keep the same settings in both the `eos` and `kap` sections of the inlist. Most of the inlist parameters used by RSP are found in the `controls` section of the inlist. Take a minute to look at the documentation of these controls [found here](https://docs.mesastar.org/en/26.4.1/reference/controls.html#radial-stellar-pulsations-rsp). The first few controls are marked as "must set". This is because, rather than taking a full stellar model as GYRE does, RSP uses the stellar mass, luminosity, effective temperature, and envelope composition to build a static model of the stellar envelope.
 
 The next set of controls change the parameters of the convection model which will be discussed by Eb in the lecture introducing lab 3. **Double check with Eb that this is, in fact, the case** There are also some additional numerical controls that we will leave at their default values. The only other RSP control we will change is `RSP_max_num_periods` which we will set to 0. This is because we are only using RSP to perform the LNA analysis and not to evolve the non-linear pulsations.
 
@@ -95,7 +95,7 @@ then try following the suggestion made in the error message and increase `RSP_T_
 
 ### Understanding the output of a successful RSP LNA run
 
-Once you have found a set of model parameters where RSP sucessfully builds an envelope model your output will look something like:
+Once you have found a set of model parameters where RSP successfully builds an envelope model your output will look something like:
 
 ```none
 read inlist_rsp_Cepheid
