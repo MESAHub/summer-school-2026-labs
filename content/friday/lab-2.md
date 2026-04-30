@@ -31,6 +31,10 @@ Although we are using the results of lab 1, we want to create a new working dire
 
 ### Set up RSP inlist
 
+There are a few inlist parameters you will need to change in `inlist_rsp_Cepheid`. The place for each addition is marked with `!!!`. If you wish to test your skills at reading MESA documentation, take a moment now to search the documentation to determine for yourself what needs to be changed. Otherwise see the walk through below.
+
+{{< details title="Task: RSP inlist settings" closed="true" >}}
+
 To use RSP within MESA, we need to set `create_RSP_model = .true.` in the `star_job` section of `inlist_rsp_Cepheid`. For consistency with the GYRE results obtained in lab 1, we keep the same settings in both the `eos` and `kap` sections of the inlist. Most of the inlist parameters used by RSP are found in the `controls` section of the inlist. Take a minute to look at the documentation of these controls [found here](https://docs.mesastar.org/en/26.4.1/reference/controls.html#radial-stellar-pulsations-rsp). The first few controls are marked as "must set". This is because, rather than taking a full stellar model as GYRE does, RSP uses the stellar mass, luminosity, effective temperature, and envelope composition to build a static model of the stellar envelope.
 
 The next set of controls change the parameters of the convection model which will be discussed by Eb in the lecture introducing lab 3. **Double check with Eb that this is, in fact, the case** There are also some additional numerical controls that we will leave at their default values. The only other RSP control we will change is `RSP_max_num_periods` which we will set to 0. This is because we are only using RSP to perform the LNA analysis and not to evolve the non-linear pulsations.
@@ -51,9 +55,11 @@ A few notes:
 2. We're going to take our values of `RSP_X` and `RSP_Z` from the surface mass fractions saved in the history file. First, however, we should check that the surface abundances are representative of the composition in the envelope. You can do this using the saved model which includes the abundance profiles of all isotopes throughout the star. Check that the `h1` and `he4` values of the surface zone are representative of the stellar envelope.
 3. Make sure to double check that you are inputting your values in the units expected by RSP: mass in Msun, Teff in K, L in Lsun, X and Z as mass fractions.
 
+{{< /details >}}
+
 ### Run RSP LNA
 
-Once you have set the envelope values, run MESA in the normal way.
+Once you have set necessary inlist controls, run MESA in the normal way.
 
 [!TIP]
 Since this is new working directory, don't forget to compile MESA before calling it.
@@ -136,7 +142,7 @@ read inlist_rsp_Cepheid
                                         OMP_NUM_THREADS          16
 ```
 
-which is then followed by the usual MESA terminal output header, and one model's worth of output before MESA terminates with `termination code: reached max number of periods`. Of this information, the part we are most interested in is the period and growth rate information printed right after `create initial RSP model`. RSP indexes the modes in order of decreasing period (increasing frequency). In our case, the mode labeled 0 should be the fundamental radial mode, followed by the first and second overtones (modes 1 and 2). RSP then prints some information about the stellar model, conveniently printing the surface luminosity labeled as `L(1)/Lsun`. Using this output please add your RSP results to the shared spreadsheet.
+This is then followed by the usual MESA terminal output header, and one model's worth of output before MESA terminates with `termination code: reached max number of periods`. Of this information, the part we are most interested in is the period and growth rate information printed right after `create initial RSP model`. RSP indexes the modes in order of decreasing period (increasing frequency). In our case, the mode labeled 0 should be the fundamental radial mode, followed by the first and second overtones (modes 1 and 2). RSP then prints some information about the stellar model, conveniently printing the surface luminosity labeled as `L(1)/Lsun`. Using this output, add your RSP results to the shared spreadsheet.
 
 To fill in our period luminosity diagram a little bit more, repeat this process (changing the inlist parameters and running RSP LNA) for different timesteps from your lab 1 results.
 
@@ -175,7 +181,7 @@ Below, you'll find an outline of one possible approach to solve this problem. Us
 
 - Conveniently, the `.mod` files saved in lab 1 contain all of the relevant information for RSP in their filenames. Note that because the envelope doesn't change composition, you don't need to change `RSP_X` or `RSP_Z`. This means that you can create a bash script which loops over all of the files in the lab 1 `mod_dir` and extracts the relevant parameters from the filename for each model.
 - In this loop you can use `shmesa change` to update the relevant inlist parameters `RSP_mass`, `RSP_Teff`, `RSP_L` before running MESA.
-- As you saw in the main lab, RSP prints the period and growth rates to the terminal. Additionally, the `extras_start_step` routine in `run_star_extras` is already configured to write LNA data to an output file. You will need to modify this to ensure that the output is not overwritten when you call MESA again for each new model (the keyword `position` in the fortran `open` call may be useful). You may also want to double check the units of this output.
+- As you saw in the main lab, RSP prints the period and growth rates to the terminal. Additionally, the `extras_start_step` routine in `run_star_extras` is already configured to write LNA data to an output file. You will need to figure out the control necessary to trigger this output and to modify this routine to ensure that the output is not overwritten when you call MESA again for each new model (the keyword `position` in the fortran `open` call may be useful). You may also want to double check the units of this output.
 
 {{< /details >}}
 
