@@ -9,14 +9,14 @@
   ! net
 
     change_initial_net = .true.
-    new_net_name = 'nets_lab3/ONeMg2Na.net'
+    new_net_name = 'nets_lab3/ONe.net'
 
   ! weak rates
 
     use_suzuki_weak_rates = .true.
     ! use_special_weak_rates = .true.
-    ! special_weak_states_file = 'weak.states_full'
-    ! special_weak_transitions_file = 'weak.transitions_full'
+    ! special_weak_states_file = 'weak.states.ONeMg'
+    ! special_weak_transitions_file = 'weak.transitions.ONeMg'
 
 / ! end of star_job namelist
 
@@ -60,7 +60,6 @@
 
   ! output
 
-    log_directory = 'LOGS_ONeMgNa25_1d-6'
-    
+    log_directory = 'LOGS_ONe_1d-6'
 
 / ! end of controls namelist

@@ -60,7 +60,7 @@
 
   ! output
 
-    log_directory = 'LOGS_ONeMgNa25_1d-6'
+    log_directory = 'LOGS_ONeMg2Na_1d-6'
     
 
 / ! end of controls namelist

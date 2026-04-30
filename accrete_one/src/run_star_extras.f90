@@ -26,6 +26,11 @@
       use star_def
       use const_def
       use math_lib
+      ! new
+      use rates_lib
+      use rates_def, only: Coulomb_info, do_ecapture
+      use eos_lib
+      use eos_def
       
       implicit none
       
@@ -87,7 +92,8 @@
          extras_start_step = 0
 
          ! skip burning if central density is not high enough
-         if (s% rho(s% nz) < 1d9) then
+         if (s% rho(s% nz) < 8d8) then
+            write(*,*) '***Reactions off***'
             s% max_abar_for_burning = -1
          else
             s% max_abar_for_burning = 199
@@ -162,7 +168,7 @@
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         how_many_extra_profile_columns = 0
+         how_many_extra_profile_columns = 2
       end function how_many_extra_profile_columns
       
       
@@ -172,7 +178,21 @@
          real(dp) :: vals(nz,n)
          integer, intent(out) :: ierr
          type (star_info), pointer :: s
-         integer :: k
+         integer :: i, k
+         ! for EOS call
+         real(dp), dimension(num_eos_basic_results) :: res, d_dlnd, d_dlnT
+         real(dp), dimension(:,:), allocatable :: d_dxa
+         real(dp) :: eta, deta_dlnT, deta_dlnd
+         ! for rates call
+         type(Coulomb_Info), pointer :: cc
+         type(Coulomb_Info), target :: cc_info
+         integer :: nr
+         character(len=iso_name_length), dimension(:), allocatable :: weak_lhs, weak_rhs
+         integer, pointer :: ids(:), reaction_ids(:)
+         real(dp) :: Ye
+         real(dp), dimension(:), pointer :: lambda, dlambda_dlnT, dlambda_dlnd, &
+              Q, dQ_dlnT, dQ_dlnd, Qneu, dQneu_dlnT, dQneu_dlnd
+         !
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
@@ -187,6 +207,71 @@
          !do k = 1, nz
          !   vals(k,1) = s% Pgas(k)/s% P(k)
          !end do
+
+         names(1) = 'lambda_na23_ne23'
+         names(2) = 'lambda_ne23_na23'
+
+         !!! 2 reactions
+         nr = 2
+         allocate( ids(nr), reaction_ids(nr), weak_lhs(nr), weak_rhs(nr), &
+              lambda(nr), dlambda_dlnT(nr), dlambda_dlnd(nr), &
+              Q(nr), dQ_dlnT(nr), dQ_dlnd(nr), &
+              Qneu(nr), dQneu_dlnT(nr), dQneu_dlnd(nr))
+
+         !!! 
+         weak_lhs(1) = 'na23'
+         weak_rhs(1) = 'ne23'
+
+         weak_lhs(2) = 'ne23'
+         weak_rhs(2) = 'na23'
+
+         do i = 1, nr
+            ids(i) = get_weak_rate_id(weak_lhs(i), weak_rhs(i))
+            reaction_ids(i) = 0
+         end do
+         
+         allocate( d_dxa(num_eos_d_dxa_results, s% species) )
+
+         !
+         do k = 1, s% nz
+            !!! call EOS to get eta and derivatives
+            call eosDT_get(s% eos_handle, s% species, s% chem_id, s% net_iso, s% xa(:,k), &
+                 s% rho(k), safe_log10(s% rho(k)), s% T(k), safe_log10(s% T(k)), &
+                 res, d_dlnd, d_dlnT, d_dxa, ierr)
+            eta = res(i_eta)
+            deta_dlnT = d_dlnT(i_eta)
+            deta_dlnd = d_dlnd(i_eta)
+            
+            !!! set coulomb context
+            ! before getting the weaklib rates, the Coulomb_info structure must be populated.
+            ! The ecapture routines need to know some local quantities (functions of the density,
+            ! temperature, and composition), to calculate the Coulomb corrections to the rates.
+            ! from $MESA_DIR/net/private/net_eval.f90
+            cc => cc_info
+            
+            call coulomb_set_context(cc, s% T(k), s% rho(k), safe_log10(s% T(k)), safe_log10(s% rho(k)), &
+                 s% zbar(k), s% abar(k), s% z2bar(k))
+
+            !!! evaluate the capture rates
+            ! do_ecapture = .false.
+            call eval_weak_reaction_info( &
+                 nr, ids, reaction_ids, cc, s% T(k)/1d9, s% ye(k)*s% rho(k), &
+                 eta, deta_dlnT, deta_dlnd, &
+                 lambda, dlambda_dlnT, dlambda_dlnd, &
+                 Q, dQ_dlnT, dQ_dlnd, &
+                 Qneu, dQneu_dlnT, dQneu_dlnd, &
+                 ierr)
+
+            !!! save results
+            do i = 1, nr
+               vals(k,i) = lambda(i)
+            end do
+         end do
+         
+         deallocate( d_dxa, ids, reaction_ids, weak_lhs, weak_rhs, &
+              lambda, dlambda_dlnT, dlambda_dlnd, &
+              Q, dQ_dlnT, dQ_dlnd, &
+              Qneu, dQneu_dlnT, dQneu_dlnd )
          
       end subroutine data_for_extra_profile_columns
 

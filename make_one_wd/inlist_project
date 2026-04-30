@@ -20,7 +20,7 @@
   ! save a model at the end of the run
     save_model_when_terminate = .true.
     ! save_model_filename = '1.1Msun_ONeMg_S15.mod'
-    save_model_filename = '1.1Msun_ONeMgNa.mod'
+    save_model_filename = '1.1Msun_ONeMgNa25.mod'
 
   ! nuclear net
 
@@ -103,17 +103,17 @@
     accretion_species_xa(4) = 0.05d0
 
     ! include Na23 and Mg25 (Schwab, Bildsten & Quataert 2017)
-    ! num_accretion_species = 5
-    ! accretion_species_id(1) = 'o16'
-    ! accretion_species_xa(1) = 0.50d0
-    ! accretion_species_id(2) = 'ne20'
-    ! accretion_species_xa(2) = 0.39d0
-    ! accretion_species_id(3) = 'na23'
-    ! accretion_species_xa(3) = 0.05d0
-    ! accretion_species_id(4) = 'mg24'
-    ! accretion_species_xa(4) = 0.05d0
-    ! accretion_species_id(5) = 'mg25'
-    ! accretion_species_xa(5) = 0.01d0
+    num_accretion_species = 5
+    accretion_species_id(1) = 'o16'
+    accretion_species_xa(1) = 0.50d0
+    accretion_species_id(2) = 'ne20'
+    accretion_species_xa(2) = 0.39d0
+    accretion_species_id(3) = 'na23'
+    accretion_species_xa(3) = 0.05d0
+    accretion_species_id(4) = 'mg24'
+    accretion_species_xa(4) = 0.05d0
+    accretion_species_id(5) = 'mg25'
+    accretion_species_xa(5) = 0.01d0
 
   ! when to stop
 

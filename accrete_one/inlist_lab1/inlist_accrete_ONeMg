@@ -4,12 +4,12 @@
 
   ! load previous model
     load_saved_model = .true.
-    load_model_filename = '../make_one_wd/1.1Msun_ONeMg2Na.mod'
+    load_model_filename = '../make_one_wd/1.1Msun_ONeMg.mod'
 
   ! net
 
     change_initial_net = .true.
-    new_net_name = 'nets_lab3/ONeMg2Na.net'
+    new_net_name = 'nets_lab1/ONeMg.net'
 
   ! weak rates
 
@@ -45,22 +45,17 @@
     accrete_same_as_surface = .false.
     accrete_given_mass_fractions = .true.
 
-    ! include Na23 and Mg25 (Schwab, Bildsten & Quataert 2017)
-    num_accretion_species = 5
+    ! S15 abundances
+    num_accretion_species = 3
     accretion_species_id(1) = 'o16'
-    accretion_species_xa(1) = 0.50d0
+    accretion_species_xa(1) = 0.5d0
     accretion_species_id(2) = 'ne20'
-    accretion_species_xa(2) = 0.39d0
-    accretion_species_id(3) = 'na23'
+    accretion_species_xa(2) = 0.45d0
+    accretion_species_id(3) = 'mg24'
     accretion_species_xa(3) = 0.05d0
-    accretion_species_id(4) = 'mg24'
-    accretion_species_xa(4) = 0.05d0
-    accretion_species_id(5) = 'mg25'
-    accretion_species_xa(5) = 0.01d0
 
   ! output
 
-    log_directory = 'LOGS_ONeMgNa25_1d-6'
-    
+    log_directory = 'LOGS_ONeMg_1d-6'
 
 / ! end of controls namelist
