@@ -82,7 +82,7 @@ module run_star_extras
          if (need_to_write_LINA_data) then
             io = 61
             open(io,file=trim(s% x_character_ctrl(10)),status='unknown', position='append')
-            write(io, '(99d16.5)') s% RSP_mass, s% RSP_L, s% RSP_Teff, &
+            write(io, '(99e16.4)')  s% RSP_mass, s% RSP_L, s% RSP_Teff, &
                (s% rsp_LINA_periods(i)/86400.d0, s% rsp_LINA_growth_rates(i), i=1, s% RSP_nmodes)
             close(io)
             write(*,*) 'write ' // trim(s% x_character_ctrl(10))

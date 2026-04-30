@@ -20,9 +20,9 @@
 ! Set parameters to build RSP envelope 
     x_character_ctrl(10) = 'RSP_test_grid_out.dat'
     ! Change these parameters 
-    RSP_mass = 7.98
-    RSP_Teff = 8165.17
-    RSP_L = 9909.75
+    RSP_mass = 7.84
+    RSP_Teff = 4150.50
+    RSP_L = 17020.96
 
     ! Fixed to match initial values from lab 1 
     RSP_X = 0.7440d0
