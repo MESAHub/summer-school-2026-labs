@@ -182,8 +182,8 @@ Zbase = 0.002d0
     photo_digits = 8
     photo_interval = 1000
     profile_interval = 10000
-    history_interval = 1
-    terminal_interval = 10
+    history_interval = 100
+    terminal_interval = 100
     max_num_profile_models = 1000000 ! 100 ! RECOMMENDED 10000
 
 ! terminal output
