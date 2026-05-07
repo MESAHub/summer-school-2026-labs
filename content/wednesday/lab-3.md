@@ -33,11 +33,13 @@ The starting point is a very simple setup.
 |:--------|
 | Edit `inlist_accrete` to set the accretion rate that you chose. |
 
+
+
 {{< details title="What variable needs to be changed?" closed="true" >}}
 
-
-
 {{< /details >}}
+
+
 
 {{< details title="Partial solution" closed="true" >}}
 
@@ -45,8 +47,20 @@ In `&controls`, set `mass_change = <your value>`.
 
 {{< /details >}}
 
+
+
 ### Step 3: Changing your net
 
+Our base net `ONe.net` contains the basic reactions for oxygen ignition, namely the reaction $^{16}\rm{O} + \,^{16}\rm{O} \to \alpha+\,^{28}\rm{Si}$, .. Depending on the net you chose in the spreadsheet, you will modify your net accordingly to include more weak reactions. 
 
+| 📋 TASK 3 |
+|:--------|
+| **Edit `my.net`** to set the reaction network. **Click on the tabs below** to review the instructions for your specific net. |
+
+{{< details title="ONe.net" closed="true" >}}
+
+Nothing to do. 
+
+{{< /details >}}
 
 
