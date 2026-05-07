@@ -163,24 +163,106 @@ The parameter that should be added is:
 
 ### Step 3: Inlist Accrete
 
-Starting with `&star_jobs`, ...
+With the common variables set, now we can focus on the fun part: throwing material on the surface. We will control the reaction network of the model and the material accreted within `inlist_accrete`. Unlike our previous inlist, this file is mostly empty. 
+
+Starting in `&star_jobs`, load in the downloaded model `1.1Msun_ONe.mod`, change the initial network to a file we will later create called `ONe.net`, and set the weak rates to those of Suzuki+2016[^1]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the URCA process. 
+
 
 | 📋 TASK 1 |
 |:--------|
-| In `&star_jobs`, **update `inlist_accrete`** to turn on ___ |
+| In `&star_jobs`, **update `inlist_accrete`** to load the `1.1Msun_ONe` model, change the initial nuclear network to `ONe.net`, and use the Suzuki rates.|
 
+> [!NOTE]
+> Remember, paths provided in the inlists are relative to the relavant `rn` executable. 
 
 {{< details title="Hint: What variables need to be changed?" closed="true" >}}
-...
+The parameters that should be added are:
+- `load_saved_model`
+- `load_model_filename`
+- `change_initial_net`
+- `new_net_name`
+- `use_suzuki_weak_rates`
+{{< /details >}}
 
+{{< details title="Partial Solution" closed="true" >}}
+```fortran
+  ! load previous model
+    load_saved_model = .true.                   !!!!! 
+    load_model_filename = '1.1Msun_ONe.mod'     !!!!!
+
+  ! net
+    change_initial_net = .true.  !!!!!
+    new_net_name = 'ONe.net'     !!!!!
+
+  ! weak rates
+    use_suzuki_weak_rates = .true. !!!!!
+```
+{{< /details >}}
+
+Next, we want to accrete material of a given composition at a given rate. This material need not be the same composition as the surface star and may be defined as mass fractions of a variety of species. 
+
+In `&controls`, set the accretion to 10<sup>-6</sup> M<sub>&#9737;</sub> / year of equal mass fractions of Oxygen-16 and Neon-20. Also, set the log output directory to a more descriptive name, `LOGS_ONe_1d-6`.
+
+
+| 📋 TASK 1 |
+|:--------|
+| In `&controls`, **update `inlist_accrete`** to rename the LOGS directory to `LOGS_ONe_1d-6` and set the accretion rate to 10<sup>-6</sup> M<sub>&#9737;</sub> / year of equal mass fractions of Oxygen-16 and Neon-20|
+
+> [!NOTE]
+> You will need to both explicitly stop MESA from accreting the same composition as the surface and flag that the new accretion composition will be given as mass fractions.
+
+{{< details title="Hint: What variables need to be changed?" closed="true" >}}
+The parameters that should be added are:
+- `mass_change`
+- `accrete_same_as_surface`
+- `accrete_given_mass_fractions`
+- `num_accretion_species`
+- `accretion_species_id`
+- `accretion_specia_xa`
+{{< /details >}}
+
+{{< details title="Hint: How is accreting material defined?" closed="true" >}}
+The accretion of various species is primarily governed by two arrays: `accretion_species_id` and `accretion_specia_xa`. Additionally, `num_accretion_species` provides MESA with an expectation of the length of these two arrays. 
+
+The `id` of a particular species is defined through abbreviated isotopic hyphen notation (minus the hyphen) as <\Chemical Symbol><\Mass Number>. For example, Selenium-80 is se80 and Nickel-56 is ni56. More information on the variety of isotopes available in MESA can be found in `$MESA_DIR/chem/public/chem_def.f90`
+
+The `xa` is the mass fraction of the particular species, some decimal value less than or equal to 1. 
+
+Therefore, if we wanted to accrete only Hydrogen-2, we would use:
+```fortran
+    ! Just H2
+    num_accretion_species = 1
+    accretion_species_id(1) = 'h2'
+    accretion_species_xa(1) = 1d0 
+```
 
 {{< /details >}}
 
-Next in `&controls`, ...
+> [!NOTE]
+> Note, arrays in fortran are 1-indexed, so the first entry in an array is array(1) and the second is array(2). 
 
-| 📋 TASK 1 |
-|:--------|
-| In `&controls`, **update `inlist_accrete`** to turn on ___ |
+{{< details title="Partial Solution" closed="true" >}}
+```fortran
+  ! accretion
+
+    mass_change = 1d-6                     !!!!!
+
+    accrete_same_as_surface = .false.      !!!!!
+    accrete_given_mass_fractions = .true.  !!!!!
+
+    ! O and Ne
+    num_accretion_species = 2
+    accretion_species_id(1) = 'o16'  !!!!!
+    accretion_species_xa(1) = 0.50d0 !!!!!
+    accretion_species_id(2) = 'ne20' !!!!!
+    accretion_species_xa(2) = 0.50d0 !!!!!
+
+  ! output
+
+    log_directory = 'LOGS_ONe_1d-6' !!!!!
+```
+{{< /details >}}
+
 
 > [!WARNING]
 > Don't forget to save your changes to the inlist!
@@ -271,6 +353,7 @@ Magnetic fields can alter the interior structure of white dwarfs, driving higher
 
 
 ## References
-[^1]: https://arxiv.org/pdf/2601.16918 (Figure 8)
+[^1]: https://iopscience.iop.org/article/10.3847/0004-637X/817/2/163
+[^2]: https://arxiv.org/pdf/2601.16918 (Figure 8)
 
 [^2]:
