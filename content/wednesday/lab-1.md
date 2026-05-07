@@ -311,6 +311,13 @@ Therefore, if we wanted to accrete only Hydrogen-2, we would use:
 |:--------|
 | **Run** the model! Observe the...  |
 
+
+Review the central density of the model at ignition. Using this value and Figure 8 from Holas+26[^2] (below), assuming that ignition is perfectly centered, does your model explode or implode? 
+
+![landscape](/wednesday/Holas+26_Fig8.png)
+*Figure 8, from Holas+26* [^2]
+
+
 > [!IMPORTANT]
 > Do not forget to `./clean`, then `./mk`, then `./rn`
 
@@ -353,7 +360,5 @@ Magnetic fields can alter the interior structure of white dwarfs, driving higher
 
 
 ## References
-[^1]: https://iopscience.iop.org/article/10.3847/0004-637X/817/2/163
-[^2]: https://arxiv.org/pdf/2601.16918 (Figure 8)
-
-[^2]:
+[^1]: Suzuki, Toshio, Hiroshi Toki, and Ken’ichi Nomoto. "Electron-capture and β-decay rates for sd-shell nuclei in stellar environments relevant to high-density O–Ne–Mg cores." The Astrophysical Journal 817, no. 2 (2016): 163. https://iopscience.iop.org/article/10.3847/0004-637X/817/2/163.
+[^2]: Holas, Alexander, Samuel W. Jones, Friedrich K. Röpke, Rüdiger Pakmor, Christina Fakiola, Giovanni Leidi, Raphael Hirschi, and Ken J. Shen. "Drawing the line between explosion and collapse in electron-capture supernovae." (2026). https://www.aanda.org/articles/aa/pdf/2026/03/aa57910-25.pdf.
