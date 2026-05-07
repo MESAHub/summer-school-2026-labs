@@ -2,6 +2,7 @@
 weight: 1
 author: Tryston Raecke, Sunny Wong, Josh Wanninger, Michael Zingale
 math: true
+disableKinds: "rss"
 ---
 # Minilab 1: Place Your Bets: Explode or Implode?
 
@@ -16,10 +17,12 @@ math: true
 ### Helpful Links
 
 The general Google drive for these Wednesday labs can be found [HERE]( FIXLINK ). 
+
 More specifically, the files for Lab 1 can be found [HERE]( FIXLINK ). This drive contains the starting point, partial solutions (separated by task), and a full solution. You do **not** need to download the entire drive!
 
+Lastly, it will be helpful to consult the [MESA documentation](https://docs.mesastar.org/en/latest/) throughout this lab.
 
-## Instructions
+## How to destroy a White Dwarf in 10(ish) easy steps!
 
 Note throughout this lab expected tasks are outlayed specifically with: 
 | 📋 TASK 0 |
@@ -39,15 +42,6 @@ to help you along.
 
 Values that need to be altered in the files will generally be marked with `!!!!!`, but feel free to look over the provided solutions if you get stuck!
 
-Notes:
-observe O ignition in O/Ne WD (ONe.net)
-	small network (p, He4, O16, Ne20, F20, O20, Si28)
-	stopping condition at log T ~ 9.1 – can’t handle a flame
-run star extras prep
-	look at neutrino energy in pgstar
-custom stopping condition
-	add inert nuclei in prep for reactions in later labs
-	save a model that can be used with larger net in next lab
 
 ### Step 0: Start Up
 
@@ -55,7 +49,7 @@ custom stopping condition
 |:--------|
 | **Download** the starting point from the [Google Drive]( FIXLINK ) to a local working directory. |
 
-This starting point is a standard set of MESA files complete with a precomputed 1.1 M<sub>&#9737;</sub> white dwarf model.
+This starting point is a standard set of MESA files complete with a precomputed 1.1 M<sub>&#9737;</sub> Oxygen-Neon (ONe) white dwarf model.
 
 After downloading, your working directory should look like:
 
@@ -92,28 +86,79 @@ At this stage, we are now ready to dive into some inlists!
 
 ### Step 2: Inlist Common
 
-`inlist_common` holds the set of defaults that we want to be common between various accretion runs. The primary point of this is to make changes to runs easier and more modular. Instead of having to sort through walls of variables for each change, the core functionality can be stored in common.
+`inlist_common` holds the set of defaults that we want to be common between various accretion runs. The primary point of this is to make changes to runs easier and more modular. Instead of having to sort through walls of variables for each change, the core functionality can be stored in... common.
 
 Now let's look over the file. You will notice that some variables have already been set to help to more aggressively relax tolerance and help the model converge at later times.
 
-Starting with `&star_jobs`, ...
-
-| 📋 TASK 1 |
-|:--------|
-| In `&star_jobs`, **update `inlist_common`** to turn on ___ |
-
-
-{{< details title="Hint: What variables need to be changed?" closed="true" >}}
-
-....
+{{< details title="Aside on miscellanous variable choices in `inlist_common`" closed="true" >}}
+The work that will be done throughout this lab requires careful consideration of input physics for real science cases. !!! TODO !!!
 
 {{< /details >}}
 
-Next in `&controls`,
+Starting with the top of the file, reset the initial age, reset the initial model number, turn on pgstar, and save our final model as `NAME`. TODO
 
 | 📋 TASK 1 |
 |:--------|
-| In `&controls`, **update `inlist_common`** to turn on ___ |
+| In `&star_jobs`, **update `inlist_common`** to set initial age to 0, set initial model number to 0, turn on pgstar, and save our final model as `NAME` TODO|
+
+
+{{< details title="Hint: What variables need to be changed?" closed="true" >}}
+The parameters that should be updated/added are:
+- `save_model_when_terminate`
+- `save_model_filename`
+- `set_initial_age`
+- `initial_age`
+- `set_initial_model_number`
+- `initial_model_number`
+- `pgstar_flag`
+
+{{< /details >}}
+
+{{< details title="Partial Solution" closed="true" >}}
+```fortran
+! save a model at the end of the run
+    save_model_when_terminate = .false. !!!!!
+    save_model_filename = ''            !!!!!
+
+  ! initial model
+    set_initial_age = .true. !!!!!
+    initial_age = 0d0        !!!!!
+
+    set_initial_model_number = .true. !!!!!
+    initial_model_number = 0          !!!!!
+
+  ! coulomb corrections
+    ion_coulomb_corrections = 'PCR2009'
+    electron_coulomb_corrections = 'Itoh2002'
+
+  ! display on-screen plots
+    pgstar_flag = .true.
+    disable_pgstar_during_relax_flag = .false.
+```
+{{< /details >}}
+
+Next, we want to record the point of oxygen ignition in the white dwarf, but **DO NOT** want to try running through explosion/collapse during these labs. Set the maximum temperature of the model to 10<sup>9.1</sup> K. 
+
+| 📋 TASK 1 |
+|:--------|
+| In `&controls`, **update `inlist_common`** to stop the model once temperature reaches 10<sup>9.1</sup> K |
+
+{{< details title="Hint: What variables need to be changed?" closed="true" >}}
+The parameter that should be added is:
+- `log_max_temp_upper_limit`
+
+{{< /details >}}
+
+{{< details title="Partial Solution" closed="true" >}}
+```fortran
+! when to stop
+
+     log_max_temp_upper_limit = 9.1d0 !!!!!
+```
+{{< /details >}}
+
+> [!WARNING]
+> Don't forget to save your changes to the inlist!
 
 
 ### Step 3: Inlist Accrete
@@ -137,6 +182,9 @@ Next in `&controls`, ...
 |:--------|
 | In `&controls`, **update `inlist_accrete`** to turn on ___ |
 
+> [!WARNING]
+> Don't forget to save your changes to the inlist!
+
 
 ### Step 4: Building a Nuclear Network
 
@@ -149,6 +197,9 @@ Next in `&controls`, ...
 |:--------|
 | **update `ONe.net`** to include the above isotopes |
 
+> [!WARNING]
+> Don't forget to save your changes!
+
 
 ### Step 5: History/Profile Columns
 
@@ -158,12 +209,18 @@ Next in `&controls`, ...
 | **Uncomment**  in `history_columns.list`. 
  **Uncomment**  in `profile_columns.list`. |
 
+> [!WARNING]
+> Don't forget to save your changes to the inlist!
+
 
 ### Step 6: Inlist Pgstar
 
 | 📋 TASK 1 |
 |:--------|
 | **update `inlist_pgstar`** to ... |
+
+> [!WARNING]
+> Don't forget to save your changes to the inlist!
 
 
 ### Step 7: Run the Model!
@@ -194,6 +251,9 @@ Add the following nuclei to the model:
 |:--------|
 | **Update** `ONe.net` to include the above inert nuclei.  |
 
+
+Now, the stopping condition should be modified to save a copy of the model right when the density crosses into thresholds that will be more... exciting. Set the stopping condition such that the final model will be produced when
+
 Run through stopping condition
 
 | 📋 TASK 1 |
@@ -204,11 +264,13 @@ Run through stopping condition
 > Do not forget to `./clean`, then `./mk`, then `./rn`
 
 
-## BONUS
+## BONUS: Magnetization Station
+
+Magnetic fields can alter the interior structure of white dwarfs, driving higher masses, while increasing instability. Modify the magnetic field of the star in 5 regimes. Track the different final masses at ignition.
 
 
 
 ## References
-[^1]:
+[^1]: https://arxiv.org/pdf/2601.16918 (Figure 8)
 
 [^2]:
