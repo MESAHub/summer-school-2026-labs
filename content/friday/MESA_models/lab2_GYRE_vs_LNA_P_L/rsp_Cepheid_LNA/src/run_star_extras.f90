@@ -74,6 +74,7 @@ module run_star_extras
       integer function extras_start_step(id)
          integer, intent(in) :: id
          integer :: ierr, io, i
+         character(len= 10) :: mod_num
          type (star_info), pointer :: s
          ierr = 0
          call star_ptr(id, s, ierr)
@@ -82,7 +83,8 @@ module run_star_extras
          if (need_to_write_LINA_data) then
             io = 61
             open(io,file=trim(s% x_character_ctrl(10)),status='unknown', position='append')
-            write(io, '(99e16.4)')  s% RSP_mass, s% RSP_L, s% RSP_Teff, &
+            call GET_ENVIRONMENT_VARIABLE('MOD_NUM', mod_num) 
+            write(io, '(a, 99e16.4)') trim(mod_num), s% RSP_mass, s% RSP_L, s% RSP_Teff, &
                (s% rsp_LINA_periods(i)/86400.d0, s% rsp_LINA_growth_rates(i), i=1, s% RSP_nmodes)
             close(io)
             write(*,*) 'write ' // trim(s% x_character_ctrl(10))
