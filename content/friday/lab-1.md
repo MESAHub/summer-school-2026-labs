@@ -9,7 +9,7 @@ linkTitle: Lab 1
 
 In this lab you will learn how to evolve a classical Cepheid model, with an initial mass in the $3$-$8\,M_\odot$ range. The evolution will be divided in two steps: first you will start from the Zero Age Main Sequence (ZAMS) and stop when a threshold in effective temperature $T_{\mathrm{eff}}$ is reached. 
 
-In the second part of this lab, you will resume the previous run and simulate the evolution all the way through Helium burning, until reaching Helium depletion in the core. While the simulation runs you'll get to watch your star producing a blue loop and moving into the instability strip, while GYRE runs automatically during the pulsational phase!
+In the second part of this lab, you will resume the previous run and simulate the evolution all the way through Helium burning, until reaching Helium depletion in the core. While the simulation runs you'll get to watch your star experience a blue loop and move through the instability strip, while GYRE runs automatically during the pulsational phase!
 
 During this second part of the run, you will also save some models (called `.mod` files), that will be reused in the upcoming lab.
 
@@ -142,7 +142,7 @@ In this second part of the run, we want to stop the simulation when Helium is de
 > [!TIP]
 > Alternatively you can take a look at the ```controls.defaults``` file in ```$MESA_DIR/star/defaults```.
 
-Once you have found the right command, implement the stopping condition in the code!
+Once you have found the right command, implement the stopping condition in your inlist!
 
 In this case, we want to stop the simulation when the mass fraction of leftover Helium in the core goes below ```1d-4```.
 
@@ -160,7 +160,7 @@ Here's how to implement the stopping condition based on the amount of leftover H
 
 Amazing! Now you are ready to continue your simulation!
 > [!NOTE]
-> Since the changes that we made in the ```inlist_to_he_dep``` are not concerning the underlying physics of the model, we **don't need** to **make a new executable**!
+> Since the changes that we made in the ```inlist_to_he_dep``` are not introducing new code into MESA, we **don't need** to **make a new executable**!
 
 ## Oh no the run stopped... anyway: ```./re```
 
@@ -189,6 +189,16 @@ Now you are ready to restart your run using
 ```
 > [!CAUTION]
 > You need to change the number after ```./re``` with the file name of your last photo file!
+
+Restarts can cause your history file to jump around as restarts only append to the existing `history.data` file. That is, if you run a track to model number 500 then restart from model number 300, the original models will remain in the history file. So any post processing code that expects the model numbers to increase monotonically will struggle. The other consequence of this is that you cannot change the history column outputs between restarts without causing an error. 
+
+Now is also a good time to look a bit deeper at the `run_star_extras` file that we provided. In previous labs, you used GYRE as a post-processing code on profile files saved by MESA. There is also a way to run GYRE on-the-fly *during* the evolution, which is what we will use in this lab. In order to use GYRE in this way we have to load the GYRE library with the statement 
+```fortran
+   use gyre_mesa_M
+```
+at the beginning of the `run_star_extras` file. We also have added a few variables to pass the values returned by GYRE from one routine within `run_star_extras` to another. The next necessary step is to set up GYRE in the `extras_startup` routine. No matter what you are using GYRE for, these two steps are always necessary! 
+
+Scrolling down further to the `data_for_extra_history_columns` routine, you should see that here we just pass each of the columsn we want to save using the variables defined at the start of the file, however these values are not calculated here. Instead we calculate them in the `extras_finish_step`
 
 **_FOR LYNN_** : maybe could you add some mention of GYRE and the fact that it's running during this part of the evolution and saving models for the next labs?
 
