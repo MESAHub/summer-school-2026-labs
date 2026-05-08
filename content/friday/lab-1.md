@@ -7,18 +7,19 @@ linkTitle: Lab 1
 # Lab 1: Evolving a Cepheid into the Instability Strip
 **_FOR LYNN_** : it might be possible that the tone is not coherent in the entirety of the lab instructions (I went a bit more unhinged in the last part) let me know if i should tone the last part down or make the beginning less formal
 
-In this lab you will learn how to evolve a classical Cepheid model, with an initial mass in the $3$-$8\,M_\odot$ range. The evolution will be divided in two steps: first you will start from the Zero Age Main Sequence (ZAMS) and stop when a threshold in effective temperature $T_{\mathrm{eff}}$ is reached. 
+In this lab you will learn how to evolve a classical Cepheid model, with an initial mass in the $3$-$8\,M_\odot$ range. The evolution will be divided in two steps: 
+1. **Step 1**: you will start from the Zero Age Main Sequence (ZAMS) and stop when a threshold in effective temperature $T_{\mathrm{eff}}$ is reached. 
+2. **Step 2**: you will resume the previous run and simulate the evolution all the way through Helium burning, until reaching Helium depletion in the core. 
 
-In the second part of this lab, you will resume the previous run and simulate the evolution all the way through Helium burning, until reaching Helium depletion in the core. While the simulation runs you'll get to watch your star experience a blue loop and move through the instability strip, while GYRE runs automatically during the pulsational phase!
+While the simulation runs in Step 2 you'll get to watch your star experience a blue loop and move through the instability strip, while GYRE runs automatically during the pulsational phase!
 
-During this second part of the run, you will also save some models (called `.mod` files), that will be reused in the upcoming lab.
-
+During this second part of the run, you will also save some models (called `.mod` files), that will be reused in the next labs.
 
 
 ## Let's get it started in here: setting up the work directory
 **Task 1**: Create your working directory for this lab. 
 
-The name of the directory could be something like ``` ~/ MESA_ss_2026/friday```.
+Select a name for the directory you will be working in (it could be something like ``` ~/ MESA_ss_2026/friday``` for example).
 You may also place the working directory somewhere other than your home directory.
 
 {{< details title="Answer 1" closed="true" >}}
@@ -29,14 +30,14 @@ mkdir -p ~/MESA_ss_2026/friday
 cd ~/MESA_ss_2026/friday
 ```
 
-The mkdir -p command creates a directory and includes all the needed parent directories. So if the parent directory does not exist, it will be created automatically.
+The useful ```mkdir -p``` command creates a directory and includes all the needed parent directories. So if the parent directory does not exist, it will be created automatically.
 {{< /details >}}
 
 **Task 2**: Download and unzip the input directory. 
 
 We have already prepared an input directory to help you getting started with this lab: you can find it [here](https://mesastar.org/summer-school-2026/lodging/). **the link is a placeholder for now**.
 
-Download the work directory into the  ``` ~/ MESA_ss_2026/friday``` directory you just created, unpack it, and enter into it.
+Download the work directory into the  ``` ~/ MESA_ss_2026/friday``` directory you just created, unpack it, and move into it.
 
 {{< details title="Answer 2" closed="true" >}}
 
@@ -50,12 +51,12 @@ cd lab1_input
 ## Cepheid goes brrr: stopping conditions in the ```run_star_extras.f90``` 
 **Task 1**: change the initial mass of the star.  
 
-Discuss among the people at your table and pick an initial mass in the range $3$-$8\,M_\odot$.
+Discuss among the people at your table and pick an initial mass in the range $3$-$8\,M_\odot$. Feel free to choose the mass you prefer!
 
 > [!IMPORTANT]
 > Make sure that each person at your table has chosen a different initial mass value: you will need to compare your results later!
 
-Now you have to give instructions to MESA about the value of initial mass you just chose. Open the ```inlist_to_he_dep``` file with your favourite text editor, and have a look at it: try to find the correct spot to define the initial mass!
+The next step is to give instructions to MESA about the value of initial mass you just chose. To do so, open the ```inlist_to_he_dep``` file with your favourite text editor, and have a look at it: try to find the correct spot to define the initial mass!
 
 {{< details title="Answer 1" closed="true" >}}
 
@@ -68,18 +69,28 @@ You should look for the ```&controls``` namelist in the ```inlist_to_he_dep``` f
 Change the value of the ```initial_mass``` variable with the number you just chose!
 {{< /details >}}
 
-However, a MESA run is not ready to start until we know **when to stop**!
+Great, now MESA knows what mass we should _start_ to simulate. However, a MESA run is not ready to start until we know **when to _stop_**!
 
 **Task 2**: Implementing a custom stopping condition in the ```run_star_extras.f90``` file.
-In this first part of the run, we want to stop the simulation when the star is at the base of the Red Giant Branch (RGB), and the most efficient way to do it is to consider a stopping condition based on the effective temperature of the star.
+In this first part of the run, we want to stop the simulation when the star is at the base of the Red Giant Branch (RGB). In this case, the most efficient way to do it is to consider a _stopping condition_ based on the **effective temperature** of the star.
 
-However, in MESA there is no pre-defined stopping condition that could do it, so you need to implement it yourself, and the best way to do it is to play with the ```run_star_extras.f90``` file!
+However, in MESA there is **no pre-defined stopping condition that could do it**, so you need to implement it yourself, and the best way to do it is to play with the ```run_star_extras.f90``` file!
 
-First thing first: open the ```run_star_extras.f90``` file with your favourite text editor and look for the ```extras_finish_step``` subroutine. This subroutine will be called during each evolutionary step, to control if the conditions to stop the evolution are met.
+_First thing first_: open the ```run_star_extras.f90``` file with your favourite text editor and look for the ```extras_finish_step``` subroutine. This subroutine will be called at the end of each evolutionary step, to control if the conditions to stop the evolution are met.
 
-Now some important information:
+Now we have collected here some important information for you, that might help you with this task:
 * The temperature you want your model to stop at is $\log(T_{\mathrm{eff}}) \simeq 3.7 $
-* We have already created a variable for you called ```logTeff``` in the code
+* To access the value of $T_{\mathrm{eff}}$ for the current evolutionary step in the ```run_star_extras.f90``` file, we need to use a pointer to the star. The way to do so is the following:
+```fortran
+s% Teff
+```
+> [!CAUTION]
+> What you get by writing what is in the section above is a _number_,  **not a variable**!
+* If you want to make the logarithm of a number in fortran, you should use
+```fortran
+log_of_number = safe_log10(number)
+```
+* We have already initialized a variable for you called ```logTeff``` in the code that you can use to store the logarithm of the effective temperature
 * In fortran the 'less than something' operator can be written as ```.le.```
 * The syntax to make an ```if``` statement in fortran is the following:
 ```fortran
@@ -113,16 +124,16 @@ If no errors or warnings pop up, you are all set! Now run the model using
 ./rn
 ```
 
-During this first run you will see the star evolving through the main sequence up to the base of the RGB.
+During this first run you will see the star evolving through the main sequence up to the base of the RGB, and will be the base on which we will be building the second part of the simulation!
 
 ## Ah yes, the remix: stopping condition in the ```inlist_to_he_dep```
-So now the star has reached the base of the RGB but we want it to evolve until the end of Helium burning.
+At this point, the star has reached the base of the RGB. Now we want it to evolve until the end of Helium burning, but with the setup we have now this is not going to happen.
 
-However with the current stopping condition we cannot progress past this point...we need to change it and choose a different one!
+Indeed, with the current stopping condition we cannot progress past this point, because the limit in temperature has already been reached...we need to change it and **choose a different condition**!
 
 **Task1**: Comment or remove the previous stopping condition.
 
-Open again the ```run_star_extras.f90``` file and look for the stopping condition you just implemented. Once you find it, take extra care in commenting every line that you wrote!
+Open again the ```run_star_extras.f90``` file and look for the stopping condition you just implemented. Once you find it, take extra care in commenting (or deleting) every line that you wrote!
 
 > [!TIP]
 > To comment lines in fortran, simply add a ```!``` at the beginning of the line.
@@ -162,6 +173,10 @@ Amazing! Now you are ready to continue your simulation!
 > [!NOTE]
 > Since the changes that we made in the ```inlist_to_he_dep``` are not introducing new code into MESA, we **don't need** to **make a new executable**!
 
+Great, we have a new executable...but how do we continue the run without losing what we just computed?
+> [!CAUTION]
+> Do **not** run the model yet with ```./rn```: this will restart the evolution from the ZAMS!
+
 ## Oh no the run stopped... anyway: ```./re```
 
 A very powerful feature of MESA is the possibility to restart a simulation from previous steps in the evolution.
@@ -178,9 +193,9 @@ What we want to do now is to restart our simulation from the last photo MESA too
 Look into the output from your terminal; you should see something like this
 ```bash
 save photos/x00000384 for model 384
-termination code: xa_central_lower_limit
+termination code: extras_finish_step
 ```
-Copy this number: this is the file name of the last photo file we are looking for!
+Copy the number you see next to ```photos``` (in this case x00000384): this is the file name of the last photo file we are looking for!
 
 Now you are ready to restart your run using
 
@@ -210,36 +225,49 @@ You might have already noticed from the MESA simulations in the previous days, t
 Let's take advantage of this awesome feature, shall we?
 
 **Task 1**: Add the instability strip 
+Since we are looking at the evolution of a Cepheid star, an extremely useful feature we can add to out Hertzsprung-Russell diagram (HRD) is the instability strip. In this region, stars usually start to show pulsations, and we want to make sure whether the model you are running is entering this phase or not.
 
-**_FOR LYNN_** :I know that this is not done yet, I will complete the instructions when I am done with the testing <3
+For this feature, MESA already provides a built-in command to show the two edges (respectively blue/hot and red/cool) of the instability strip to your HRD.
 
-- open pgstar inlist
-- locate the HRD
-- add command for IS
+First of all, open the ```inlist_pgstar``` file with your favorite text editor. Then paste this line into the file (_where_ you put it is not strictly relevant).
+```fortran
+show_HR_classical_instability_strip = .true.
+```
+After doing so, make sure to **_save the file_**!
+
+In the next step of the evolution, you will see the two lines magically appear on the HRD on your screen, TA-DAA!
+
+![mesa output](is_hrd.png)
+
+**_FOR LYNN_** if you feel like this can be changed more, feel free (if you don't like the screenshot remove it, i don't know how to make it smaller) 
+
 
 ## Hooray! You survived the setup - let's talk about science!
-**_FOR LYNN_** : these are preliminary, i need to test the pgplot before finalizing the questions (if you want to make the paragraph smoother and less of a grocery shopping list feel free!) and also feel free to change the questions if you feel like some of them are not relevant 
+**_FOR LYNN_** : i need to work a bit more on the questions maybe (if you want to make the paragraph smoother and less of a grocery shopping list feel free!) and also feel free to change the questions if you feel like some of them are not relevant...should I also add the answers to them?
 
-Even though you will not be changing the rest of these plots, it's still interesting to look at them: we can get some very interesting information from them.
+Even though you will not be changing the rest of these plots, it's still interesting to take a look at them: we can get some very interesting information from them.
+During the evolution you should see something like this:
 
-- **HRD**: now you have added two lines in the plot. These are the edges of the Instability Strip, a region of the HRD where stars pulsate. What is your model doing right now? Is it entering the strip? 
+![grid](grid_lab1.png)
+There are a total of 5 panels:
 
-- **density/temperature**: in which regime is the interior of the star? Does it change throughout the evolution? What is the difference between the surface and the core?
+1. **HRD**: This is the Hertzsprung-Russell diagram, to which you have now added two lines. These are the edges of the Instability Strip, a region of the HRD where stars pulsate. What is your model doing right now? Is it entering the strip or not? 
 
-- **Kippenhahn diagram**: How is the energy transported in the star? can you see any changes while the model is evolving?
+2. **density/temperature**: This is a density/temperature plot, showing the different regimes of the equations of state in which each point in the interior of a star is. Can you distinguish which one of the two extremes is the core and which one is the surface? in which regime is the interior of the star? Does it change throughout the evolution? What is the difference between the surface and the core?
 
-- **opacity**: how is opacity changing in the star during the evolution? can you link it to the energy transport mechanism?
+3. **Combined panel**: In this panel you can see 3 figures stacked on top of each other. From the top down you can see, respectively, the chemical abundances in the interior of the star, the energy generation, and the internal mixing processes, all as a function of the mass coordinate. How is the energy transported in the star? can you see any changes while the model is evolving?
 
-- **radius**
+4. **opacity**: In this plot you can see the value of opacity throughout the interior of the star, for each evolutionary step. Notice the x axis: it is a function of the logarithm of the optical depth. How is opacity changing in the star during the evolution? can you link it to the energy transport mechanism?
 
-- **luminosity** 
+5. **radius and luminosity**: Finally in this panel you can see how radius, temperature and luminosity evolve during the evolution of the star.
+
 
 **_FOR LYNN_** :if you want to add some explanation about the radius and luminosity not pulsating in standard mesa you are more than welcome to :P
 
 
 ## To blue loop or not to blue loop? That is the question
 After your simulation are completed, take a look at the last ```.png``` file that MESA saved, and compare it to those of the other people at your table.
-Can you answer the following questions?
+Can you answer the following questions? Share possible hypotheses with the folks at your table!
 
 - Which masses make the cleanest blue loops?
 - Which models actually enter the instability strip?
