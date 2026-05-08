@@ -5,6 +5,7 @@ linkTitle: Lab 1
 ---
 
 # Lab 1: Evolving a Cepheid into the Instability Strip
+**_FOR LYNN_** : it might be possible that the tone is not coherent in the entirety of the lab instructions (I went a bit more unhinged in the last part) let me know if i should tone the last part down or make the beginning less formal
 
 In this lab you will learn how to evolve a classical Cepheid model, with an initial mass in the $3$-$8\,M_\odot$ range. The evolution will be divided in two steps: first you will start from the Zero Age Main Sequence (ZAMS) and stop when a threshold in effective temperature $T_{\mathrm{eff}}$ is reached. 
 
@@ -14,7 +15,7 @@ During this second part of the run, you will also save some models (called `.mod
 
 
 
-## First steps: setting up the work directory
+## Let's get it started in here: setting up the work directory
 **Task 1**: Create your working directory for this lab. 
 
 The name of the directory could be something like ``` ~/ MESA_ss_2026/friday```.
@@ -22,7 +23,7 @@ You may also place the working directory somewhere other than your home director
 
 {{< details title="Answer 1" closed="true" >}}
 
-Here's how to creade your working directory and then move inside it.
+Here's how to create your working directory and then move inside it.
 ```bash
 mkdir -p ~/MESA_ss_2026/friday
 cd ~/MESA_ss_2026/friday
@@ -46,10 +47,10 @@ cd lab1_input
 ```
 {{< /details >}}
 
-## Let's evolve a star!
+## Cepheid goes brrr: stopping conditions in the ```run_star_extras.f90``` 
 **Task 1**: change the initial mass of the star.  
 
-Discuss among the people at your table and pick an initial mass in the range $3$-$8\,M_\odot$ (please consider only $0.5\,M_\odot$ steps if you want a non-integer value).
+Discuss among the people at your table and pick an initial mass in the range $3$-$8\,M_\odot$.
 
 > [!IMPORTANT]
 > Make sure that each person at your table has chosen a different initial mass value: you will need to compare your results later!
@@ -114,7 +115,7 @@ If no errors or warnings pop up, you are all set! Now run the model using
 
 During this first run you will see the star evolving through the main sequence up to the base of the RGB.
 
-## Oh no the run has stopped...what do we do? Restart it!
+## Ah yes, the remix: stopping condition in the ```inlist_to_he_dep```
 So now the star has reached the base of the RGB but we want it to evolve until the end of Helium burning.
 
 However with the current stopping condition we cannot progress past this point...we need to change it and choose a different one!
@@ -161,7 +162,7 @@ Amazing! Now you are ready to continue your simulation!
 > [!NOTE]
 > Since the changes that we made in the ```inlist_to_he_dep``` are not concerning the underlying physics of the model, we **don't need** to **make a new executable**!
 
-**Task 3**: Restart the model.
+## Oh no the run stopped... anyway: ```./re```
 
 A very powerful feature of MESA is the possibility to restart a simulation from previous steps in the evolution.
 
@@ -188,16 +189,58 @@ Now you are ready to restart your run using
 ```
 > [!CAUTION]
 > You need to change the number after ```./re``` with the file name of your last photo file!
+
+**_FOR LYNN_** : maybe could you add some mention of GYRE and the fact that it's running during this part of the evolution and saving models for the next labs?
+
+
+## Noice, what now? Changing the ```pgplot``` window _during_ the run!
+Ok you have started the final run for your lab, but there is still plenty you can do!
+You might have already noticed from the MESA simulations in the previous days, that a panel with plots will pop up when you start running. Do you know you can change that _while the model is running_? Crazy!
+
+Let's take advantage of this awesome feature, shall we?
+
+**Task 1**: Add the instability strip 
+
+**_FOR LYNN_** :I know that this is not done yet, I will complete the instructions when I am done with the testing <3
+
+- open pgstar inlist
+- locate the HRD
+- add command for IS
+
+## Hooray! You survived the setup - let's talk about science!
+**_FOR LYNN_** : these are preliminary, i need to test the pgplot before finalizing the questions (if you want to make the paragraph smoother and less of a grocery shopping list feel free!) and also feel free to change the questions if you feel like some of them are not relevant 
+
+Even though you will not be changing the rest of these plots, it's still interesting to look at them: we can get some very interesting information from them.
+
+- **HRD**: now you have added two lines in the plot. These are the edges of the Instability Strip, a region of the HRD where stars pulsate. What is your model doing right now? Is it entering the strip? 
+
+- **density/temperature**: in which regime is the interior of the star? Does it change throughout the evolution? What is the difference between the surface and the core?
+
+- **Kippenhahn diagram**: How is the energy transported in the star? can you see any changes while the model is evolving?
+
+- **opacity**: how is opacity changing in the star during the evolution? can you link it to the energy transport mechanism?
+
+- **radius**
+
+- **luminosity** 
+
+**_FOR LYNN_** :if you want to add some explanation about the radius and luminosity not pulsating in standard mesa you are more than welcome to :P
+
+
+## To blue loop or not to blue loop? That is the question
+After your simulation are completed, take a look at the last ```.png``` file that MESA saved, and compare it to those of the other people at your table.
+Can you answer the following questions?
+
+- Which masses make the cleanest blue loops?
+- Which models actually enter the instability strip?
+- How does the Cepheid candidate phase depend on mass?
+- Which saved structures are the best starting points for Lab 2?
+
+
 -----
 -----
 -----
-
-Discuss with your team members and choose a value of initial mass in the range $3$-$8\,M_\odot$, so that you can 
-
-Lab 1 is where the Friday sequence starts. The point is to evolve a classical Cepheid model in the $3$-$8\,M_\odot$ range, follow it into core helium burning, and save the models that we will reuse in Lab 2.
-
-> [!IMPORTANT]
-> Ignore the README in this directory for the Friday lab plan. The actual model directory here is the setup we want to use to evolve a Cepheid, run GYRE in MESA during helium burning, and save `.mod` files for the next lab.
+## stuff written by Eb: to be removed once the instructions are completed
 
 ## Directory
 
