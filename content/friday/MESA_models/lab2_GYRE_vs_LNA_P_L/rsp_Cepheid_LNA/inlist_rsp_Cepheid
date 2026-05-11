@@ -14,20 +14,22 @@
 / ! end of kap namelist
 
 &colors
+   use_colors = .true. 
 / ! end of colors namelist
 
 &controls
 ! Set parameters to build RSP envelope 
-    x_character_ctrl(10) = 'RSP_test_grid_out.dat'
+    x_character_ctrl(10) = 'RSP_full_grid.dat'
     ! Change these parameters 
-    RSP_mass = 4.4135
-    RSP_Teff = 4753
-    RSP_L = 2387
+    RSP_mass = 7.84
+    RSP_Teff = 4150.50
+    RSP_L = 17020.96
 
     ! Fixed to match initial values from lab 1 
     RSP_X = 0.7440d0
     RSP_Z = 0.002d0
 
+    RSP_alfa = 1.77 
     ! Set to zero to perform only LNA, otherwise RSP will do non-linear evolution 
     RSP_max_num_periods = 0 
 
