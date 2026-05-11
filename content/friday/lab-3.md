@@ -4,8 +4,6 @@ title: Lab 3 - The Hertzsprung Progression
 linkTitle: Lab 3
 ---
 
-# Lab 3: The Hertzsprung Progression
-
 In this lab you will take one of your saved Cepheid models from Lab 1, use a nonlinear pulsation setup to kick it into motion, and inspect the resulting waveform. Your goal is to identify where the bump appears in the cycle and combine your result with the rest of the class to reconstruct the Hertzsprung progression.
 
 This is the nonlinear pulsation lab for Friday. That means the details are a little more technical than in the previous labs, but your job is still very concrete:
