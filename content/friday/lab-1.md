@@ -5,7 +5,7 @@ linkTitle: Lab 1
 ---
 
 # Lab 1: Evolving a Cepheid into the Instability Strip
-**_FOR LYNN_** : it might be possible that the tone is not coherent in the entirety of the lab instructions (I went a bit more unhinged in the last part) let me know if i should tone the last part down or make the beginning less formal
+**_Disclaimer_** : it might be possible that the tone is not coherent in the entirety of the lab instructions (I went a bit more unhinged in the last part) let me know if i should tone the last part down or make the beginning less formal
 
 In this lab you will learn how to evolve a classical Cepheid model, with an initial mass in the $3$-$8\,M_\odot$ range. The evolution will be divided in two steps: 
 1. **Step 1**: you will start from the Zero Age Main Sequence (ZAMS) and stop when a threshold in effective temperature $T_{\mathrm{eff}}$ is reached. 
@@ -72,6 +72,7 @@ Change the value of the ```initial_mass``` variable with the number you just cho
 Great, now MESA knows what mass we should _start_ to simulate. However, a MESA run is not ready to start until we know **when to _stop_**!
 
 **Task 2**: Implementing a custom stopping condition in the ```run_star_extras.f90``` file.
+
 In this first part of the run, we want to stop the simulation when the star is at the base of the Red Giant Branch (RGB). In this case, the most efficient way to do it is to consider a _stopping condition_ based on the **effective temperature** of the star.
 
 However, in MESA there is **no pre-defined stopping condition that could do it**, so you need to implement it yourself, and the best way to do it is to play with the ```run_star_extras.f90``` file!
@@ -91,14 +92,14 @@ s% Teff
 log_of_number = safe_log10(number)
 ```
 * We have already initialized a variable for you called ```logTeff``` in the code that you can use to store the logarithm of the effective temperature
-* In fortran the 'less than something' operator can be written as ```.le.```
+* In fortran the '_less than something_' operator can be written as ```.le.```
 * The syntax to make an ```if``` statement in fortran is the following:
 ```fortran
 if (condition_you_want_to_meet) then
     what_happens
 endif
 ```
-Try and code it yourself, but if you are have some trouble don't hesitate to click on the answer below!
+Try and code it yourself, but if you are have some trouble don't hesitate to ask for help or click on the answer below!
 
 {{< details title="Answer 2" closed="true" >}}
 
@@ -138,7 +139,7 @@ Open again the ```run_star_extras.f90``` file and look for the stopping conditio
 > [!TIP]
 > To comment lines in fortran, simply add a ```!``` at the beginning of the line.
 
-Now, since we are changing the ```run_star_extras.f90``` file, we also need to change the executable. In order to effectively remove the stopping condition based on the temperature, we need to delete the previous ```star``` file from the folder. Now make a new executable file using 
+Now, since we are changing the ```run_star_extras.f90``` file, we also need to change the executable. In order to effectively remove the stopping condition based on the temperature from the next part of the evolution, we need to delete the previous ```star``` file from the folder. Now make a new executable file using 
 ```bash
 ./mk
 ```
@@ -175,13 +176,13 @@ Amazing! Now you are ready to continue your simulation!
 
 Great, we have a new executable...but how do we continue the run without losing what we just computed?
 > [!CAUTION]
-> Do **not** run the model yet with ```./rn```: this will restart the evolution from the ZAMS!
+> Do **not** run the model yet with ```./rn```: this will start a brand new model from the ZAMS!
 
 ## Oh no the run stopped... anyway: ```./re```
 
 A very powerful feature of MESA is the possibility to restart a simulation from previous steps in the evolution.
 
-This lab is a perfect example of this: we have just run a simulation for a star that has reached the base of the RGB. If we want to evolve it further (like up to Helium depletion), there is no need to make a new simulation from scratch: just **restart** the one you have just stopped!
+This lab is a perfect example of this: we have just run a simulation for a star that has reached the base of the RGB. If we want to evolve it further (like up to Helium depletion), there is no need to make a new simulation from scratch: **restart** the one you have just stopped!
 
 The way to do it is by using ```photos``` files. These are files written by MESA in binary code, like 'snapshots' taken during the evolution of the star. You can find them in the ```photos/``` directory.
 
@@ -213,18 +214,19 @@ Now is also a good time to look a bit deeper at the `run_star_extras` file that 
 ```
 at the beginning of the `run_star_extras` file. We also have added a few variables to pass the values returned by GYRE from one routine within `run_star_extras` to another. The next necessary step is to set up GYRE in the `extras_startup` routine. No matter what you are using GYRE for, these two steps are always necessary! 
 
-Scrolling down further to the `data_for_extra_history_columns` routine, you should see that here we just pass each of the columsn we want to save using the variables defined at the start of the file, however these values are not calculated here. Instead we calculate them in the `extras_finish_step`
+Scrolling down further to the `data_for_extra_history_columns` routine, you should see that here we just pass each of the columns we want to save using the variables defined at the start of the file. However these values are not calculated here. Instead we calculate them in the `extras_finish_step`
 
 **_FOR LYNN_** : maybe could you add some mention of GYRE and the fact that it's running during this part of the evolution and saving models for the next labs?
 
 
 ## Noice, what now? Changing the ```pgplot``` window _during_ the run!
-Ok you have started the final run for your lab, but there is still plenty you can do!
-You might have already noticed from the MESA simulations in the previous days, that a panel with plots will pop up when you start running. Do you know you can change that _while the model is running_? Crazy!
+Ok you have started the final part of the run for your lab, but there is still plenty you can do!
+You might have already noticed from the MESA simulations in the previous days, that a ```pgplot``` panel with figures will pop up when you start running. Do you know you can change that _while the model is running_? Crazy!
 
 Let's take advantage of this awesome feature, shall we?
 
 **Task 1**: Add the instability strip 
+
 Since we are looking at the evolution of a Cepheid star, an extremely useful feature we can add to out Hertzsprung-Russell diagram (HRD) is the instability strip. In this region, stars usually start to show pulsations, and we want to make sure whether the model you are running is entering this phase or not.
 
 For this feature, MESA already provides a built-in command to show the two edges (respectively blue/hot and red/cool) of the instability strip to your HRD.
@@ -239,11 +241,11 @@ In the next step of the evolution, you will see the two lines magically appear o
 
 ![mesa output](is_hrd.png)
 
-**_FOR LYNN_** if you feel like this can be changed more, feel free (if you don't like the screenshot remove it, i don't know how to make it smaller) 
+**_Disclaimer_**  (if you don't like the screenshot remove it, i don't know how to make it smaller) 
 
 
 ## Hooray! You survived the setup - let's talk about science!
-**_FOR LYNN_** : i need to work a bit more on the questions maybe (if you want to make the paragraph smoother and less of a grocery shopping list feel free!) and also feel free to change the questions if you feel like some of them are not relevant...should I also add the answers to them?
+**_Disclaimer_** : maybe I need to get more work done on these questions, but if you have suggestions/want to make changes feel free
 
 Even though you will not be changing the rest of these plots, it's still interesting to take a look at them: we can get some very interesting information from them.
 During the evolution you should see something like this:
@@ -262,7 +264,7 @@ There are a total of 5 panels:
 5. **radius and luminosity**: Finally in this panel you can see how radius, temperature and luminosity evolve during the evolution of the star.
 
 
-**_FOR LYNN_** :if you want to add some explanation about the radius and luminosity not pulsating in standard mesa you are more than welcome to :P
+**_FOR LYNN_** :if you want to add some explanation about the radius and luminosity not pulsating in standard mesa please do so :P
 
 
 ## To blue loop or not to blue loop? That is the question
