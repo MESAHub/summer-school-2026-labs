@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 
 # Set input paramters 
-mod_dir="/home/lbuchele/work/MESASummerSchool2026/summer-school-2026-labs_Friday/content/friday/MESA_models/lab1_evolve_a_cepheid/cepheid_evolution_gyre_in_mesa/mod_dir/"
+mod_dir="quick_mod_dir/"
+
+# Set output file 
+out_file='RSP.dat'
 
 # Get list of mod files
 mod_files=`ls $mod_dir/*.mod`
 #mod_files=("270_4.43664_5695_2294.mod") # Run only one model for testing
 
 # Remove output file from previous runs
-rm RSP.dat 
+rm $out_file
+
+# Write a header in our output file 
+echo 'star_mass	luminosity	effective_temperature	 W_VI	RSP_F_period	RSP_F_growth	GYRE_F_Period	GRYE_F_Growth' > $out_file
 
 # Loop over each mod_file 
 for file in $mod_files 
