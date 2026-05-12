@@ -69,9 +69,9 @@ module run_star_extras
          if (ierr /= 0) return
 !         call test_suite_startup(s, restart, ierr)
          if (.not. restart) then
-            need_to_write_LINA_data = len_trim(s% x_character_ctrl(10)) > 0
+            need_to_write_LNA_data = len_trim(s% x_character_ctrl(10)) > 0
          else  ! it is a restart
-            need_to_write_LINA_data = .false.
+            need_to_write_LNA_data = .false.
          end if
 
          ! Initialize GYRE
@@ -186,7 +186,7 @@ module run_star_extras
                s% rsp_LINA_periods(1)/86400.d0, s% rsp_LINA_growth_rates(1), GYRE_F_period, GYRE_F_growth
             close(io)
             write(*,*) 'write ' // trim(s% x_character_ctrl(10))
-            need_to_write_LINA_data = .false.
+            need_to_write_LNA_data = .false.
          end if
 
       contains 
