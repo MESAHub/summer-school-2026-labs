@@ -51,10 +51,56 @@ In `&controls`, set `mass_change = <your value>`.
 
 | 📋 TASK 3 |
 |:--------|
-| Edit `<name of your net>.net` to add the nuclear species and reactions connecting them. **Click on the tabs below** to review the instructions for your specific net. |
+| **Edit `example.net`** to add the nuclear species and reactions connecting them. **Click on the tabs below** to review the instructions for your specific net. Check the general hints if you need help. |
 
 {{< details title="ONe.net" closed="true" >}}
-The network should include ${^{16}\rm{O}},{^{20}\rm{Ne}}$. 
+Species to include:
+- ${^{1}\rm{H}}$
+- ${^{4}\rm{He}}$
+- ${^{16}\rm{O}}$
+- ${^{20}\rm{Ne}}$
+- ${^{20}\rm{F}}$
+- ${^{20}\rm{O}}$
+- ${^{23}\rm{Na}}$
+- ${^{24}\rm{Mg}}$
+- ${^{28}\rm{Si}}$
+
+Reactions to include:
+- ${^{16}\rm{O}} + {^{16}\rm{O}} \to \rm{products}$ (specifically, use the reaction ```r1616```)
+- ${^{20}\rm{Ne}} + {e^{-}} \to {^{20}\rm{F}} + \nu_{e}$
+- ${^{20}\rm{F}} \to {^{20}\rm{Ne}} + {e^{-}} + \bar{\nu}_{e}$
+- ${^{20}\rm{F}} + {e^{-}} \to {^{20}\rm{Ne}} + \nu_{e}$
+- ${^{20}\rm{O}} \to {^{20}\rm{F}} + {e^{-}} + \bar{\nu}_{e}$
+{{< /details >}}
+
+
+
+
+
+
+
+{{< details title="General hint for adding isotopes" closed="true" >}}
+For adding an isotope without automatically connecting it to others, add the following in your net
+```fortran
+add_isos(
+    <isotope name>
+)
+```
+{{< /details >}}
+
+
+
+{{< details title="General hint for reaction names" closed="true" >}}
+For adding reactions, add the following in your net
+```fortran
+add_reactions(
+    <reaction name>
+)
+```
+You can find the full list of reaction names [here](https://docs.mesastar.org/en/latest/net/nets.html#creating-a-custom-net), but you'll just need:
+- Electron capture reactions $X + e^{-} \to Y$ have the form ```r_x_wk_y```. 
+- Beta decay reactions $Y \to X + e^{-}$ have the form ```r_y_wk-minus_x```. 
+- Alpha capture reactions that release a photon $ C + \alpha \to D + \gamma $ have the form ```r_c_ag_d```. (Think: ```a``` for alpha, ```g``` for gamma). 
 {{< /details >}}
 
 ### Step 4: Use your network
