@@ -461,7 +461,7 @@ You can find the full list of reaction names [here](https://docs.mesastar.org/en
 
 ### Step 5: Set reaction rate source
 
-So far we have been using the Suzuki et al. rates, but with new experimental and theoretical data, some of these rates could change. In this crowdsourcing exercise, some of you will be implementing custom rates provided by us. MESA also has the option to calculate weak reaction rates on the fly. Some of you will be implementing that. 
+So far we have been using the Suzuki et al. rates, but with new experimental and theoretical data, some of these rates could change. In this crowdsourcing exercise, some of you will be implementing custom rates provided by us, or ask MESA to calculate weak reaction rates on the fly. 
 
 Check the Google spreadsheet [here](LINK) to remind yourself which rates you picked. 
 
@@ -472,7 +472,10 @@ Check the Google spreadsheet [here](LINK) to remind yourself which rates you pic
 
 {{< tabs items="Suzuki Rates,Custom Weak Rates,Special (on-the-fly) Weak Rates" >}}
 
+<!-- Suzuki rates -->
 {{< tab name="Suzuki Rates" >}}
+
+#### Step 5: Using Suzuki Rates
 
 | 📋 TASK 5 |
 |:--------|
@@ -497,29 +500,93 @@ use_suzuki_weak_rates = .true.
 
 {{< /tab >}}
 
+<!-- Custom weak rates -->
 {{< tab name="Custom Weak Rates" default="true" >}}
 
-You can supply your own tabulated weak rates to MESA. 
+You can supply your own tabulated weak rates to MESA. Here we will show you how to use this feature. 
 
-| 📋 TASK 5a |
+> [!NOTE]
+> You can also do this for *regular* reactions, but here we'll show you how to use custom *weak* reaction rates. 
+
+#### Step 5a: Tell MESA to use a custom rate table
+
+We first need to tell MESA the location of the directory (which we'll call `tables_custom`) to find the tabulated custom rates. This is an inlist option. 
+
+{{< details title="Hint: how to find this inlist option?" closed="true" >}}
+Look up ``rate_table`` in ``$MESA_DIR/star/defaults/``:
+```bash
+grep -r rate_table $MESA_DIR/star/defaults/
+```
+{{< /details >}}
+
+{{< details title="Partial Solution" closed="true" >}}
+Add the following to the ``star_job`` section of your inlist:
+```fortran
+rate_table = 'tables_custom'
+```
+{{< /details >}}
+
+#### Step 5b: Download data
+
+| 📋 TASK 5b |
 |:--------|
-| **Download the weak rate tables** [here](). Move it to your working directory and unzip it. |
+| **Download** the weak rate tables [here]() to your working directory and **unzip** it. |
 
 After that, your working directory should look like:
 
 {{< filetree/container >}}
-  {{< filetree/folder name="work directory" >}}
-    {{< filetree/file name="other things" >}}
-    {{< filetree/folder name="tables_custom" >}}
-      {{< filetree/file name="weak_rate_list.txt" >}}
-      {{< filetree/file name="weak_rate_list2.txt" >}}
+  {{< filetree/folder name="work directory" >}} .
+    {{< filetree/file name="other things" >}} .
+    {{< filetree/folder name="tables_custom" >}} .
+        {{< filetree/file name="weak_rate_list.txt">}}  .
+        {{< filetree/file name="on-the-fly_r_f20_wk_o20.h5">}} .
+        {{< filetree/file name="other h5 files" >}} .
     {{< /filetree/folder >}}
   {{< /filetree/folder >}}
 {{< /filetree/container >}}
 
+Each ``h5`` file contains the rates for each weak reaction, for example, ``on-the-fly_r_f20_wk_o20.h5`` for the electron capture reaction ${^{20}\rm{F} + e^{-} \to {^{20}\rm{O}}}$. 
+
+#### Step 5c: Edit weak_rates.list
+
+Once we point MESA to `rates_dir`, it will look for `rate_list.txt` (for regular reactions, which we won't modify) and `weak_rate_list.txt` (for weak reactions), *if* they exist. 
+These two lists tell MESA the reaction names and the corresponding file names. 
+
+| 📋 TASK 5c |
+|:--------|
+| **Add** the following four reactions to  **`weak_rate_list.txt`**. Take a look at `weak_rate_list.txt` to see what is needed. |
+- ${^{20}\rm{Ne}} + e^{-} \to {^{20}\rm{F}} + \nu_{e}$
+- ${^{20}\rm{F}} \to {^{20}\rm{Ne}} + e^{-} + \bar{\nu}_{e}$
+- ${^{20}\rm{F}} + e^{-} \to {^{20}\rm{O}} + \nu_{e}$
+- ${^{20}\rm{O}} \to {^{20}\rm{F}} + e^{-} + \bar{\nu}_{e}$
+
+> [!WARNING]
+> We have already included the other weak reactions for you. Do *not* remove any of the other reactions. 
+
+{{< details title="Hint" closed="true" >}}
+The format is as follows:
+```fortran
+<reaction name> <h5 file name>
+```
+{{< details title="What is the reaction name format again?" closed="true" >}}
+For electron capture reactions ($X + e^{-} \to Y + \nu_{e}$), the format is `r_x_wk_y`. 
+For beta decay reactions ($Y \to X + e^{-} + \bar{\nu}_{e}$), the format is `r_x_wk-minus_y`. 
+{{< /details >}}
+{{< /details >}}
+
+{{< details title="Partial solution" closed="true" >}}
+You need to add the following to `weak_rate_list.txt`: 
+```fortran
+r_ne20_wk_f20 'on-the-fly_r_ne20_wk_f20.h5'
+r_f20_wk-minus_ne20 'on-the-fly_r_f20_wk-minus_o20.h5'
+r_f20_wk_o20 'on-the-fly_r_f20_wk_o20.h5'
+r_o20_wk-minus_f20 'on-the-fly_r_o20_wk-minus_f20.h5'
+```
+{{< /details >}}
+
 {{< /tab >}}
 
-
+<!-- Special rates -->
 {{< tab name="blah" >}}
 
 blah
@@ -528,84 +595,11 @@ blah
 
 {{< /tabs >}}
 
-{{< details title="Suzuki rates" closed="true" >}}
-
-| 📋 TASK 5 |
-|:--------|
-| **Edit your inlist** to ask MESA to use Suzuki weak rates. |
-
-{{< details title="Hint: which inlist option?" closed="true" >}}
-You can easily search for this: 
-```fortran
-grep -r suzuki $MESA_DIR/star/defaults
-```
-{{< /details >}}
-
-{{< details title="Partial solutions" closed="true" >}}
-You need this one line in your ``star_job`` section of your inlist:
-```fortran
-use_suzuki_weak_rates = .true.
-```
-{{< /details >}}
-
-> [!NOTE]
-> The Suzuki tables only cover $A=17-28$. 
-
-{{< /details >}}
-
-{{< details title="Custom Weak Rates" closed="true" >}}
-
-You can supply your own tabulated weak rates to MESA. 
-
-| 📋 TASK 5a |
-|:--------|
-| **Download the weak rate tables** [here](). Move it to your working directory and unzip it. |
-
-After that, your working directory should look like:
-
-{{< filetree/container >}}
-  {{< filetree/folder name="work directory" >}}
-    {{< filetree/file name="other things" >}}
-    {{< filetree/folder name="tables_custom" >}}
-      {{< filetree/file name="weak_rate_list.txt" >}}
-      {{< filetree/file name="on-the-fly_r_f20_wk_o20.h5" >}}
-    {{< /filetree/folder >}}
-  {{< /filetree/folder >}}
-{{< /filetree/container >}}
 
 
-{{< details title="Hint: which inlist option?" closed="true" >}}
-You can easily search for this: 
-```fortran
-grep -r suzuki $MESA_DIR/star/defaults
-```
-{{< /details >}}
+Now you're ready to go!
 
-{{< details title="Partial solutions" closed="true" >}}
-You need this one line in your ``star_job`` section of your inlist:
-```fortran
-use_suzuki_weak_rates = .true.
-```
-{{< /details >}}
-
-> [!WARNING]
-> If ``use_suzuki_weak_rates = .true.`` in your inlist, and your weak reaction is included in the Suzuki tables, then MESA won't use your custom weak rates. 
-
-| 📋 TASK 5c |
-|:--------|
-| **Edit your inlist** to set ``use_suzuki_weak_rates = .false.``. |
-
-{{< /details >}}
-
-
-
-| 📋 TASK 5 |
-|:--------|
-| Edit `inlist_accrete` to have it use your specific network. |
-
-
-
-### Step 6: Running to and Declaring Bankrupcy
+### Step 6: Declaring Bankrupcy
 
 | 📋 TASK 6 |
 |:--------|
