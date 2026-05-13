@@ -244,18 +244,23 @@ save photos/x00000384 for model 384
 termination code: extras_finish_step
 ```
 
-Copy the number you see next to ```photos``` (in this case x00000384): this is the file name of the last photo file we are looking for!
+> [!NOTE]
+> How often a photos are written is set with `photo_interval` in the `controls` section of the inlist. Another important control is `photo_digits` which sets how many digits from the end of the model number are used in the photo name. We have set `photo_interval = 8` and so unless we run more than $10^8$ models the photo number will always correspond to the model number.
 
-Now you are ready to restart your run using
+If we want to restart from a specific model number we pass it to the `re` script like this:
 
 ```bash
 ./re x00000384
 ```
 
-> [!CAUTION]
-> You need to change the number after ```./re``` with the file name of your last photo file!
+However, if you know you want to start from the most recent photo, you can simply call `./re`.
 
-Restarts can cause your history file to jump around as restarts only append to the existing `history.data` file. That is, if you run a track to model number 500 then restart from model number 300, the original timesteps will remain in the history file. So any post processing code that expects the model numbers to increase monotonically will be confused. The other consequence of this is that you cannot change the history column outputs between restarts without causing an error.
+Another thing to know, restarts can cause your history file to jump around as restarts only append to the existing `history.data` file. That is, if you run a track to model number 500 then restart from model number 300, the original timesteps will remain in the history file. So any post processing code that expects the model numbers to increase monotonically will be confused. The other consequence of this is that you cannot change the history column outputs between restarts without causing an error.
+
+> [!CAUTION]
+> The method that we have used today (running a model to a stopping condition, then changing `run_star_extras` and starting again from a photo) is fine for exploration runs or debugging things. But it isn't the most reproducible method, since it's easy to forget what you changed or accidentally restart your run and overwrite the previous results. Since we're not really changing the physics of our models this isn't a problem but if you're doing science runs it's better to use saved `.mod` files and multiple inlists to stop the run and restart with changes.
+
+With all that out of the way go ahead and restart your run from the most recently saved photo. 
 
 ## Oh no the run stopped... 
 
