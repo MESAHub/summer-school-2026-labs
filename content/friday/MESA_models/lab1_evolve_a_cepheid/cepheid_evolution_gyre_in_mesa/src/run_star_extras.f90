@@ -444,9 +444,9 @@ contains
                cfreq = md% freq('HZ')
                growth = AIMAG(cfreq) ! in seconds
                freq = REAL(cfreq) ! in seconds
-               period = 0 ! days
+               !period = 0 ! days
+               period = 1d0/freq ! in seconds
                if (growth > 0d0) then ! unstable
-                  period = 1d0/freq ! in seconds
                   write(*, 100) model_number, md%n_pg, &
                      freq, period, period/(24*3600), 1d0/(2*pi*24*3600*AIMAG(cfreq)), &
                      (2d0*pi*growth)/freq, freq/(2d0*pi*growth)
@@ -460,11 +460,7 @@ contains
                ! xtra_arrays are used to store data
                s% ixtra1_array(num_written) = md%n_pg
                s% xtra1_array(num_written) = period/(24*3600) ! Save period in days 
-               if (growth > 0d0) then
-                  s% xtra2_array(num_written) =  (2d0*pi*growth)/freq ! Save fractional growth rate 
-               else
-                  s% xtra2_array(num_written) = -1d0 ! If stable, then save growth rate as -1 
-               end if
+               s% xtra2_array(num_written) =  (2d0*pi*growth)/freq ! Save fractional growth rate 
 
                retcode = 0
 

@@ -348,7 +348,7 @@ There are a total of 5 panels:
 
 5. **radius and luminosity**: Finally in this panel you can see how radius, temperature and luminosity evolve during the evolution of the star.
 
-You might notice that even once your star has crossed into the instability strip, it doesn't pulsate. For a first order explanation of why this is the case, the fundamental period of a Cepheid star can be approximated as $P_F \approx 0.37 t_{dym}$ where $t_{dyn} = 2 \pi \sqrt{R_{\ast}^3/(GM_{\ast})}$ is the dynamical time scale. This value is shown in your pgplot text summary. How does it compare to the timestep? (The solution to getting Cepheids to pulsate as MESA evolves is a bit more complicated than just dropping the timestep, but that will be explored in lab 3.)
+You might notice that even once your star has crossed into the instability strip, it doesn't pulsate. For a first order explanation of why this is the case, the fundamental period of a Cepheid star can be approximated as $P_F \approx 0.37 t_{dym}$ where $t_{dyn} = 2 \pi \sqrt{R_{\ast}^3/(GM_{\ast})}$ is the dynamical time scale. This value (in sec) and time step in seconds are shown in your pgplot text summary. How do the two compare? (The solution to getting Cepheids to pulsate as MESA evolves is a bit more complicated than just dropping the timestep, but that will be explored in lab 3.)
 
 ## To blue loop or not to blue loop? That is the question
 
