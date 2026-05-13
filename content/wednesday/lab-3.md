@@ -51,7 +51,10 @@ In `&controls`, set `mass_change = <your value>`.
 
 | 📋 TASK 3 |
 |:--------|
-| **Edit `example.net`** to add the nuclear species and reactions connecting them. **Click on the tabs below** to review the instructions for your specific net. Check the general hints if you need help. |
+| **Edit `example.net`** to add the nuclear species and reactions connecting them. **Click on the tabs below** to review the instructions for your specific net. |
+
+> [!NOTE]
+> Check `example.net` to see what species and reactions are already included. Check the general hints if you need help. 
 
 {{< details title="ONe.net" closed="true" >}}
 Species to include:
@@ -63,6 +66,7 @@ Species to include:
 - ${^{20}\rm{O}}$
 - ${^{23}\rm{Na}}$
 - ${^{24}\rm{Mg}}$
+- ${^{25}\rm{Mg}}$
 - ${^{28}\rm{Si}}$
 
 Reactions to include:
@@ -71,9 +75,110 @@ Reactions to include:
 - ${^{20}\rm{F}} \to {^{20}\rm{Ne}} + {e^{-}} + \bar{\nu}_{e}$
 - ${^{20}\rm{F}} + {e^{-}} \to {^{20}\rm{Ne}} + \nu_{e}$
 - ${^{20}\rm{O}} \to {^{20}\rm{F}} + {e^{-}} + \bar{\nu}_{e}$
+
+{{< details title="Partial solutions" closed="true" >}}
+Your net should have the following: 
+```fortran
+add_isos(
+    h1
+    he4
+    o16
+    ! for Ne20 - F20 - O20
+    ne20
+    f20
+    o20
+    ! for other accreted species
+    na23
+    mg24
+    mg25
+    ! for O ignition
+    si28
+)
+
+add_reactions(
+    ! for oxygen ignition
+    r1616
+    ! for Ne20 - F20 - O20
+    r_ne20_wk_f20
+    r_f20_wk-minus_ne20
+    r_f20_wk_o20
+    r_o20_wk-minus_f20
+)
+```
+
+{{< /details >}}
+
 {{< /details >}}
 
 
+
+{{< details title="ONeMg.net" closed="true" >}}
+Species to include:
+- ${^{1}\rm{H}}$
+- ${^{4}\rm{He}}$
+- ${^{16}\rm{O}}$
+- ${^{20}\rm{Ne}}$
+- ${^{20}\rm{F}}$
+- ${^{20}\rm{O}}$
+- ${^{23}\rm{Na}}$
+- ${^{24}\rm{Mg}}$
+- ${^{24}\rm{Na}}$
+- ${^{24}\rm{Ne}}$
+- ${^{25}\rm{Mg}}$
+- ${^{28}\rm{Si}}$
+
+Reactions to include:
+- ${^{16}\rm{O}} + {^{16}\rm{O}} \to \rm{products}$ (specifically, use the reaction ```r1616```)
+- ${^{20}\rm{Ne}} + {e^{-}} \to {^{20}\rm{F}} + \nu_{e}$
+- ${^{20}\rm{F}} \to {^{20}\rm{Ne}} + {e^{-}} + \bar{\nu}_{e}$
+- ${^{20}\rm{F}} + {e^{-}} \to {^{20}\rm{Ne}} + \nu_{e}$
+- ${^{20}\rm{O}} \to {^{20}\rm{F}} + {e^{-}} + \bar{\nu}_{e}$
+- ${^{24}\rm{Mg}} + {e^{-}} \to {^{24}\rm{Na}} + \nu_{e}$
+- ${^{24}\rm{Na}} \to {^{24}\rm{Mg}} + {e^{-}} + \bar{\nu}_{e}$
+- ${^{24}\rm{Na}} + {e^{-}} \to {^{24}\rm{Ne}} + \nu_{e}$
+- ${^{24}\rm{Ne}} \to {^{24}\rm{Na}} + {e^{-}} + \bar{\nu}_{e}$
+
+{{< details title="Partial solutions" closed="true" >}}
+Your net should have the following: 
+```fortran
+add_isos(
+    h1
+    he4
+    o16
+    ! for Ne20 - F20 - O20
+    ne20
+    f20
+    o20
+    ! for Mg24 - Na24 - Ne24
+    mg24
+    na24
+    ne24
+    ! for other accreted species
+    na23
+    mg25
+    ! for O ignition
+    si28
+)
+
+add_reactions(
+    ! for oxygen ignition
+    r1616
+    ! for Ne20 - F20 - O20
+    r_ne20_wk_f20
+    r_f20_wk-minus_ne20
+    r_f20_wk_o20
+    r_o20_wk-minus_f20
+    ! for Mg24 - Na24 - Ne24
+    r_mg24_wk_na24
+    r_na24_wk-minus_mg24
+    r_na24_wk_ne24
+    r_ne24_wk-minus_na24
+)
+```
+
+{{< /details >}}
+
+{{< /details >}}
 
 
 
