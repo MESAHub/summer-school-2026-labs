@@ -123,17 +123,27 @@ contains
          integer, intent(in) :: id
          integer :: ierr
          type (star_info), pointer :: s
+         real(dp) :: logTeff, stopping_logTeff, stopping_tol
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
          extras_check_model = keep_going
-         if (.false. .and. s% star_mass_h1 < 0.35d0) then
-            ! stop when star hydrogen mass drops to specified level
-            extras_check_model = terminate
-            write(*, *) 'have reached desired hydrogen mass'
-            return
-         end if
 
+
+         ! ====== TODO: add stopping condition for effective temperature! ======
+!         logTeff = safe_log10(s% Teff)
+!         stopping_logTeff = 3.7d0 
+!         stopping_tol = 0.0001
+!         if(logTeff .gt. stopping_logTeff) then
+!           extras_check_model = keep_going 
+!         ! Avoid overshooting our desired stopping condition using retries 
+!         else if (abs(logTeff - stopping_logTeff) .lt. stopping_tol) then 
+!           extras_check_model = terminate
+!           write(*, *) '===== you have reached the end of the RGB! ===='
+!           s% termination_code = t_extras_check_model
+!         else 
+!           extras_check_model = retry
+!         end if
 
          ! if you want to check multiple conditions, it can be useful
          ! to set a different termination code depending on which
@@ -309,14 +319,6 @@ contains
          if (ierr /= 0) return
          extras_finish_step = keep_going
 
-         ! ====== TODO: add stopping condition for effective temperature! ======
-         !logTeff = safe_log10(s% Teff)
-         !if(logTeff .le. 3.7d0) then
-         !   extras_finish_step = terminate
-         !   write(*, *) '===== you have reached the end of the RGB! ===='
-         !   s% termination_code = t_extras_finish_step
-         !end if
-
          call_gyre = .false. ! Assume we don't need to call GYRE 
 
          ! Save user specified parameters with meaningful names
@@ -346,7 +348,7 @@ contains
 
          if (call_gyre) then
 
-            ! Add comment about where to find this routine 
+            ! This call gets the structure variables necessary to calculate the pulsations and stores them in global_data and point_data 
             call star_get_pulse_data(s%id, 'GYRE', .FALSE., .FALSE., .FALSE., global_data, point_data, ierr)
             if (ierr /= 0) then
                print *,'Failed when calling star_get_pulse_data'
@@ -373,10 +375,7 @@ contains
             call get_modes(mode_l, process_mode_cepheid, ipar, rpar)
 
             s% ixtra3_array(1) = ipar(3) 
-
-            ! L NOTE: Throw some warnings here if GYRE doesn't find 3 modes (seems unlikely) 
-            ! or finds modes with bad n values (probably related to difficulty of non-adiabatic mode id)? 
-
+            
             ! Store mode information in variables that are called by data_for_extra_history_columns
             ! process_mode_cepheid saves periods in xtra1_array, and growth rates in xtra2_array
             F_period = s% xtra1_array(1)
@@ -444,9 +443,9 @@ contains
                cfreq = md% freq('HZ')
                growth = AIMAG(cfreq) ! in seconds
                freq = REAL(cfreq) ! in seconds
-               period = 0 ! days
+               !period = 0 ! days
+               period = 1d0/freq ! in seconds
                if (growth > 0d0) then ! unstable
-                  period = 1d0/freq ! in seconds
                   write(*, 100) model_number, md%n_pg, &
                      freq, period, period/(24*3600), 1d0/(2*pi*24*3600*AIMAG(cfreq)), &
                      (2d0*pi*growth)/freq, freq/(2d0*pi*growth)
@@ -460,11 +459,7 @@ contains
                ! xtra_arrays are used to store data
                s% ixtra1_array(num_written) = md%n_pg
                s% xtra1_array(num_written) = period/(24*3600) ! Save period in days 
-               if (growth > 0d0) then
-                  s% xtra2_array(num_written) =  (2d0*pi*growth)/freq ! Save fractional growth rate 
-               else
-                  s% xtra2_array(num_written) = -1d0 ! If stable, then save growth rate as -1 
-               end if
+               s% xtra2_array(num_written) =  (2d0*pi*growth)/freq ! Save fractional growth rate 
 
                retcode = 0
 
