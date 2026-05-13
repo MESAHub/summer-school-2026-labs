@@ -405,27 +405,44 @@ add_reactions(
 
 ### Step 5: History/Profile Columns
 
+DESCRIBE WHAT HAS BEEN UNCOMMENTED IN HISTORY/PROFILE COLUMNS TODO
 
-| 📋 TASK 5 |
-|:--------|
-| **Uncomment**  in `history_columns.list`. 
- **Uncomment**  in `profile_columns.list`. |
-
-> [!WARNING]
-> Don't forget to save your changes to the inlist!
+> [!NOTE]
+> There is no task for this step! 
 
 
 ### Step 6: Inlist Pgstar
 
+Within the white dwarf interior, there should be some preference for electron capture ($\beta$) over electron emission ($\beta^-$). Therefore, the rate of F-20 -> O-20 ($\lambda_{^{20}F->^{20}O}$) should be higher than the rate of O-20 -> F-20 ($\lambda_{^{20}O->^{20}F}$) at high densities.
+
+The provided `inlist_pgstar` has been mostly preformatted to show exactly this given some values to be created in `run_star_extras.f90`. Set `profile_panels1_yaxis_name(1)` to `lambda_f20_o20` and `profile_panels1_other_yaxis_name(1)` to `lambda_o20_f20`.
+
 | 📋 TASK 1 |
 |:--------|
-| **update `inlist_pgstar`** to ... |
+| In `inlist_pgstar`, **Set** `profile_panels1_yaxis_name(1)` to `lambda_f20_o20` and `profile_panels1_other_yaxis_name(1)` to `lambda_o20_f20`   |
+
+> [!NOTE]
+> With these inclusions, the provided `inlist_pgstar` will be expecting four new profile columns: `eps_nuc_neu_total`, `non_nuc_neu`, `lambda_f20_o20`, `lambda_o20_f20`
 
 > [!WARNING]
-> Don't forget to save your changes to the inlist!
+> Don't forget to save your changes!
+
+### Step 7: Run Star Extras
+
+Now that `inlist_pgstar` is expecting four new profile columns, we need to fill these columns with data. The general format of `run_star_extras.f90`
 
 
-### Step 7: Run the Model!
+With our inlists prepped, the last thing to do before running the model is to set up these new profile columns for 
+
+| 📋 TASK 1 |
+|:--------|
+| In `run_star_extras`, **Add** an additional history column for neutrino luminosity ...  |
+
+> [!WARNING]
+> Don't forget to save your changes to run_star_extras!
+
+
+### Step 8: Run the Model!
 
 | 📋 TASK 1 |
 |:--------|
@@ -442,14 +459,7 @@ Review the central density of the model at ignition. Using this value and Figure
 > Do not forget to `./clean`, then `./mk`, then `./rn`
 
 
-### Step 8: Run Star Extras !!
 
-| 📋 TASK 1 |
-|:--------|
-| In `run_star_extras`, **Add** an additional history column for neutrino luminosity ...  |
-
-> [!WARNING]
-> Don't forget to save your changes to run_star_extras!
 
 ### Step 9: Plan for the future (Update nuclear network and run)
 
