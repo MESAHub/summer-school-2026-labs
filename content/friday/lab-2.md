@@ -62,8 +62,8 @@ A few notes:
 
 Once you have set necessary inlist controls, run MESA in the normal way.
 
-[!TIP]
-Since this is new working directory, don't forget to compile MESA before calling it.
+> [!TIP]
+> Since this is new working directory, don't forget to compile MESA before calling it.
 
 ### Understanding potential error messages
 
@@ -163,8 +163,8 @@ as the `colors` section of the inlist. We can now rerun the model. Although, by 
 
 To fill in our diagrams a little bit more, repeat this process (changing the inlist parameters and running RSP LNA) for different timesteps from your lab 1 results.
 
-[!NOTE]
-Take a look at your original `history.data` file from lab 1. Do you need to change the envelop composition when running a new model?
+> [!NOTE]
+> Take a look at your original `history.data` file from lab 1. Do you need to change the envelop composition when running a new model?
 
 ### As the spreadsheet fills in discuss the following questions at your table
 
@@ -189,7 +189,7 @@ Come up with your own approach to automating this task. After you have a plan bu
 - How do you plan to loop over all the relevant models?
 - What output do you need to save?
 - How can you make this output easy to process (i.e., add to the spreadsheet)?
-- If you want to also include GYRE information in your output what steps do you need to take? 
+- If you want to also include GYRE information in your output what steps do you need to take?
 
 {{< /details >}}
 
