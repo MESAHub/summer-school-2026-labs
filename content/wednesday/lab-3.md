@@ -448,10 +448,6 @@ You can find the full list of reaction names [here](https://docs.mesastar.org/en
 |:--------|
 | Edit `inlist_accrete` to have it use your specific network. |
 
-{{< details title="ONe.net" closed="true" >}}
-Nothing to do. 
-{{< /details >}}
-
 > [!NOTE]
 > You can do the following sanity check: 
 > In ``star_job`` in ``inlist_common``, set ``show_net_species_info = .true.`` and ``show_net_reactions_info = .true.``. 
@@ -471,6 +467,66 @@ Check the Google spreadsheet [here](LINK) to remind yourself which rates you pic
 
 > [!NOTE]
 > Not everyone will get to implement custom rates / MESA on-the-fly weak rates, but there will be plenty of time at the end of this lab. Come back here for bonus points! 
+
+-----
+
+{{< tabs items="Suzuki Rates,Custom Weak Rates,Special (on-the-fly) Weak Rates" >}}
+
+{{< tab name="Suzuki Rates" >}}
+
+| 📋 TASK 5 |
+|:--------|
+| **Edit your inlist** to ask MESA to use Suzuki weak rates. |
+
+{{< details title="Hint: which inlist option?" closed="true" >}}
+You can easily search for this: 
+```fortran
+grep -r suzuki $MESA_DIR/star/defaults
+```
+{{< /details >}}
+
+{{< details title="Partial solutions" closed="true" >}}
+You need this one line in your ``star_job`` section of your inlist:
+```fortran
+use_suzuki_weak_rates = .true.
+```
+{{< /details >}}
+
+> [!NOTE]
+> The Suzuki tables only cover $A=17-28$. 
+
+{{< /tab >}}
+
+{{< tab name="Custom Weak Rates" default="true" >}}
+
+You can supply your own tabulated weak rates to MESA. 
+
+| 📋 TASK 5a |
+|:--------|
+| **Download the weak rate tables** [here](). Move it to your working directory and unzip it. |
+
+After that, your working directory should look like:
+
+{{< filetree/container >}}
+  {{< filetree/folder name="work directory" >}}
+    {{< filetree/file name="other things" >}}
+    {{< filetree/folder name="tables_custom" >}}
+      {{< filetree/file name="weak_rate_list.txt" >}}
+      {{< filetree/file name="weak_rate_list2.txt" >}}
+    {{< /filetree/folder >}}
+  {{< /filetree/folder >}}
+{{< /filetree/container >}}
+
+{{< /tab >}}
+
+
+{{< tab name="blah" >}}
+
+blah
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 {{< details title="Suzuki rates" closed="true" >}}
 
@@ -497,9 +553,7 @@ use_suzuki_weak_rates = .true.
 
 {{< /details >}}
 
-
-
-{{< details title="Custom weak rates" closed="true" >}}
+{{< details title="Custom Weak Rates" closed="true" >}}
 
 You can supply your own tabulated weak rates to MESA. 
 
@@ -508,6 +562,16 @@ You can supply your own tabulated weak rates to MESA.
 | **Download the weak rate tables** [here](). Move it to your working directory and unzip it. |
 
 After that, your working directory should look like:
+
+{{< filetree/container >}}
+  {{< filetree/folder name="work directory" >}}
+    {{< filetree/file name="other things" >}}
+    {{< filetree/folder name="tables_custom" >}}
+      {{< filetree/file name="weak_rate_list.txt" >}}
+      {{< filetree/file name="on-the-fly_r_f20_wk_o20.h5" >}}
+    {{< /filetree/folder >}}
+  {{< /filetree/folder >}}
+{{< /filetree/container >}}
 
 
 {{< details title="Hint: which inlist option?" closed="true" >}}
