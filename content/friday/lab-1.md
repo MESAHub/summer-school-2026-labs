@@ -85,7 +85,10 @@ In this first part of the run, we want to stop the simulation when the star is a
 
 However, in MESA there is **no pre-defined stopping condition that could do it**, so you need to implement it yourself, and the best way to do it is to play with the ```run_star_extras.f90``` file!
 
-_First thing first_: open the ```run_star_extras.f90``` file with your favourite text editor and look for the ```extras_finish_step``` subroutine. This subroutine will be called at the end of each evolutionary step, to control if the conditions to stop the evolution are met.
+_First thing first_: open the ```run_star_extras.f90``` file with your favourite text editor and look for the ```extras_check_model``` subroutine. This subroutine will be called at the end of each solver step, to control if the conditions to stop the evolution are met.
+
+> [!NOTE]
+> Similar functionality is available using the `extras_finish_step` model subroutine. However, that function is only able to return two options: `keep_going` or `terminate`. In addition to these two options, `extras_check_model` can also return `retry` which causes MESA to try again with a smaller time step. 
 
 Now we have collected here some important information for you, that might help you with this task:
 
@@ -129,6 +132,24 @@ Here's how to implement the stopping condition based on the effective temperatur
             extras_finish_step = terminate
             write(*, *) '== end of the RGB! =='
             s% termination_code = t_extras_finish_step
+         end if
+```
+
+If we wanted to stop more precisely, say when $\log(T_{\mathrm{eff}}) =  3.7 \pm \rm{tol} $ where $\rm{tol}$ is some numeric tolerance, then we could use the following code:
+
+```fortran
+! ====== TODO: add stopping condition for effective temperature! ======
+         logTeff = safe_log10(s% Teff)
+         stopping_logTeff = 3.7d0 
+         stopping_tol = 0.0001
+         if(logTeff .gt. stopping_logTeff) then
+           extras_check_model = keep_going 
+         else if (abs(logTeff - stopping_logTeff) .lt. stopping_tol) then 
+           extras_check_model = terminate
+           write(*, *) '===== you have reached the end of the RGB! ===='
+           s% termination_code = t_extras_check_model
+         else ! Avoid overshooting our desired stopping condition using retries 
+           extras_check_model = retry
          end if
 ```
 
@@ -203,7 +224,7 @@ Great, we have a new executable...but how do we continue the run without losing 
 > [!CAUTION]
 > Do **not** run the model yet with ```./rn```: this will start a brand new model from the ZAMS!
 
-## Oh no the run stopped... anyway: ```./re```
+## Take two: ```./re```
 
 A very powerful feature of MESA is the possibility to restart a simulation from previous steps in the evolution.
 
@@ -234,9 +255,42 @@ Now you are ready to restart your run using
 > [!CAUTION]
 > You need to change the number after ```./re``` with the file name of your last photo file!
 
-Restarts can cause your history file to jump around as restarts only append to the existing `history.data` file. That is, if you run a track to model number 500 then restart from model number 300, the original models will remain in the history file. So any post processing code that expects the model numbers to increase monotonically will struggle. The other consequence of this is that you cannot change the history column outputs between restarts without causing an error.
+Restarts can cause your history file to jump around as restarts only append to the existing `history.data` file. That is, if you run a track to model number 500 then restart from model number 300, the original timesteps will remain in the history file. So any post processing code that expects the model numbers to increase monotonically will be confused. The other consequence of this is that you cannot change the history column outputs between restarts without causing an error.
 
-Now is also a good time to look a bit deeper at the `run_star_extras` file that we provided. In previous labs, you used GYRE as a post-processing code on profile files saved by MESA. There is also a way to run GYRE on-the-fly during the evolution, which is what we will use in this lab. In order to use GYRE in this way we have to load the GYRE library with the statement
+## Oh no the run stopped... 
+
+A few time steps into your run, the model should crash and leave you with the following error message:
+
+```none
+ ABORT at line 280 of /home/lbuchele/mesa-26.04.1/gyre/gyre/src/lib/gyre_mesa_m.fypp
+ assertion ASSOCIATED(ml_m) failed with message No model provided"
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+ERROR STOP 
+
+Error termination. Backtrace:
+#0  0x75055b22915e in ???
+#1  0x75055b229d99 in ???
+#2  0x75055b22b155 in ???
+#3  0x7e547b in ???
+#4  0x408054 in __run_star_extras_MOD_extras_finish_step
+	at ../src/run_star_extras.f90:375
+#5  0x43d028 in __run_star_support_MOD_after_step_loop
+	at ../job/run_star_support.f90:733
+#6  0x44021c in __run_star_support_MOD_do_evolve_one_step
+	at ../job/run_star_support.f90:176
+#7  0x440a95 in __run_star_support_MOD_run1_star
+	at ../job/run_star_support.f90:113
+#8  0x4093dd in __run_star_MOD_do_run_star
+	at /home/lbuchele/mesa-26.04.1//star/job/run_star.f90:44
+#9  0x40944a in run
+	at ../src/run.f90:13
+#10  0x40948c in main
+	at ../src/run.f90:2
+```
+
+Although the first line of the error message points to a file in the MESA source code, the later error message tells us that the error is actually in `run_star_extras` during the `extras_finish_step` routine. Now is a good time to look a bit deeper at the `run_star_extras` file that we provided you. After some explanation, you'll fix the line that caused this error message.
+
+ In previous labs, you used GYRE as a post-processing code on profile files saved by MESA. There is also a way to run GYRE on-the-fly during the evolution, which is what we will use in this lab. In order to use GYRE in this way we have to load the GYRE library with the statement
 
 ```fortran
    use gyre_mesa_M
@@ -248,7 +302,7 @@ Scrolling down further to the `data_for_extra_history_columns` routine, you shou
 
 After the usual variable declarations and getting the `star_info` data structure, there is a logical called `call_gyre` that is initially set to false. This structure can be useful if you don't want to call GYRE on every single step which can significantly increase the run time of a given evolutionary track (depending on what kind of star you're evolving).
 
-We then have a few lines of code which use the `x_integer_ctrl(1:3)` parameters to set other variables. This isn't strictly necessary, but it can be nice to have variables with meaningful names. We then zero out the variables that we saw used in `data_for_extra_history_columns`. As you saw we are only calling GYRE every `s% x_integer_ctrl(1)` time steps, so if we left these variables undefined the time steps during which we don't call GYRE would just keep their values from the previous time step. This can be a bit confusing so by setting everything to zero we ensure that it is clear during which timesteps GYRE is actually called.
+We then have a few lines of code which use the `x_integer_ctrl(1:3)` parameters to set other variables. This isn't strictly necessary, but it can be nice to have variables with meaningful names. We then zero out the variables that we saw used in `data_for_extra_history_columns`. As you saw we are only calling GYRE every `s% x_integer_ctrl(1)` time steps, so if we left these variables undefined the time steps during which we don't call GYRE would just keep their values from the previous time step. This can be a bit confusing so by setting everything to zero we ensure that the time steps where GYRE is actually called are clear.
 
 The code then checks if we need to call GYRE during this time step. If we do then there is some additional set up we need to do before calling GYRE. The first is to get the stellar structure data that will be passed to GYRE. This is accomplished with the `star_get_pulse_data` subroutine. This routine has three logical input parameters, take a moment to search the code base and try to figure out what each parameter controls.
 
