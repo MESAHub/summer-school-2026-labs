@@ -28,8 +28,10 @@
 ! x_integer_ctrl(1) - output GYRE info at this step interval 
 ! x_integer_ctrl(2) - max number of modes to output per call 
 ! x_integer_ctrl(3) - mode l, should match gyre.in mode l 
+! x_integer_ctrl(5) - save .mod files at this step interval
 
-! x_ctrl(1) - set Teff limit of when to start saving models 
+! x_ctrl(1) - existing frequency control
+! x_ctrl(3) - set Teff limit of when to start saving models
 
 module run_star_extras
 
@@ -84,9 +86,21 @@ contains
          logical, intent(in) :: restart
          integer, intent(out) :: ierr
          type (star_info), pointer :: s
+         logical :: mod_dir_exists
+         integer :: mkdir_status
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
+
+         inquire(file='mod_dir/.', exist=mod_dir_exists)
+         if (.not. mod_dir_exists) then
+            call execute_command_line('mkdir -p mod_dir', exitstat=mkdir_status)
+            if (mkdir_status /= 0) then
+               ierr = mkdir_status
+               write(*, *) 'Failed to create mod_dir'
+               return
+            end if
+         end if
 
       ! Initialize GYRE
 
@@ -199,7 +213,7 @@ contains
          vals(5) = O2_period
           
          names(6) = 'O2_growth' 
-         vals(6) = O2_period
+         vals(6) = O2_growth
 
 
       end subroutine data_for_extra_history_columns
@@ -309,7 +323,8 @@ contains
          real(dp), allocatable     :: point_data(:,:)
          character(len=150) :: name
          logical :: call_gyre, need_to_save_model 
-         integer :: gyre_interval, max_mode_num, mode_l, ipar(3), Teff, lumi
+         integer :: gyre_interval, max_mode_num, mode_l, save_mod_interval, ipar(3), Teff, lumi
+         real(dp), parameter :: gyre_logTeff_min = 3.66d0
          real(dp) :: save_mod_Teff_limit, rpar(1), mass
 
          real(dp) :: logTeff     ! log value of the effective temperature
@@ -320,13 +335,16 @@ contains
          extras_finish_step = keep_going
 
          call_gyre = .false. ! Assume we don't need to call GYRE 
+         need_to_save_model = .false.
 
          ! Save user specified parameters with meaningful names
          gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist 
          max_mode_num = s% x_integer_ctrl(2) ! Sets how many modes should be saved 
          mode_l = s% x_integer_ctrl(3)       ! Sets l value of modes 
+         save_mod_interval = s% x_integer_ctrl(5) ! Sets how often to save .mod files
 
-         save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model 
+         save_mod_Teff_limit = s% x_ctrl(3) ! Sets minimum Teff necessary to save a model
+         logTeff = safe_log10(s% Teff)
 
          ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0. 
          F_period = 0d0 
@@ -339,9 +357,13 @@ contains
          ! Check if in He burning and we're calling GYRE 
          ! L NOTE: Could use same if statement as stopping condition for MS evolution 
          if (s% center_h1 <= 1d-12 .and. safe_log10(s% power_he_burn) >1d0) then
-            if (GYRE_interval > 0 .and. MOD(s% model_number, GYRE_interval) == 0) then ! Avoid calling GYRE at every step
+            if (logTeff > gyre_logTeff_min .and. gyre_interval > 0 .and. &
+                  MOD(s% model_number, gyre_interval) == 0) then
                call_gyre = .true.
             end if 
+            if (save_mod_interval > 0 .and. MOD(s% model_number, save_mod_interval) == 0) then
+               need_to_save_model = .true.
+            end if
          end if
 
     ! If necessary, call GYRE
@@ -385,16 +407,24 @@ contains
             O2_period = s% xtra1_array(3) 
             O2_growth = s% xtra2_array(3) 
 
+            call write_gyre_in_mesa_data(ierr)
+            if (ierr /= 0) then
+               print *,'Failed when writing gyre_in_mesa.data'
+               return
+            end if
+
+         end if
+
+         ! Decide if we need to save a model based on the interval and Teff limit.
+         if (need_to_save_model) then
             Teff = int(s% Teff)
             mass = s% m(1) / Msun
             lumi = int(s% L(1) / Lsun)
 
-            ! Decide if we need to save a model based on Teff limit set in x_ctrl(1) 
-            if (Teff > save_mod_Teff_limit .and. mod(s% model_number,1)==0) then 
+            if (Teff > save_mod_Teff_limit) then
                write(name, '(a,i0,a,f6.4,a,i0,a,i0,a)') 'mod_dir/', s%model_number, '_', mass, '_', Teff, '_', lumi, '.mod'               
                call star_write_model(id, name, ierr)
             end if 
-            
          end if
 
 
@@ -409,6 +439,52 @@ contains
          if (extras_finish_step == terminate) s% termination_code = t_extras_finish_step
 
       contains 
+
+             subroutine write_gyre_in_mesa_data(ierr)
+               integer, intent(out) :: ierr
+               integer :: io
+               logical :: have_file
+
+               ierr = 0
+               inquire(file='gyre_in_mesa.data', exist=have_file)
+               open(newunit=io, file='gyre_in_mesa.data', status='unknown', &
+                  position='append', action='write', iostat=ierr)
+               if (ierr /= 0) return
+
+               if (.not. have_file) then
+                  write(io, '(a)') '# model_number Teff L F_period F_logKE_per_cycle O1_period O1_logKE_per_cycle O2_period O2_logKE_per_cycle'
+               end if
+
+               write(io, '(i10,1x,8e20.10)') s% model_number, s% Teff, s% L(1)/Lsun, &
+                  unstable_period(F_period, F_growth), logKE_per_cycle(F_growth), &
+                  unstable_period(O1_period, O1_growth), logKE_per_cycle(O1_growth), &
+                  unstable_period(O2_period, O2_growth), logKE_per_cycle(O2_growth)
+               close(io)
+
+            end subroutine write_gyre_in_mesa_data
+
+             real(dp) function unstable_period(period, growth)
+               real(dp), intent(in) :: period, growth
+
+               if (growth > 0d0) then
+                  unstable_period = period
+               else
+                  unstable_period = -1d0
+               end if
+
+            end function unstable_period
+
+             real(dp) function logKE_per_cycle(growth)
+               real(dp), intent(in) :: growth
+
+               if (growth > 0d0) then
+                  ! xtra2_array stores 2*pi*IM(freq)/REAL(freq); RSP uses twice that.
+                  logKE_per_cycle = 2d0*growth
+               else
+                  logKE_per_cycle = -1d0
+               end if
+
+            end function logKE_per_cycle
 
              subroutine process_mode_cepheid (md, ipar, rpar, retcode)
              
@@ -443,7 +519,6 @@ contains
                cfreq = md% freq('HZ')
                growth = AIMAG(cfreq) ! in seconds
                freq = REAL(cfreq) ! in seconds
-               !period = 0 ! days
                period = 1d0/freq ! in seconds
                if (growth > 0d0) then ! unstable
                   write(*, 100) model_number, md%n_pg, &
@@ -477,4 +552,3 @@ contains
          if (ierr /= 0) return
       end subroutine extras_after_evolve
 end module run_star_extras
-
