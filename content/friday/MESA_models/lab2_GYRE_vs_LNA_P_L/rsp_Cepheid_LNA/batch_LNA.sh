@@ -62,8 +62,9 @@ fi
 rm -f "$mesa_out_file" "$final_out_file" "$failed_models_file" "${final_out_file}.failed_models"
 
 # Write a fixed-width header in our output file.
-printf '%12s %20s %20s %20s %20s %20s %20s\n' \
-	'model_number' 'star_mass' 'luminosity' 'Teff' 'RSP_W_VI' 'RSP_F_period' 'RSP_F_growth' > "$mesa_out_file"
+printf '%12s %20s %20s %20s %20s %20s %20s %20s %20s\n' \
+	'model_number' 'star_mass' 'luminosity' 'Teff' 'RSP_W_VI' \
+	'RSP_F_period' 'RSP_F_growth' 'RSP_F1_period' 'RSP_F1_growth' > "$mesa_out_file"
 
 lookup_rsp_xz() {
 	local model="$1"

@@ -145,8 +145,9 @@ module run_star_extras
 
             io = 61
             open(io,file=trim(s% x_character_ctrl(10)),status='unknown', position='append')
-            write(io, '(i12,6(1x,e20.10))') output_model_number, s% RSP_mass, s% RSP_L, s% RSP_Teff, W_VI, &
-               s% rsp_LINA_periods(1)/86400.d0, s% rsp_LINA_growth_rates(1)
+            write(io, '(i12,8(1x,e20.10))') output_model_number, s% RSP_mass, s% RSP_L, s% RSP_Teff, W_VI, &
+               s% rsp_LINA_periods(1)/86400.d0, s% rsp_LINA_growth_rates(1), &
+               s% rsp_LINA_periods(2)/86400.d0, s% rsp_LINA_growth_rates(2)
             close(io)
             write(*,*) 'write ' // trim(s% x_character_ctrl(10))
             need_to_write_LNA_data = .false.
