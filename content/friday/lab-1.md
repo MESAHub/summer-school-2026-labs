@@ -233,7 +233,7 @@ In this case, we want to stop the simulation when the core He burning ends, whic
 {{< details title="Answer 3.2" closed="true" >}}
 
 Here's how to implement the stopping condition based on the amount of leftover He in the core.
-Add the following in the `&controls` section of *inliist_to_he_dep*:
+Add the following in the `&controls` section of *inlist_project*:
 
 ```fortran
    ! == TODO: add a stopping condition here! ==
@@ -421,7 +421,7 @@ First, open ```inlist_pgstar``` with some text editor. Then paste this line into
 show_HR_classical_instability_strip = .true.
 ```
 
-> [!NOTE}]
+> [!NOTE]
 > Make sure to **_save the inlist_pgstar file_**!
 
 In the next step of the evolution, you will see the two lines appear on the HRD on your screen.
