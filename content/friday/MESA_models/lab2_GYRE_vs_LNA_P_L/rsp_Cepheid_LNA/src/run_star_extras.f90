@@ -20,7 +20,7 @@
 !!! Solutions for the bonus task of Lab 2 for Friday's lab at the 2026 MESA Summer school
 !!! This file runs RSP-LNA using the parameters specified in the inlist. 
 !!! It then saves the following in an output specified by x_character_ctrl(10): 
-!!! M, L, Teff, Wesenheit index, RSP F Period, RSP F Growth Rate, GYRE F Period, GYRE F Growth Rate
+!!! model number, M, L, Teff, Wesenheit index, RSP F Period, RSP F Growth Rate, GYRE F Period, GYRE F Growth Rate
 !!! This run_star_extras is designed to be called within a bash script that loops over a number of models 
 !!! and so it appends to the file. 
 
@@ -97,8 +97,7 @@ module run_star_extras
          use colors_def, only: Colors_General_Info, get_colors_ptr
          use colors_lib, only: how_many_colors_history_columns, data_for_colors_history_columns
          integer, intent(in) :: id
-         integer :: ierr, io, i, ipar(3)
-         character(len= 10) :: mod_num
+         integer :: ierr, io, i, ipar(3), output_model_number
          type (star_info), pointer :: s
          real(dp) :: GYRE_F_period, GYRE_F_growth, rpar(1)
          real(dp), allocatable     :: global_data(:)
@@ -179,10 +178,12 @@ module run_star_extras
             
             GYRE_F_period = s% xtra1_array(1)
             GYRE_F_growth = s% xtra2_array(1)
+            output_model_number = s% x_integer_ctrl(10)
+            if (output_model_number <= 0) output_model_number = s% model_number
 
             io = 61
             open(io,file=trim(s% x_character_ctrl(10)),status='unknown', position='append')
-            write(io, '(99e16.4)') s% RSP_mass, s% RSP_L, s% RSP_Teff, W_VI, &
+            write(io, '(i10,1x,8e16.4)') output_model_number, s% RSP_mass, s% RSP_L, s% RSP_Teff, W_VI, &
                s% rsp_LINA_periods(1)/86400.d0, s% rsp_LINA_growth_rates(1), GYRE_F_period, GYRE_F_growth
             close(io)
             write(*,*) 'write ' // trim(s% x_character_ctrl(10))

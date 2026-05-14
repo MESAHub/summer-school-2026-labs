@@ -40,10 +40,10 @@ Next, instruct MESA about initial mass you just chose. To do so, open the ```inl
 
 {{< details title="Answer 2.1" closed="true" >}}
 
-You should look for the ```&controls``` namelist in the ```inlist_to_he_dep``` file, and you will find something like this:
+You should look for the ```&controls``` namelist in the ```inlist_project``` file, and you will find something like this:
 
 ```fortran
-   ! ====== TODO: set the initial mass here! ======
+   ! set the initial mass here
    initial_mass = 4.5d0
 ```
 
@@ -150,7 +150,7 @@ Here's how to implement the stopping condition based on the effective temperatur
          logTeff = safe_log10(s% Teff)
          if(logTeff .le. 3.7d0) then
             extras_finish_step = terminate
-            write(*, *) '== end of the RGB! =='
+            write(*, *) '===== you have reached the end of the RGB! ===='
             s% termination_code = t_extras_finish_step
          end if
 ```
@@ -221,7 +221,7 @@ Since you changed ```run_star_extras.f90```, you also need to update the executa
 In this second part of the run, we want to stop the simulation when He is depleted in the core of the star. Luckily, in this case MESA provides a pre-made stopping condition for when the mass fraction of an isotope goes below a user-set value. Can you find it in the documentation?
 
 > [!TIP]
-> Have a look at the ```controls``` section [here](https://docs.mesastar.org/en/latest/reference/controls.html#).
+> Have a look at the [`xa_central_lower_limit_species` controls section](https://docs.mesastar.org/en/latest/reference/controls.html#xa-central-lower-limit-species).
 
 > [!TIP]
 > Alternatively you can take a look in the ```$MESA_DIR/star/defaults/controls.defaults``` file.
@@ -237,18 +237,18 @@ Here's how to implement the stopping condition based on the amount of leftover H
 ```fortran
    ! == TODO: add a stopping condition here! ==
    ! we want the second part of the run to stop when
-   ! the mass fraction of he4 drops below 1d-4
+   ! the mass fraction of he4 drops below 1d-14
    xa_central_lower_limit_species(1) = 'he4'
-   xa_central_lower_limit(1) = 1d-4
+   xa_central_lower_limit(1) = 1d-14
 ```
 
 {{< /details >}}
 
 Amazing! Now you are ready to continue your simulation!
 > [!NOTE]
-> Since the changes that we made in the ```inlist_to_he_dep``` are not introducing new code into MESA, we **don't need to make a new executable** again!
+> Since the changes that we made in the ```inlist_project``` are not introducing new code into MESA, we **don't need** to **make a new executable**!
 
-Great, we have a functional executable...but how do we continue the run without losing what we already computed?
+Great, we have the second part of the run set up...but how do we continue without losing what we just computed?
 > [!CAUTION]
 > Do **not** run the model yet with ```./rn```: this will start a brand new model from the ZAMS!
 
@@ -395,9 +395,11 @@ As noted in the comments:
 ! However we choose to use the xtra#_array values that are a part of the star_info structure, so indexing is less confusing
 ```
 
-We then move the information returned by GYRE to the variables used by `data_for_extra_history_columns`.
+We then move the information returned by GYRE to the variables used by `data_for_extra_history_columns`. In this setup, GYRE in MESA should start printing mode information to the terminal only once `log_Teff = log10(T_eff/K)` is greater than `3.66`.
 
-The last additional steps in this subroutine check whether we need to save a `.mod` file based on the effective temperature. We will use these models for the later labs. This temperature limit is just to ensure that these later labs run smoothly. **Need to add directions on how to set `save_mod_Teff_limit` based on results from Eb's testing here**
+The same GYRE-in-MESA block also appends one compact output file, `gyre_in_mesa.data`, with the model number, `T_eff`, luminosity, and the period/growth information for the fundamental, first-overtone, and second-overtone modes. Keep this file for Lab 2.
+
+The last additional steps in this subroutine check whether we need to save a `.mod` file. The saved models go into `mod_dir/`; keep that directory because Lab 3 uses these saved models as starting points for nonlinear saturation runs. In the starter inlist, `x_integer_ctrl(5) = 1` saves at every eligible step during core helium burning, while `x_ctrl(3) = 0d0` means the effective-temperature cut does not reject any of those saves. The GYRE calls themselves, including the terminal printout and `gyre_in_mesa.data` output, are restricted to models with `log_Teff > 3.66`.
 
 ## 6. Nice! Now let's change the ```pgplot``` window _during_ the run!
 
@@ -421,7 +423,7 @@ show_HR_classical_instability_strip = .true.
 > [!NOTE}]
 > Make sure to **_save the inlist_pgstar file_**!
 
-In the next step of the evolution, you will see the two lines magically appear on the HRD on your screen, TA-DAA!
+In the next step of the evolution, you will see the two lines appear on the HRD on your screen.
 
 ![mesa output](is_hrd.png)
 
@@ -439,7 +441,7 @@ Now let's take a look at the other panels, which contain some very interesting i
 During the evolution you should see something like this:
 
 ![grid](grid_lab1.png)
-There are a total of 5 panels:
+There is a text summary plus 5 science panels:
 
 1. **HRD**: This is the Hertzsprung-Russell diagram where you just added the edges of the instability strip. What is your model doing right now? Is it entering the strip or not?
 

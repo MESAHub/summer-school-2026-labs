@@ -20,6 +20,7 @@
 &controls
 ! Set parameters to build RSP envelope 
     x_character_ctrl(10) = 'RSP_full_grid.dat'
+    x_integer_ctrl(10) = 0 ! lab 1 model number written to the RSP output table
     ! Change these parameters 
     RSP_mass = 7.84
     RSP_Teff = 4150.50

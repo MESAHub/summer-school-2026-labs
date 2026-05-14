@@ -6,13 +6,13 @@
    required_termination_code_string = ''
 
    ! we don't create a pre-MS model
-   ! instead, we relax a ZAMS model to the desired Z = 0.002
+   ! instead, we relax a ZAMS model to the desired Z = 0.006
    ! when we relax from pre-MS model, default z_frac = 3, gs98.
    create_pre_main_sequence_model = .false. ! load from ZAMS and relax Z
    relax_initial_Z = .true.
-   new_Z = 2d-3
+   new_Z = 6d-3
    relax_initial_Y = .true.
-   new_Y = 0.2545
+   new_Y = 0.2575d0
    
    ! enable the use of the pgstar window
    pgstar_flag = .true.
@@ -25,7 +25,7 @@
    kap_file_prefix = 'gs98'    ! 'gs98' 'a09'  'OP_a09' 'OP_gs98'
    kap_CO_prefix   = 'gs98_co' ! 'gs98_co' 'a09_co'
    use_Type2_opacities = .true.
-   Zbase = 0.002d0 
+   Zbase = 0.006d0
    kap_lowT_prefix = 'lowT_fa05_gs98'
 
 / !end of kap namelist
@@ -34,17 +34,27 @@
 / !end of eos namelist
 
 &colors
+   use_colors = .true.
+   instrument = 'data/colors_data/filters/Generic/Johnson'
+   stellar_atm = 'data/colors_data/stellar_models/Kurucz2003all/'
+   vega_sed = 'data/colors_data/stellar_models/vega_flam.csv'
+   distance = 3.0857d19     ! 10 pc; output magnitudes are absolute
+   mag_system = 'Vega'
+   make_csv = .false.
+   colors_results_directory = 'SED'
+   sed_per_model = .false.
 / ! end of colors namelist
 
 &controls
 
-   ! ====== TODO: set the initial mass here! ======
+   ! set the initial mass here
    initial_mass = 4.5d0
 
    ! ====== TODO: add a stopping condition here! ======
-   ! we want the second part of the run to stop when the mass fraction of he4 drops below 1d-4
-   xa_central_lower_limit_species(1) = 'he4'
-   xa_central_lower_limit(1) = 1d-4
+   ! we want the second part of the run to stop when
+   ! the mass fraction of he4 drops below 1d-14
+   !xa_central_lower_limit_species(1) = 'he4'
+   !xa_central_lower_limit(1) = 1d-14
 
    ! GYRE output controls
    !write_pulse_data_with_profile = .true.
@@ -52,7 +62,7 @@
    
    x_logical_ctrl(37) = .true.   ! if true, then run GYRE
 
-   x_integer_ctrl(1) = 10        ! output GYRE info at this step interval
+   x_integer_ctrl(1) = 1         ! output GYRE info at this step interval
    x_logical_ctrl(1) = .false.   ! save GYRE info whenever save profile
 
    x_integer_ctrl(2) = 3         ! max number of modes to output per call
@@ -61,8 +71,10 @@
    x_integer_ctrl(3) = 0         ! mode l (e.g. 0 for p modes, 1 for g modes)
                                     ! should match gyre.in mode l
    x_integer_ctrl(4) = 1         ! order
+   x_integer_ctrl(5) = 1         ! save .mod files at this step interval
    x_ctrl(1) = 0.158d-05         ! freq ~ this (Hz)
    x_ctrl(2) = 0.33d+03          ! growth < this (days)
+   x_ctrl(3) = 0d0               ! save .mod files when Teff is greater than this
 
 
 ! see run_star_extras for stopping condition
@@ -75,8 +87,17 @@
     MLT_option = 'TDC'
     include_mlt_corr_to_TDC = .false.
     mixing_length_alpha = 1.77d0
-    use_ledoux_criterion = .true.
-    alpha_semiconvection = 1d0
+    use_Ledoux_criterion = .false.
+    recalc_mix_info_after_evolve = .true.
+
+    predictive_mix(1) = .true.
+    predictive_zone_type(1) = 'any'
+    predictive_zone_loc(1) = 'core'
+    predictive_bdy_loc(1) = 'any'
+    predictive_superad_thresh(1) = 0.005d0
+    predictive_avoid_reversal(1) = 'he4'
+
+    alpha_semiconvection = 0d0
     thermohaline_coeff = 0d0
 
 ! wind model section: ! for M < 10
@@ -85,25 +106,24 @@
    cool_wind_RGB_scheme   = 'Reimers'
    cool_wind_AGB_scheme   = 'Blocker'
    RGB_to_AGB_wind_switch = 1d-4
-   Reimers_scaling_factor = 0.5   ! 0.1
-   Blocker_scaling_factor = 0.5   ! 0.5  crank up to 1.0 when the mass loss stops and/or timestep crashes
+   Reimers_scaling_factor = 0.5d0
+   Blocker_scaling_factor = 0.5d0
 
 ! overshoot controls
-! we only include a bit of exponential overshooting to smooth things out
 
    overshoot_scheme(1) = 'exponential'
-   overshoot_zone_type(1) = 'any'
-   overshoot_zone_loc(1) = 'any'
+   overshoot_zone_type(1) = 'burn_H'
+   overshoot_zone_loc(1) = 'core'
    overshoot_bdy_loc(1) = 'any'
    overshoot_f(1) = 0.02
    overshoot_f0(1) = 0.002
 
-   !overshoot_scheme(2) = 'exponential'
-   !overshoot_zone_type(2) = 'nonburn'
-   !overshoot_zone_loc(2) = 'any'
-   !overshoot_bdy_loc(2) = 'bottom'
-   !overshoot_f(2) = 0.04!4
-   !overshoot_f0(2) = 0.002
+   overshoot_scheme(2) = 'exponential'
+   overshoot_zone_type(2) = 'nonburn'
+   overshoot_zone_loc(2) = 'any'
+   overshoot_bdy_loc(2) = 'bottom'
+   overshoot_f(2) = 0.06
+   overshoot_f0(2) = 0.002
 
 ! solver controls
    make_gradr_sticky_in_solver_iters = .true.
@@ -139,6 +159,9 @@
 
 &pgstar
 
+ read_extra_pgstar_inlist(1) = .true.
+ extra_pgstar_inlist_name(1)= 'inlist_pgstar'
+
  Grid1_file_dir = 'png_evolution'
  History_Track1_file_flag = .false.
  History_Track2_file_flag = .false.
@@ -152,8 +175,8 @@
  Profile_Panels3_xaxis_reversed = .false.
 
  TRho_Profile_xmin = -12.0
- TRho_Profile_xmax = 7d0!5d0!10.0
+ TRho_Profile_xmax = 5d0
  TRho_Profile_ymin = 2.5
- TRho_Profile_ymax = 9d0!8.5d0!10.0
+ TRho_Profile_ymax = 9.5d0
 
 / ! end of pgstar namelist
