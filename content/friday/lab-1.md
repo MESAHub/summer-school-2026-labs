@@ -4,8 +4,6 @@ title: Lab 1 - Evolving a Cepheid into the Instability Strip
 linkTitle: Lab 1
 ---
 
-# Lab 1: Evolving a Cepheid into the Instability Strip
-
 **_Disclaimer_** : it might be possible that the tone is not coherent in the entirety of the lab instructions (I went a bit more unhinged in the last part) let me know if i should tone the last part down or make the beginning less formal
 
 In this lab you will learn how to evolve a classical Cepheid model, with an initial mass in the $3$-$8\,M_\odot$ range. The evolution will be divided in two steps:
@@ -22,7 +20,7 @@ During this second part of the run, you will also save some models (called `.mod
 
 **Task 1**: Create your working directory for this lab.
 
-Select a name for the directory you will be working in (it could be something like ```~/ MESA_ss_2026/friday``` for example).
+Select a name for the directory you will be working in (it could be something like ```~/MESA_ss_2026/friday``` for example).
 You may also place the working directory somewhere other than your home directory.
 
 {{< details title="Answer 1" closed="true" >}}
@@ -39,17 +37,24 @@ The useful ```mkdir -p``` command creates a directory and includes all the neede
 
 **Task 2**: Download and unzip the input directory.
 
-We have already prepared an input directory to help you getting started with this lab: you can find it [here](https://mesastar.org/summer-school-2026/lodging/). **the link is a placeholder for now**.
+We have already prepared an input directory to help you get started with this lab: download [lab1_work_dir.zip](https://drive.google.com/file/d/1UxLMBFTgl3q63SNrQwWSEsRIFm6O1v87/view?usp=share_link).
 
-Download the work directory into the  ```~/ MESA_ss_2026/friday``` directory you just created, unpack it, and move into it.
+The shared Lab 1 files are:
+
+- [lab1_work_dir.zip](https://drive.google.com/file/d/1UxLMBFTgl3q63SNrQwWSEsRIFm6O1v87/view?usp=share_link)
+- [lab1_solution_1.zip](https://drive.google.com/file/d/1NsPBwzEuHBqlhIg_HO9d2b0dhPZF5QN4/view?usp=share_link)
+- [lab1_gyre_file_solutions](https://drive.google.com/drive/folders/1woaPSSlIvNQADA5Eg-SGO0N11gXHa-S2?usp=share_link)
+- [lab1_mod_file_solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link)
+
+Download the work directory into the ```~/MESA_ss_2026/friday``` directory you just created, unpack it, and move into it.
 
 {{< details title="Answer 2" closed="true" >}}
 
 Here's how to unzip the input folder
 
 ```bash
-unzip lab1_input.zip 
-cd lab1_input
+unzip lab1_work_dir.zip
+cd lab1_work_dir
 ```
 
 {{< /details >}}
@@ -63,14 +68,14 @@ Discuss among the people at your table and pick an initial mass in the range $3$
 > [!IMPORTANT]
 > Make sure that each person at your table has chosen a different initial mass value: you will need to compare your results later!
 
-The next step is to give instructions to MESA about the value of initial mass you just chose. To do so, open the ```inlist_to_he_dep``` file with your favourite text editor, and have a look at it: try to find the correct spot to define the initial mass!
+The next step is to give instructions to MESA about the value of initial mass you just chose. To do so, open the ```inlist_project``` file with your favourite text editor, and have a look at it: try to find the correct spot to define the initial mass!
 
 {{< details title="Answer 1" closed="true" >}}
 
-You should look for the ```&controls``` namelist in the ```inlist_to_he_dep``` file, and you will find something like this:
+You should look for the ```&controls``` namelist in the ```inlist_project``` file, and you will find something like this:
 
 ```fortran
-   ! ====== TODO: set the initial mass here! ======
+   ! set the initial mass here
    initial_mass = 4.5d0
 ```
 
@@ -130,7 +135,7 @@ Here's how to implement the stopping condition based on the effective temperatur
          logTeff = safe_log10(s% Teff)
          if(logTeff .le. 3.7d0) then
             extras_finish_step = terminate
-            write(*, *) '== end of the RGB! =='
+            write(*, *) '===== you have reached the end of the RGB! ===='
             s% termination_code = t_extras_finish_step
          end if
 ```
@@ -169,13 +174,13 @@ If no errors or warnings pop up, you are all set! Now run the model using
 
 During this first run you will see the star evolving through the main sequence up to the base of the RGB, and will be the base on which we will be building the second part of the simulation!
 
-## Ah yes, the remix: stopping condition in the ```inlist_to_he_dep```
+## Ah yes, the remix: stopping condition in the ```inlist_project```
 
 At this point, the star has reached the base of the RGB. Now we want it to evolve until the end of Helium burning, but with the setup we have now this is not going to happen.
 
 Indeed, with the current stopping condition we cannot progress past this point, because the limit in temperature has already been reached...we need to change it and **choose a different condition**!
 
-**Task1**: Comment or remove the previous stopping condition.
+**Task 1**: Comment or remove the previous stopping condition.
 
 Open again the ```run_star_extras.f90``` file and look for the stopping condition you just implemented. Once you find it, take extra care in commenting (or deleting) every line that you wrote!
 
@@ -193,14 +198,14 @@ Now, since we are changing the ```run_star_extras.f90``` file, we also need to c
 In this second part of the run, we want to stop the simulation when Helium is depleted in the core of the star. Luckily, in this case MESA provides a pre-made stopping condition for when the mass fraction of an isotope goes below a user-set value. Can you find it in the documentation?
 
 > [!TIP]
-> Have a look at the ```controls``` section [here](https://docs.mesastar.org/en/latest/reference/controls.html#).
+> Have a look at the [`xa_central_lower_limit_species` controls section](https://docs.mesastar.org/en/latest/reference/controls.html#xa-central-lower-limit-species).
 
 > [!TIP]
 > Alternatively you can take a look at the ```controls.defaults``` file in ```$MESA_DIR/star/defaults```.
 
-Once you have found the right command, implement the stopping condition in your inlist!
+Once you have found the right command, implement the stopping condition in your inlist.
 
-In this case, we want to stop the simulation when the mass fraction of leftover Helium in the core goes below ```1d-4```.
+In this case, we want to stop the simulation when the mass fraction of leftover Helium in the core goes below ```1d-14```.
 
 {{< details title="Answer 2" closed="true" >}}
 
@@ -209,18 +214,18 @@ Here's how to implement the stopping condition based on the amount of leftover H
 ```fortran
    ! == TODO: add a stopping condition here! ==
    ! we want the second part of the run to stop when
-   ! the mass fraction of he4 drops below 1d-4
+   ! the mass fraction of he4 drops below 1d-14
    xa_central_lower_limit_species(1) = 'he4'
-   xa_central_lower_limit(1) = 1d-4
+   xa_central_lower_limit(1) = 1d-14
 ```
 
 {{< /details >}}
 
 Amazing! Now you are ready to continue your simulation!
 > [!NOTE]
-> Since the changes that we made in the ```inlist_to_he_dep``` are not introducing new code into MESA, we **don't need** to **make a new executable**!
+> Since the changes that we made in the ```inlist_project``` are not introducing new code into MESA, we **don't need** to **make a new executable**!
 
-Great, we have a new executable...but how do we continue the run without losing what we just computed?
+Great, we have the second part of the run set up...but how do we continue without losing what we just computed?
 > [!CAUTION]
 > Do **not** run the model yet with ```./rn```: this will start a brand new model from the ZAMS!
 
@@ -354,9 +359,11 @@ As noted in the comments:
 ! However we choose to use the xtra#_array values that are a part of the star_info structure, so indexing is less confusing 
 ```
 
-We then move the information returned by GYRE to the variables used by `data_for_extra_history_columns`.
+We then move the information returned by GYRE to the variables used by `data_for_extra_history_columns`. In this setup, GYRE in MESA should start printing mode information to the terminal only once `log_Teff = log10(T_eff/K)` is greater than `3.66`.
 
-The last additional steps in this subroutine check whether we need to save a `.mod` file based on the effective temperature. We will use these models for the later labs. This temperature limit is just to ensure that these later labs run smoothly. **Need to add directions on how to set `save_mod_Teff_limit` based on results from Eb's testing here**
+The same GYRE-in-MESA block also appends one compact output file, `gyre_in_mesa.data`, with the model number, `T_eff`, luminosity, and the period/growth information for the fundamental, first-overtone, and second-overtone modes. Keep this file for Lab 2.
+
+The last additional steps in this subroutine check whether we need to save a `.mod` file. The saved models go into `mod_dir/`; keep that directory because Lab 3 uses these saved models as starting points for nonlinear saturation runs. In the starter inlist, `x_integer_ctrl(5) = 1` saves at every eligible step during core helium burning, while `x_ctrl(3) = 0d0` means the effective-temperature cut does not reject any of those saves. The GYRE calls themselves, including the terminal printout and `gyre_in_mesa.data` output, are restricted to models with `log_Teff > 3.66`.
 
 ## Noice, what now? Changing the ```pgplot``` window _during_ the run!
 
@@ -379,7 +386,7 @@ show_HR_classical_instability_strip = .true.
 
 After doing so, make sure to **_save the file_**!
 
-In the next step of the evolution, you will see the two lines magically appear on the HRD on your screen, TA-DAA!
+In the next step of the evolution, you will see the two lines appear on the HRD on your screen.
 
 ![mesa output](is_hrd.png)
 
@@ -395,19 +402,19 @@ Even though you will not be changing the rest of these plots, it's still interes
 During the evolution you should see something like this:
 
 ![grid](grid_lab1.png)
-There are a total of 5 panels:
+There is a text summary plus 5 science panels:
 
-1. **HRD**: This is the Hertzsprung-Russell diagram, to which you have now added two lines. These are the edges of the Instability Strip, a region of the HRD where stars pulsate. What is your model doing right now? Is it entering the strip or not?
+1. **HRD**: This is the Hertzsprung-Russell diagram. The two additional lines are the edges of the Instability Strip, a region of the HRD where stars pulsate. What is your model doing right now? Is it entering the strip or not?
 
 2. **density/temperature**: This is a density/temperature plot, showing the different regimes of the equations of state in which each point in the interior of a star is. Can you distinguish which one of the two extremes is the core and which one is the surface? in which regime is the interior of the star? Does it change throughout the evolution? What is the difference between the surface and the core?
 
 3. **Combined panel**: In this panel you can see 3 figures stacked on top of each other. From the top down you can see, respectively, the chemical abundances in the interior of the star, the energy generation, and the internal mixing processes, all as a function of the mass coordinate. How is the energy transported in the star? can you see any changes while the model is evolving?
 
-4. **opacity**: In this plot you can see the value of opacity throughout the interior of the star, for each evolutionary step. Notice the x axis: it is a function of the logarithm of the optical depth. How is opacity changing in the star during the evolution? can you link it to the energy transport mechanism?
+4. **opacity**: In this plot you can see the value of opacity throughout the interior of the star, with `gradr` on the right y-axis, for each evolutionary step. Notice the x axis: it is a function of the logarithm of the optical depth. How is opacity changing in the star during the evolution? can you link it to the energy transport mechanism?
 
-5. **radius and luminosity**: Finally in this panel you can see how radius, temperature and luminosity evolve during the evolution of the star.
+5. **radius, temperature, and luminosity**: Finally in this panel you can see how `log_R`, `log_Teff`, and `log_L` evolve with model number during the evolution of the star.
 
-You might notice that even once your star has crossed into the instability strip, it doesn't pulsate. For a first order explanation of why this is the case, the fundamental period of a Cepheid star can be approximated as $P_F \approx 0.37 t_{dym}$ where $t_{dyn} = 2 \pi \sqrt{R_{\ast}^3/(GM_{\ast})}$ is the dynamical time scale. This value (in sec) and time step in seconds are shown in your pgplot text summary. How do the two compare? (The solution to getting Cepheids to pulsate as MESA evolves is a bit more complicated than just dropping the timestep, but that will be explored in lab 3.)
+You might notice that even once your star has crossed into the instability strip, it doesn't pulsate. For a first order explanation of why this is the case, the fundamental period of a Cepheid star can be approximated as $P_F \approx 0.37 t_{dyn}$ where $t_{dyn} = 2 \pi \sqrt{R_{\ast}^3/(GM_{\ast})}$ is the dynamical time scale. This value in seconds and the timestep in seconds are shown in your pgplot text summary. How do the two compare? (The solution to getting Cepheids to pulsate as MESA evolves is a bit more complicated than just dropping the timestep, but that will be explored in lab 3.)
 
 ## To blue loop or not to blue loop? That is the question
 
@@ -426,7 +433,7 @@ Can you answer the following questions? Share possible hypotheses with the folks
 
 ## Directory
 
-`content/friday/MESA_models/lab1_evolve_a_cepheid/cepheid_evolution_gyre_in_mesa/`
+`lab1_work_dir/`
 
 ## Goal
 
@@ -444,7 +451,7 @@ Can you answer the following questions? Share possible hypotheses with the folks
 5. Save the `.mod` files written during the Cepheid phase and record the matching `log L` and `log T_eff`.
 
 ```bash
-cd content/friday/MESA_models/lab1_evolve_a_cepheid/cepheid_evolution_gyre_in_mesa
+cd lab1_work_dir
 ./mk
 ./rn
 ```

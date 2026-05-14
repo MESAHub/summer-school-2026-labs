@@ -51,9 +51,9 @@ It is also helpful if you still have the following information from Lab 1 writte
 
 ## Where You Will Be Working
 
-The website source directories for this lab are:
+The relevant work directories for this lab are:
 
-- `content/friday/MESA_models/lab1_evolve_a_cepheid/cepheid_evolution_gyre_in_mesa/`
+- `lab1_work_dir/`
 - `content/friday/MESA_models/lab3_Hertzsprung_progression/TDC_Cepheid/`
 
 However, during the lab you should not work inside the website source tree. Instead, create a separate local Lab 3 working directory inside the same Friday workspace you used for Lab 1.
