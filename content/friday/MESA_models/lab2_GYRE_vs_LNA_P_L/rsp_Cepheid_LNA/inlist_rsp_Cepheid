@@ -10,7 +10,8 @@
 / ! end of eos namelist
 
 &kap 
-   Zbase = 0.002d0 ! Keep same Zbase as lab 1
+   Zbase = 0.006d0 ! Keep same Zbase as lab 1
+   use_Type2_opacities = .false.
 / ! end of kap namelist
 
 &colors
@@ -27,8 +28,8 @@
     RSP_L = 17020.96
 
     ! Fixed to match initial values from lab 1 
-    RSP_X = 0.7440d0
-    RSP_Z = 0.002d0
+    RSP_X = 0.7365d0
+    RSP_Z = 0.006d0
 
     RSP_alfa = 1.77 
     ! Set to zero to perform only LNA, otherwise RSP will do non-linear evolution 

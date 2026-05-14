@@ -60,7 +60,7 @@ Using your Lab 1 `.mod` filename and the matching row in `gyre_in_mesa.data`, se
 A few notes:
 
 1. Because we have mass loss turned on, the mass of each model will not be the initial mass we started with in lab 1.
-2. We're going to take our values of `RSP_X` and `RSP_Z` from the surface mass fractions saved in the history file. First, however, we should check that the surface abundances are representative of the composition in the envelope. You can do this using the saved model which includes the abundance profiles of all isotopes throughout the star. Check that the `h1` and `he4` values of the surface zone are representative of the stellar envelope.
+2. RSP does not read the envelope composition from the `.mod` file. We're going to take our values of `RSP_X` and `RSP_Z` from the surface mass fractions saved in the history file, while `Y` is implied by `1-X-Z`. First, however, we should check that the surface abundances are representative of the composition in the envelope. You can do this using the saved model which includes the abundance profiles of all isotopes throughout the star. Check that the `h1` and `he4` values of the surface zone are representative of the stellar envelope.
 3. Make sure to double check that you are inputting your values in the units expected by RSP: mass in Msun, Teff in K, L in Lsun, X and Z as mass fractions.
 
 {{< /details >}}

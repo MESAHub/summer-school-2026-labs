@@ -35,7 +35,7 @@ module run_star_extras
 
       implicit none
 
-      logical :: need_to_write_LINA_data
+      logical :: need_to_write_LNA_data
 
       contains
 
@@ -159,7 +159,7 @@ module run_star_extras
  
          end if 
 
-         if (need_to_write_LINA_data) then
+         if (need_to_write_LNA_data) then
             ! Get GYRE Information 
             call star_get_pulse_data(s%id, 'GYRE', .FALSE., .FALSE., .FALSE., global_data, point_data, ierr)
             if (ierr /= 0) then
@@ -223,9 +223,8 @@ module run_star_extras
             cfreq = md% freq('HZ')
             growth = AIMAG(cfreq) ! in seconds
             freq = REAL(cfreq) ! in seconds
-            period = 0 ! days
+            period = 1d0/freq ! in seconds
             if (growth > 0d0) then ! unstable
-               period = 1d0/freq ! in seconds
                write(*, 100) model_number, md%n_pg, &
                   freq, period, period/(24*3600), 1d0/(2*pi*24*3600*AIMAG(cfreq)), &
                   (2d0*pi*growth)/freq, freq/(2d0*pi*growth)
