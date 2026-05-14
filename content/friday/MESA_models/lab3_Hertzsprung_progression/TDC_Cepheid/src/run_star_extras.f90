@@ -265,6 +265,7 @@ contains
             if (max_dt_before_pulse > 0d0) s%max_timestep = max_dt_before_pulse
          end if
 
+         ! time step control on pulsations
          have_dt_limit = .false.
          dt_limit = 0d0
          if (s%model_number > timestep_drop_model_number) then

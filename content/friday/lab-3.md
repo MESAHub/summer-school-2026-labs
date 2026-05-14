@@ -146,7 +146,9 @@ Find the line
 load_model_filename = 'mod_dir/YOUR_MODEL.mod'
 ```
 
-and replace the filename with the one you copied into your local `mod_dir/`.
+For your first run:
+
+- update `load_model_filename` so it points to the model you copied into your local `mod_dir/`
 
 > [!NOTE]
 > In this setup, MESA loads the saved stellar structure, removes the core, remeshes the envelope for time-dependent convection, and then uses a GYRE kick to seed the fundamental radial mode.
