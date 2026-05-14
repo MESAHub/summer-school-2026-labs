@@ -653,6 +653,7 @@
 
       ! individual surface mass fractions (as many as desired)
       surface h1
+      surface he3
       surface he4
       !surface c12
       !surface o16

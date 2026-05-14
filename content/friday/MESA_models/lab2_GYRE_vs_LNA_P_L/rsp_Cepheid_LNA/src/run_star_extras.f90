@@ -20,7 +20,7 @@
 !!! Solutions for the bonus task of Lab 2 for Friday's lab at the 2026 MESA Summer school
 !!! This file runs RSP-LNA using the parameters specified in the inlist. 
 !!! It then saves the following in an output specified by x_character_ctrl(10): 
-!!! model number, M, L, Teff, RSP Wesenheit index, RSP F Period, RSP F Growth Rate
+!!! model number, M, L, Teff, RSP Wesenheit index, RSP F/F1 periods, and RSP F/F1 growth rates
 !!! This run_star_extras is designed to be called within a bash script that loops over a number of models 
 !!! and so it appends to the file. 
 

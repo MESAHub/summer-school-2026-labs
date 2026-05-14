@@ -13,7 +13,7 @@
    new_Z = 6d-3
    relax_initial_Y = .true.
    new_Y = 0.2575d0
-   
+
    ! enable the use of the pgstar window
    pgstar_flag = .true.
 
@@ -21,7 +21,7 @@
 
 &kap
 
-   ! choose the opacity tables 
+   ! choose the opacity tables
    kap_file_prefix = 'gs98'    ! 'gs98' 'a09'  'OP_a09' 'OP_gs98'
    kap_CO_prefix   = 'gs98_co' ! 'gs98_co' 'a09_co'
    use_Type2_opacities = .true.
@@ -56,26 +56,29 @@
    xa_central_lower_limit_species(1) = 'he4'
    xa_central_lower_limit(1) = 1d-4
 
-   ! GYRE output controls   
+   ! GYRE output controls
    x_integer_ctrl(1) = 10        ! output GYRE info at this step interval
 
    x_integer_ctrl(2) = 3         ! max number of modes to output per call
 
    x_integer_ctrl(3) = 0         ! mode l (e.g. 0 for p modes, 1 for g modes)
                                     ! should match gyre.in mode l
-   x_integer_ctrl(4) = 1         ! save .mod files at this step interval
+   x_integer_ctrl(4) = 10        ! save .mod files at this step interval
 
    x_ctrl(1) = 0d0               ! save .mod files when Teff is greater than this
 
 
-! convection controls ! Lynn: all these need explanatory comments here or in the instructions 
+! convection controls
     steps_before_use_TDC = 0
-    MLT_option = 'TDC' 
+    MLT_option = 'TDC'
     include_mlt_corr_to_TDC = .false.
-    mixing_length_alpha = 1.77d0     
+    mixing_length_alpha = 1.77d0
     recalc_mix_info_after_evolve = .true.
 
-    predictive_mix(1) = .true. 
+! Predictive mixing is a convective boundary mixing scheme. It adjusts
+! the core boundary during burning to avoid artificial composition jumps
+! and helps produce reliable blue loops.
+    predictive_mix(1) = .true.
     predictive_zone_type(1) = 'any'
     predictive_zone_loc(1) = 'core'
     predictive_bdy_loc(1) = 'any'
@@ -122,9 +125,9 @@
    photo_digits = 8
    photo_interval = 100
 
-   profile_interval = 20         
+   profile_interval = 20
 
-   history_interval = 10            
+   history_interval = 10
    terminal_interval = 10
    max_num_profile_models = 1000000 ! 100 ! RECOMMENDED 10000
 
@@ -135,7 +138,7 @@
  read_extra_pgstar_inlist(1) = .true.
  extra_pgstar_inlist_name(1)= 'inlist_pgstar'
 
- ! Lynn: Is there a good reason this is here and not all in the inlist_pgstar file? 
+ ! Lynn: Is there a good reason this is here and not all in the inlist_pgstar file?
  Grid1_file_dir = 'png_evolution'
  History_Track1_file_flag = .false.
  History_Track2_file_flag = .false.

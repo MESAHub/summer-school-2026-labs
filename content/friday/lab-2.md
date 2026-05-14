@@ -46,21 +46,21 @@ To use RSP within MESA, we need to set `create_RSP_model = .true.` in the `star_
 
 The next set of controls change the parameters of the convection model which will be discussed by Eb in the lecture introducing lab 3. Most of these we will leave set to their default values however we need to set the mixing length parameter used by RSP (`RSP_alfa`) to match our evolutionary models constructed in lab 1. There are also some additional numerical controls that we will leave at their default values. The only other RSP control we will change is `RSP_max_num_periods` which we will set to 0. This is because we are only using RSP to perform the LNA analysis and not to evolve the non-linear pulsations.
 
-Using your Lab 1 `.mod` filename and the matching row in `gyre_in_mesa.data`, set the following controls in `inlist_rsp_Cepheid` to the correct value for the models you examined in the previous step:
+Using the model you chose from Lab 1, set the following controls in `inlist_rsp_Cepheid` to the correct value for the models you examined in the previous step:
 
 ```fortran
-    RSP_mass = 
-    RSP_Teff = 
-    RSP_L = 
-    RSP_X = 
-    RSP_Z = 
-    RSP_alfa = 
+    RSP_mass =
+    RSP_Teff =
+    RSP_L =
+    RSP_X =
+    RSP_Z =
+    RSP_alfa =
 ```
 
 A few notes:
 
 1. Because we have mass loss turned on, the mass of each model will not be the initial mass we started with in lab 1.
-2. RSP does not read the envelope composition from the `.mod` file. We're going to take our values of `RSP_X` and `RSP_Z` from the photospheric `X` and `Z` columns saved in `gyre_in_mesa.data`, while `Y` is implied by `1-X-Z`. First, however, we should check that the surface abundances are representative of the composition in the envelope. You can do this using the saved model which includes the abundance profiles of all isotopes throughout the star. Check that the `h1` and `he4` values of the surface zone are representative of the stellar envelope.
+2. RSP does not read the envelope composition from the `.mod` file. Set `RSP_X` and `RSP_Z` from the `photosphere_X` and `photosphere_Z` history columns for the Lab 1 model you chose, while `Y` is implied by `1-X-Z`. First, however, we should check that the surface abundances are representative of the composition in the envelope. You can do this using the saved model which includes the abundance profiles of all isotopes throughout the star. Check that the `h1`, `he3`, and `he4` values of the surface zone are representative of the stellar envelope.
 3. Make sure to double check that you are inputting your values in the units expected by RSP: mass in Msun, Teff in K, L in Lsun, X and Z as mass fractions.
 
 {{< /details >}}
@@ -79,7 +79,7 @@ Depending on the model that you chose, you may get an error message that looks s
 ```none
  read inlist_rsp_Cepheid
  create initial RSP model
- P <= Prad          -1   3.1066999930251846        31.441496087080992        10566.796852683854     
+ P <= Prad          -1   3.1066999930251846        31.441496087080992        10566.796852683854
  failed in do_rsp_build
  failed in build_rsp_model
  star_create_RSP_model ierr          -1
@@ -162,7 +162,7 @@ Where $V$ and $I$ are the absolute magnitudes in the V and I bands, respectively
 
 ```none
 &colors
-   use_colors = .true. 
+   use_colors = .true.
 / ! end of colors namelist
 ```
 
@@ -171,7 +171,7 @@ as the `colors` section of the inlist. When you rerun the RSP model here, we are
 To fill in our diagrams a little bit more, repeat this process (changing the inlist parameters and running RSP LNA) for different timesteps from your lab 1 results.
 
 > [!NOTE]
-> Take a look at your original `history.data` file from lab 1. Do you need to change the envelop composition when running a new model?
+> Take a look at your original `history.data` file from lab 1. Do you need to change the envelope composition when running a new model?
 
 ### As the spreadsheet fills in discuss the following questions at your table
 
@@ -222,7 +222,7 @@ Start from the [partially complete solutions](https://drive.google.com/file/d/1Y
 
 This is a [complete set of solutions](https://drive.google.com/file/d/1q_ieQpw9ggKxSQ-5eoDLMWcuXlMX4hrQ/view?usp=share_link) with comments explaining the code. Read through the code to understand what is happening and then run it using your results from lab 1.
 
-If you use these solutions files directly, you still need to pass the correct path for your `mod_dir` from lab 1 to `batch_LNA.sh`. Pass the matching `gyre_in_mesa.data` file as the third argument if you want the script to update `RSP_X` and `RSP_Z` for each model from the Lab 1 photospheric composition.
+If you use these solutions files directly, you still need to pass the correct path for your `mod_dir` from lab 1 to `batch_LNA.sh`. The supplied script updates `RSP_mass`, `RSP_Teff`, and `RSP_L` from the `.mod` filenames; set `RSP_X` and `RSP_Z` in `inlist_rsp_Cepheid` to the composition you want to use before launching the batch.
 
 {{< /details >}}
 

@@ -35,7 +35,7 @@ Pick an initial mass in the range $3.9-9.4\,$M$_\odot$ from the options availabl
 > [!IMPORTANT]
 > Make sure that each person at your table has chosen a significantly different initial mass value: this will make later comparisons more interesting!
 
-Next, instruct MESA about initial mass you just chose. To do so, open the ```inlist_to_he_dep``` file with your favourite text editor, and find the correct spot to define the initial mass!
+Next, instruct MESA about initial mass you just chose. To do so, open the ```inlist_project``` file with your favourite text editor, and find the correct spot to define the initial mass!
 
 {{< details title="Answer 2.1" closed="true" >}}
 
@@ -174,7 +174,7 @@ If no errors pop up, you are all set! Now run the model using
 During this first run you will see the star evolving through the main sequence and across the Hertzsprung gap to the base of the RGB, and will be the base on which we will be building the second part of the simulation!
 
 
-## 3. Ah yes, the remix: stopping condition in the ```inlist_to_he_dep```
+## 3. Ah yes, the remix: stopping condition in the ```inlist_project```
 
 At this point, the star has reached the base of the RGB. Now we want it to evolve until the end of He burning.
 To that end, we need to **choose and implement a different stopping condition**!
@@ -266,7 +266,7 @@ However, if you know you want to start from the most recent photo, you can simpl
 > Another thing to know, restarts can cause your history file to jump around as restarts only append to the existing `history.data` file. That is, if you run a track to model number 500 then restart from model number 300, the original time steps will remain in the history file, which may confuse your later analysis of the history. Another consequence of this is that you cannot change the history column outputs between restarts without causing an error.
 
 > [!CAUTION]
-> The method that we have used today (running a model to a stopping condition, then changing `run_star_extras` and starting again) is fine for exploration runs or debugging things. However, it isn't the most reproducible method, since it's easy to forget what you changed or accidentally restart your run and overwrite the previous results. Since we're not really changing the physics of our models this isn't a problem but if you're doing science runs it's better to set everything up before going. For changes to the inlists, you can accomplish this by using multiple inlists (for an example see the `1M_pre_ms_to_wd` case in the test suite). If you need to change functionally in the `run_star_extras`, `if` statements and the `x_logical_ctrl` variables will be useful. 
+> The method that we have used today (running a model to a stopping condition, then changing `run_star_extras` and starting again) is fine for exploration runs or debugging things. However, it isn't the most reproducible method, since it's easy to forget what you changed or accidentally restart your run and overwrite the previous results. Since we're not really changing the physics of our models this isn't a problem but if you're doing science runs it's better to set everything up before going. For changes to the inlists, you can accomplish this by using multiple inlists (for an example see the `1M_pre_ms_to_wd` case in the test suite). If you need to change functionally in the `run_star_extras`, `if` statements and the `x_logical_ctrl` variables will be useful.
 
 With all that out of the way go ahead and restart your run from the most recently saved photo.
 
@@ -340,11 +340,11 @@ In addition to loading the GYRE library we also need to initialize GYRE and set 
       call set_constant('GYRE_DIR', TRIM(mesa_dir)//'/build/gyre/src')
    ```
 
-Scrolling down further to the `data_for_extra_history_columns` routine, you should see that here that we just pass each of the columns we want to save using the variables defined at the start of the file.
+Scrolling down further to the `data_for_extra_history_columns` routine, you should see that here that we pass each of the columns we want to save. The mode information comes from the variables defined at the start of the file, and the photospheric composition is read directly from the model cell MESA identifies as the photosphere.
 
 ```fortran
-         names(1) = 'F_period' 
-         vals(1) = F_period 
+         names(1) = 'F_period'
+         vals(1) = F_period
 
          names(2) = 'F_growth'
          vals(2) = F_growth
@@ -352,14 +352,20 @@ Scrolling down further to the `data_for_extra_history_columns` routine, you shou
          names(3) = 'O1_period'
          vals(3) = O1_period
 
-         names(4) = 'O1_growth' 
-         vals(4) = O1_growth 
+         names(4) = 'O1_growth'
+         vals(4) = O1_growth
 
-         names(5) = 'O2_period' 
+         names(5) = 'O2_period'
          vals(5) = O2_period
-          
-         names(6) = 'O2_growth' 
+
+         names(6) = 'O2_growth'
          vals(6) = O2_growth
+
+         names(7) = 'photosphere_X'
+         vals(7) = s% X(s% photosphere_cell_k)
+
+         names(8) = 'photosphere_Z'
+         vals(8) = s% Z(s% photosphere_cell_k)
 ```
 
 However, these values are not calculated here. Instead, we calculate them in the `extras_finish_step` function.
@@ -370,15 +376,15 @@ Let's go back to the `extras_finish_step`routine and see how that's done, look s
 ! ======= Routines for the core-helium burning part of the evolution ! ======
 ```
 
-Right after this comment we set two logical variables: `call_gyre` and `need_to_save_model` both set to `.false.` This is because we want to decide at run time when GYRE will be called and when we will save models.
+Right after this comment we set two logical variables, `call_gyre` and `need_to_save_model`, to `.false.` This is because we want to decide at run time when GYRE will be called and when we will save models. The logical variable `in_gyre_region` is used for the part of the evolution where we want denser output.
 
-We then have a few lines of code which set parse the `x_integer_ctrl` and `x_ctrl` values set in the inlist. This renaming isn't strictly necessary, but it makes the code more legible.
+We then have a few lines of code which parse the `x_integer_ctrl` and `x_ctrl` values set in the inlist. This renaming isn't strictly necessary, but it makes the code more legible.
 
 ```fortran
       ! Save user specified parameters with meaningful names
-      gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist 
-      max_mode_num = s% x_integer_ctrl(1) ! Sets how many modes should be saved 
-      mode_l = s% x_integer_ctrl(1)       ! Sets l value of modes 
+      gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist
+      max_mode_num = s% x_integer_ctrl(1) ! Sets how many modes should be saved
+      mode_l = s% x_integer_ctrl(1)       ! Sets l value of modes
       save_mod_interval = s% x_integer_ctrl(1) ! Sets how often to save .mod files
       save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
 ```
@@ -393,12 +399,12 @@ The correct assignments are
 
 ```fortran
    ! Save user specified parameters with meaningful names
-   gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist 
-   max_mode_num = s% x_integer_ctrl(2) ! Sets how many modes should be saved 
-   mode_l = s% x_integer_ctrl(3)       ! Sets l value of modes 
+   gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist
+   max_mode_num = s% x_integer_ctrl(2) ! Sets how many modes should be saved
+   mode_l = s% x_integer_ctrl(3)       ! Sets l value of modes
    save_mod_interval = s% x_integer_ctrl(4) ! Sets how often to save .mod files
    save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
-   
+
 ```
 
 {{< /details >}}
@@ -407,38 +413,44 @@ We then zero out the variables that we saw used in `data_for_extra_history_colum
 
 ```fortran
 
-   ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0. 
-   F_period = 0d0 
-   F_growth = 0d0 
-   O1_period = 0d0 
-   O1_growth = 0d0 
-   O2_period = 0d0 
-   O2_growth = 0d0 
+   ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0.
+   F_period = 0d0
+   F_growth = 0d0
+   O1_period = 0d0
+   O1_growth = 0d0
+   O2_period = 0d0
+   O2_growth = 0d0
 
 ```
 
 As you saw we are only calling GYRE every `s% x_integer_ctrl(1)` time steps. If we don't update the values each time step (because we did't call GYRE), the values from the previous GYRE call will persist. This might be confusing as we'll have values at time steps where GYRE wasn't actually called. By setting everything to zero we ensure that we only have results for time steps where GYRE was actually called.
 
-The code then checks if we need to call GYRE during this time step. We want to call GYRE when
+The code then checks if we are in the part of the evolution where we want GYRE output. We want the GYRE region to begin when
 
 1. We are in the core helium burning stage.
-2. Every `gyre_interval` models.
-3. Models have logTeff below 3.66d0 (this ensures that these models work well for lab 2).
+2. Models have logTeff above 3.66d0 (this ensures that these models work well for lab 2).
 
-If these conditions are met we set `call_gyre = .true.`. We preform a similar check to determine if we need to save a model.
+Inside this region, we write history output, print terminal output, and save `.mod` files every model, but only call GYRE every `gyre_interval` models. If the GYRE cadence condition is also met, we set `call_gyre = .true.`.
 
 These checks are done by this bit of code:
 
 ```fortran
-   ! Check if in He burning and we're calling GYRE 
-   if (s% center_h1 <= 1d-12 .and. safe_log10(s% power_he_burn) >1d0) then
-      if (logTeff > gyre_logTeff_min .and. gyre_interval > 0 .and. &
-            MOD(s% model_number, gyre_interval) == 0) then
+   ! Check if in He burning and we're calling GYRE.
+   in_gyre_region = s% center_h1 <= 1d-12 .and. &
+      safe_log10(s% power_he_burn) >1d0 .and. logTeff > gyre_logTeff_min
+   if (in_gyre_region) then
+      save_mod_interval = 1
+      s% history_interval = 1
+      s% terminal_interval = 1
+      if (gyre_interval > 0 .and. MOD(s% model_number, gyre_interval) == 0) then
          call_gyre = .true.
-      end if 
+      end if
       if (save_mod_interval > 0 .and. MOD(s% model_number, save_mod_interval) == 0) then
          need_to_save_model = .true.
       end if
+   else
+      s% history_interval = 10
+      s% terminal_interval = 10
    end if
 ```
 
@@ -495,7 +507,7 @@ As noted in the comments:
 
 We then move the information returned by GYRE to the variables used by `data_for_extra_history_columns`. In this setup, GYRE in MESA also prints some information to the  terminal but again only once `log_Teff = log10(T_eff/K)` is greater than `3.66`.
 
-The last additional steps in this subroutine check whether we need to save a `.mod` file. The saved models go into `mod_dir/`; keep that directory because Lab 3 uses these saved models as starting points for nonlinear saturation runs. In the starter inlist, `x_integer_ctrl(4) = 1` saves at every eligible step during core helium burning, while `x_ctrl(1) = 0d0` means the effective-temperature cut does not reject any of those saves.
+The last additional steps in this subroutine check whether we need to save a `.mod` file. The saved models go into `mod_dir/`; keep that directory because Lab 3 uses these saved models as starting points for nonlinear saturation runs. In the GYRE region, the model-save interval is temporarily set to 1, while `x_ctrl(1) = 0d0` means the effective-temperature cut does not reject any of those saves.
 
 ## 6. Nice! Now let's change the ```pgplot``` window _during_ the run!
 
