@@ -60,18 +60,12 @@ In `&controls`, set `mass_change = <your value>`.
 > [!NOTE]
 > Some of these nets are the same in labs 1 and 2. Feel free to use them. Check the general hints if you need help. 
 
-{{< details title="ONe.net" closed="true" >}}
-Species to include:
-- ${^{1}\rm{H}}$
-- ${^{4}\rm{He}}$
-- ${^{16}\rm{O}}$
-- ${^{20}\rm{Ne}}$
-- ${^{20}\rm{F}}$
-- ${^{20}\rm{O}}$
-- ${^{23}\rm{Na}}$
-- ${^{24}\rm{Mg}}$
-- ${^{25}\rm{Mg}}$
-- ${^{28}\rm{Si}}$
+{{< tabs items="ONe.net,ONeMg.net,ONeNa.net,ONeMgNa.net,ONeMg2Na.net" >}}
+
+<!-- ONe.net -->
+{{< tab name='ONe.net' >}}
+
+Species to include: ${^{1}\rm{H}}$, ${^{4}\rm{He}}$, ${^{16}\rm{O}}$, ${^{20}\rm{Ne}}$, ${^{20}\rm{F}}$, ${^{20}\rm{O}}$, ${^{23}\rm{Na}}$, ${^{24}\rm{Mg}}$, ${^{25}\rm{Mg}}$, ${^{28}\rm{Si}}$
 
 Reactions to include:
 - ${^{16}\rm{O}} + {^{16}\rm{O}} \to \rm{products}$ (specifically, use the reaction ```r1616```)
@@ -112,24 +106,11 @@ add_reactions(
 
 {{< /details >}}
 
-{{< /details >}}
+{{< /tab >}}
 
-
-
-{{< details title="ONeMg.net" closed="true" >}}
-Species to include:
-- ${^{1}\rm{H}}$
-- ${^{4}\rm{He}}$
-- ${^{16}\rm{O}}$
-- ${^{20}\rm{Ne}}$
-- ${^{20}\rm{F}}$
-- ${^{20}\rm{O}}$
-- ${^{23}\rm{Na}}$
-- ${^{24}\rm{Mg}}$
-- ${^{24}\rm{Na}}$
-- ${^{24}\rm{Ne}}$
-- ${^{25}\rm{Mg}}$
-- ${^{28}\rm{Si}}$
+<!-- ONeMg.net -->
+{{< tab name="ONeMg.net" >}}
+Species to include: ${^{1}\rm{H}}$, ${^{4}\rm{He}}$, ${^{16}\rm{O}}$, ${^{20}\rm{Ne}}$, ${^{20}\rm{F}}$, ${^{20}\rm{O}}$, ${^{23}\rm{Na}}$, ${^{24}\rm{Mg}}$, ${^{24}\rm{Na}}$, ${^{24}\rm{Ne}}$, ${^{25}\rm{Mg}}$, ${^{28}\rm{Si}}$
 
 Reactions to include:
 - ${^{16}\rm{O}} + {^{16}\rm{O}} \to \rm{products}$ (specifically, use the reaction ```r1616```)
@@ -181,23 +162,12 @@ add_reactions(
 ```
 
 {{< /details >}}
+{{< /tab >}}
 
-{{< /details >}}
+<!-- ONeNa.net -->
+{{< tab name="ONeNa.net" >}}
 
-
-{{< details title="ONeNa.net" closed="true" >}}
-Species to include:
-- ${^{1}\rm{H}}$
-- ${^{4}\rm{He}}$
-- ${^{16}\rm{O}}$
-- ${^{20}\rm{Ne}}$
-- ${^{20}\rm{F}}$
-- ${^{20}\rm{O}}$
-- ${^{23}\rm{Na}}$
-- ${^{23}\rm{Ne}}$
-- ${^{24}\rm{Mg}}$
-- ${^{25}\rm{Mg}}$
-- ${^{28}\rm{Si}}$
+Species to include: ${^{1}\rm{H}}$, ${^{4}\rm{He}}$, ${^{16}\rm{O}}$, ${^{20}\rm{Ne}}$, ${^{20}\rm{F}}$, ${^{20}\rm{O}}$, ${^{23}\rm{Na}}$, ${^{23}\rm{Ne}}$, ${^{24}\rm{Mg}}$, ${^{25}\rm{Mg}}$, ${^{28}\rm{Si}}$
 
 Reactions to include:
 - ${^{16}\rm{O}} + {^{16}\rm{O}} \to \rm{products}$ (specifically, use the reaction ```r1616```)
@@ -245,25 +215,12 @@ add_reactions(
 
 {{< /details >}}
 
-{{< /details >}}
+{{< /tab >}}
 
+<!-- ONeMgNa.net -->
+{{< tab name="ONeMgNa.net" >}}
 
-
-{{< details title="ONeMgNa.net" closed="true" >}}
-Species to include:
-- ${^{1}\rm{H}}$
-- ${^{4}\rm{He}}$
-- ${^{16}\rm{O}}$
-- ${^{20}\rm{Ne}}$
-- ${^{20}\rm{F}}$
-- ${^{20}\rm{O}}$
-- ${^{23}\rm{Na}}$
-- ${^{23}\rm{Ne}}$
-- ${^{24}\rm{Mg}}$
-- ${^{24}\rm{Na}}$
-- ${^{24}\rm{Ne}}$
-- ${^{25}\rm{Mg}}$
-- ${^{28}\rm{Si}}$
+Species to include: ${^{1}\rm{H}}$, ${^{4}\rm{He}}$, ${^{16}\rm{O}}$, ${^{20}\rm{Ne}}$, ${^{20}\rm{F}}$, ${^{20}\rm{O}}$, ${^{23}\rm{Na}}$, ${^{23}\rm{Ne}}$, ${^{24}\rm{Mg}}$, ${^{24}\rm{Na}}$, ${^{24}\rm{Ne}}$, ${^{25}\rm{Mg}}$, ${^{28}\rm{Si}}$
 
 Reactions to include:
 - ${^{16}\rm{O}} + {^{16}\rm{O}} \to \rm{products}$ (specifically, use the reaction ```r1616```)
@@ -323,27 +280,12 @@ add_reactions(
 
 {{< /details >}}
 
-{{< /details >}}
+{{< /tab >}}
 
+<!-- ONeMg2Na.net -->
+{{< tab name="ONeMg2Na.net" >}}
 
-
-{{< details title="ONeMg2Na.net" closed="true" >}}
-Species to include:
-- ${^{1}\rm{H}}$
-- ${^{4}\rm{He}}$
-- ${^{16}\rm{O}}$
-- ${^{20}\rm{Ne}}$
-- ${^{20}\rm{F}}$
-- ${^{20}\rm{O}}$
-- ${^{23}\rm{Na}}$
-- ${^{23}\rm{Ne}}$
-- ${^{24}\rm{Mg}}$
-- ${^{24}\rm{Na}}$
-- ${^{24}\rm{Ne}}$
-- ${^{25}\rm{Mg}}$
-- ${^{25}\rm{Na}}$
-- ${^{25}\rm{Ne}}$
-- ${^{28}\rm{Si}}$
+Species to include: ${^{1}\rm{H}}$, ${^{4}\rm{He}}$, ${^{16}\rm{O}}$, ${^{20}\rm{Ne}}$, ${^{20}\rm{F}}$, ${^{20}\rm{O}}$, ${^{23}\rm{Na}}$, ${^{23}\rm{Ne}}$, ${^{24}\rm{Mg}}$, ${^{24}\rm{Na}}$, ${^{24}\rm{Ne}}$, ${^{25}\rm{Mg}}$, ${^{25}\rm{Na}}$, ${^{25}\rm{Ne}}$, ${^{28}\rm{Si}}$
 
 Reactions to include:
 - ${^{16}\rm{O}} + {^{16}\rm{O}} \to \rm{products}$ (specifically, use the reaction ```r1616```)
@@ -414,10 +356,15 @@ add_reactions(
 
 {{< /details >}}
 
-{{< /details >}}
+{{< /tab >}}
+
+
+{{< /tabs >}}
 
 
 
+
+<!-- general hint for adding isotopes -->
 {{< details title="General hint for adding isotopes" closed="true" >}}
 For adding an isotope without automatically connecting it to others, add the following in your net
 ```fortran
@@ -428,7 +375,7 @@ add_isos(
 {{< /details >}}
 
 
-
+<!-- general hint for adding reactions -->
 {{< details title="General hint for reaction names" closed="true" >}}
 For adding reactions, add the following in your net
 ```fortran
@@ -448,7 +395,7 @@ You can find the full list of reaction names [here](https://docs.mesastar.org/en
 |:--------|
 | Edit `inlist_accrete` to have it use your specific network. |
 
-> [!NOTE]
+> [!TIP]
 > You can do the following sanity check: 
 > In ``star_job`` in ``inlist_common``, set ``show_net_species_info = .true.`` and ``show_net_reactions_info = .true.``. 
 > Then do ``./rn`` and let MESA run for a few steps. MESA will first print out the species and reactions in the net. 
@@ -587,9 +534,9 @@ r_o20_wk-minus_f20 'on-the-fly_r_o20_wk-minus_f20.h5'
 {{< /tab >}}
 
 <!-- Special rates -->
-{{< tab name="blah" >}}
+{{< tab name="Special (on-the-fly) rates" >}}
 
-blah
+MESA has the capability to calculate the weak reactions on-the-fly, if you supply the list of transitions and energy levels. 
 
 {{< /tab >}}
 
