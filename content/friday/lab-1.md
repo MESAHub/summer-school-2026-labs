@@ -62,7 +62,7 @@ However, in MESA there is **no pre-defined stopping condition that could do it**
 
 <!-- I recommend letting students think about where to implement this themselves before pointing them to extras_finish_step. That might look a little something like this: -->
 
-**Question:** Check the (MESA documentation)[https://docs.mesastar.org/en/latest/using_mesa/extending_mesa.html] of ```run_star_extras.f90```. Where in the control flow does this stopping condition belong?
+**Question:** Check the [MESA documentation](https://docs.mesastar.org/en/latest/using_mesa/extending_mesa.html) of ```run_star_extras.f90```. Where in the control flow does this stopping condition belong?
 
 {{< details title="Answer" closed="true" >}}
 
@@ -73,7 +73,7 @@ The function ```extras_finish_step``` is called at the end of a time step to che
 <!-- _First thing first_: open the ```run_star_extras.f90``` file and look for the ```extras_finish_step``` subroutine. This subroutine will be called at the end of each solver step, to control if the conditions to stop the evolution are met. -->
 
 > [!NOTE]
-> Similar functionality is available using the `extras_finish_step` model subroutine. However, that function is only able to return two options: `keep_going` or `terminate`. In addition to these two options, `extras_finish_step` can also return `retry` which causes MESA to try again with a smaller time step.
+> The `extras_finish_step` routine can return either `keep_going` or `terminate`. If you need MESA to retry a step with a smaller timestep, use `extras_check_model` instead.
 
 Now we have collected here some important information for you, that might help you with this task:
 
@@ -159,25 +159,7 @@ Here's how to implement the stopping condition based on the effective temperatur
 <!-- Mathijs: I made this a collapsible bonus task to not confuse students unnecessarily with the two possible solutions -->
 {{< details title="BONUS: Stopping at a precise effective temperature" closed="true" >}}
 
-If we wanted to stop more precisely, say when $\log(T_{\mathrm{eff}}) =  3.7 \pm \rm{tol} $ where $\rm{tol}$ is some numeric tolerance, then we could use the following code:
-
-```fortran
-! ====== TODO: add stopping condition for effective temperature! ======
-         real(dp) :: logTeff, stopping_logTeff, stopping_tol
-
-         logTeff = safe_log10(s% Teff)
-         stopping_logTeff = 3.7d0
-         stopping_tol = 0.0001d0
-         if(logTeff .gt. stopping_logTeff) then
-           extras_finish_step = keep_going
-         else if (abs(logTeff - stopping_logTeff) .lt. stopping_tol) then
-           extras_finish_step = terminate
-           write(*, *) '===== you have reached the end of the RGB! ===='
-           s% termination_code = t_extras_finish_step
-         else ! Avoid overshooting our desired stopping condition using retries
-           extras_finish_step = retry
-         end if
-```
+If we wanted to stop more precisely, say when $\log(T_{\mathrm{eff}}) = 3.7 \pm \rm{tol}$ where $\rm{tol}$ is some numeric tolerance, we would need a routine that can ask MESA to retry the step with a smaller timestep. That is available through `extras_check_model`, but for this exercise we are using the simpler `extras_finish_step` approach.
 
 {{< /details >}}
 
@@ -238,7 +220,7 @@ Add the following in the `&controls` section of *inlist_project*:
 ```fortran
    ! == TODO: add a stopping condition here! ==
    ! we want the second part of the run to stop when
-   ! the mass fraction of he4 drops below 1d-14
+   ! the mass fraction of he4 drops below 1d-4
    xa_central_lower_limit_species(1) = 'he4'
    xa_central_lower_limit(1) = 1d-4
 ```
@@ -398,7 +380,7 @@ As noted in the comments:
 
 We then move the information returned by GYRE to the variables used by `data_for_extra_history_columns`. In this setup, GYRE in MESA should start printing mode information to the terminal only once `log_Teff = log10(T_eff/K)` is greater than `3.66`.
 
-The same GYRE-in-MESA block also appends one compact output file, `gyre_in_mesa.data`, with the model number, `T_eff`, luminosity, and the period/growth information for the fundamental, first-overtone, and second-overtone modes. Keep this file for Lab 2.
+The same GYRE-in-MESA block also appends one compact output file, `gyre_in_mesa.data`, with the model number, current mass, photospheric `X` and `Z`, `T_eff`, luminosity, and the period/growth information for the fundamental, first-overtone, and second-overtone modes. Keep this file for Lab 2.
 
 The last additional steps in this subroutine check whether we need to save a `.mod` file. The saved models go into `mod_dir/`; keep that directory because Lab 3 uses these saved models as starting points for nonlinear saturation runs. In the starter inlist, `x_integer_ctrl(5) = 1` saves at every eligible step during core helium burning, while `x_ctrl(3) = 0d0` means the effective-temperature cut does not reject any of those saves. The GYRE calls themselves, including the terminal printout and `gyre_in_mesa.data` output, are restricted to models with `log_Teff > 3.66`.
 

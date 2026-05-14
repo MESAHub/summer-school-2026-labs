@@ -50,11 +50,11 @@
    ! set the initial mass here
    initial_mass = 4.5d0
 
-   ! ====== TODO: add a stopping condition here! ======
+   ! stop when core helium is exhausted
    ! we want the second part of the run to stop when
    ! the mass fraction of he4 drops below 1d-4
-   !xa_central_lower_limit_species(1) = 'he4'
-   !xa_central_lower_limit(1) = 1d-4
+   xa_central_lower_limit_species(1) = 'he4'
+   xa_central_lower_limit(1) = 1d-4
 
    ! GYRE output controls
    !write_pulse_data_with_profile = .true.

@@ -20,7 +20,7 @@
 !!! Solutions for the bonus task of Lab 2 for Friday's lab at the 2026 MESA Summer school
 !!! This file runs RSP-LNA using the parameters specified in the inlist. 
 !!! It then saves the following in an output specified by x_character_ctrl(10): 
-!!! model number, M, L, Teff, Wesenheit index, RSP F Period, RSP F Growth Rate, GYRE F Period, GYRE F Growth Rate
+!!! model number, M, L, Teff, RSP Wesenheit index, RSP F Period, RSP F Growth Rate
 !!! This run_star_extras is designed to be called within a bash script that loops over a number of models 
 !!! and so it appends to the file. 
 
@@ -31,7 +31,6 @@ module run_star_extras
       use const_def
       use math_lib
       use auto_diff
-      use gyre_mesa_m ! Load in the GYRE library 
 
       implicit none
 
@@ -74,22 +73,6 @@ module run_star_extras
             need_to_write_LNA_data = .false.
          end if
 
-         ! Initialize GYRE
-
-         call init('gyre.in')
-
-         ! Set constants
-
-         call set_constant('G_GRAVITY', standard_cgrav)
-         call set_constant('C_LIGHT', clight)
-         call set_constant('A_RADIATION', crad)
-
-         call set_constant('M_SUN', Msun)
-         call set_constant('R_SUN', Rsun)
-         call set_constant('L_SUN', Lsun)
-
-         call set_constant('GYRE_DIR', TRIM(mesa_dir)//'/build/gyre/src')
-
       end subroutine extras_startup
 
 
@@ -97,11 +80,8 @@ module run_star_extras
          use colors_def, only: Colors_General_Info, get_colors_ptr
          use colors_lib, only: how_many_colors_history_columns, data_for_colors_history_columns
          integer, intent(in) :: id
-         integer :: ierr, io, i, ipar(3), output_model_number
+         integer :: ierr, io, i, output_model_number
          type (star_info), pointer :: s
-         real(dp) :: GYRE_F_period, GYRE_F_growth, rpar(1)
-         real(dp), allocatable     :: global_data(:)
-         real(dp), allocatable     :: point_data(:,:)
          real(dp) :: m_div_h, min_m_div_h, max_m_div_h, V_mag, I_mag, R_VI, W_VI
          type(colors_general_info), pointer :: colors_settings => null()
          integer :: num_colors_cols
@@ -144,7 +124,7 @@ module run_star_extras
                m_div_h = min_m_div_h
             end if
 
-            call data_for_colors_history_columns(s%T(1), log10(s%grav(1)), s%R(1), m_div_h, &
+            call data_for_colors_history_columns(s% photosphere_T, s% photosphere_logg, s% photosphere_r*Rsun, m_div_h, &
                s% model_number, s% colors_handle, num_colors_cols, colors_col_names, colors_col_vals, ierr)
 
             do i = 1, num_colors_cols
@@ -160,94 +140,17 @@ module run_star_extras
          end if 
 
          if (need_to_write_LNA_data) then
-            ! Get GYRE Information 
-            call star_get_pulse_data(s%id, 'GYRE', .FALSE., .FALSE., .FALSE., global_data, point_data, ierr)
-            if (ierr /= 0) then
-               print *,'Failed when calling star_get_pulse_data'
-               return
-            end if
-          
-            ! This subroutine constructs the data structure that GYRE uses to calculate modes
-            call set_model(global_data, point_data, s%gyre_data_schema)
-
-            ipar(1) = s% id
-            ipar(2) = 1
-            ipar(3) = 0 ! num_written
-
-            call get_modes(0, process_mode_cepheid, ipar, rpar)
-            
-            GYRE_F_period = s% xtra1_array(1)
-            GYRE_F_growth = s% xtra2_array(1)
             output_model_number = s% x_integer_ctrl(10)
             if (output_model_number <= 0) output_model_number = s% model_number
 
             io = 61
             open(io,file=trim(s% x_character_ctrl(10)),status='unknown', position='append')
-            write(io, '(i10,1x,8e16.4)') output_model_number, s% RSP_mass, s% RSP_L, s% RSP_Teff, W_VI, &
-               s% rsp_LINA_periods(1)/86400.d0, s% rsp_LINA_growth_rates(1), GYRE_F_period, GYRE_F_growth
+            write(io, '(i12,6(1x,e20.10))') output_model_number, s% RSP_mass, s% RSP_L, s% RSP_Teff, W_VI, &
+               s% rsp_LINA_periods(1)/86400.d0, s% rsp_LINA_growth_rates(1)
             close(io)
             write(*,*) 'write ' // trim(s% x_character_ctrl(10))
             need_to_write_LNA_data = .false.
          end if
-
-      contains 
-
-            subroutine process_mode_cepheid (md, ipar, rpar, retcode)
-            type(mode_t), intent(in) :: md
-            integer, intent(inout)   :: ipar(:)
-            real(dp), intent(inout)  :: rpar(:)
-            integer, intent(out)     :: retcode
-
-            character(LEN=strlen) :: filename
-            integer               :: ierr, unit, k, model_number, num_written, max_to_write !, order_target
-            complex(dp)           :: cfreq
-            real(dp)              :: freq, growth, period
-            type(grid_t)          :: gr
-            type (star_info), pointer :: s
-
-
-            ierr = 0
-            call star_ptr(ipar(1), s, ierr)
-            if (ierr /= 0) return
-
-            ! Since we only want to save three modes with the lowest frequencies,
-            ! exit if we have already found three frequencies.
-            ! GYRE returns modes from lowest to highest frequency. 
-            max_to_write = ipar(2) 
-            num_written = ipar(3)
-            if (num_written >= max_to_write) return
-            num_written = num_written + 1
-            ipar(3) = num_written
-
-            model_number = s% model_number
-            cfreq = md% freq('HZ')
-            growth = AIMAG(cfreq) ! in seconds
-            freq = REAL(cfreq) ! in seconds
-            period = 1d0/freq ! in seconds
-            if (growth > 0d0) then ! unstable
-               write(*, 100) model_number, md%n_pg, &
-                  freq, period, period/(24*3600), 1d0/(2*pi*24*3600*AIMAG(cfreq)), &
-                  (2d0*pi*growth)/freq, freq/(2d0*pi*growth)
-100                  format(2I8,E20.4,5F20.4)
-            else ! stable
-               write(*, 110) model_number, md%n_pg, &
-                  freq, period, period/(24*3600), 'stable'
-110               format(2I8,E20.4,2F20.4,A20)
-            end if              
-
-            ! xtra_arrays are used to store data
-            s% ixtra1_array(num_written) = md%n_pg
-            s% xtra1_array(num_written) = period/(24*3600) ! Save period in days 
-            if (growth > 0d0) then
-               s% xtra2_array(num_written) =  (2d0*pi*growth)/freq ! Save fractional growth rate 
-               ! s% xtra2_array(num_written) =  growth ! Save non-fractional growth rate to match with RSP
-            else
-               s% xtra2_array(num_written) = -1d0 ! If stable, then save growth rate as -1 
-            end if
-
-            retcode = 0
-
-         end subroutine process_mode_cepheid
 
       end function extras_start_step
 

@@ -19,6 +19,18 @@ fi
 out_file="${2:-RSP_full_grid.dat}"
 final_out_file="$out_file"
 
+# Read X/Z from the Lab 1 GYRE table when available.
+gyre_table="${3:-}"
+if [[ -z "$gyre_table" && -f "$mod_dir/gyre_in_mesa.data" ]]; then
+	gyre_table="$mod_dir/gyre_in_mesa.data"
+fi
+
+# Require the requested Lab 1 GYRE table.
+if [[ -n "$gyre_table" && ! -f "$gyre_table" ]]; then
+	echo "Missing Lab 1 GYRE table: $gyre_table"
+	exit 1
+fi
+
 # Give shmesa a local filename.
 mesa_out_file="$(basename "$out_file")"
 failed_models_file="${mesa_out_file}.failed_models"
@@ -49,8 +61,47 @@ fi
 # Remove output file from previous runs
 rm -f "$mesa_out_file" "$final_out_file" "$failed_models_file" "${final_out_file}.failed_models"
 
-# Write a header in our output file 
-echo 'model_number	star_mass	luminosity	effective_temperature	W_VI	RSP_F_period	RSP_F_growth	GYRE_F_period	GYRE_F_growth' > "$mesa_out_file"
+# Write a fixed-width header in our output file.
+printf '%12s %20s %20s %20s %20s %20s %20s\n' \
+	'model_number' 'star_mass' 'luminosity' 'Teff' 'RSP_W_VI' 'RSP_F_period' 'RSP_F_growth' > "$mesa_out_file"
+
+lookup_rsp_xz() {
+	local model="$1"
+	local table="$2"
+
+	awk -v target="$model" '
+		function scan_header(   i) {
+			model_col = x_col = z_col = 0
+			for (i = 1; i <= NF; i++) {
+				if ($i == "model_number") model_col = i
+				if ($i == "X") x_col = i
+				if ($i == "Z") z_col = i
+			}
+			return model_col && x_col && z_col
+		}
+		{
+			if ($1 == "#") {
+				$1 = ""
+				sub(/^[[:space:]]+/, "")
+			}
+			if (!have_header) {
+				if (scan_header()) have_header = 1
+				next
+			}
+			if (int($model_col + 0.5) == target) {
+				x = $x_col + 0
+				z = $z_col + 0
+				if (x <= 0 || z <= 0) exit 2
+				printf "%.12g %.12g\n", x, z
+				found = 1
+				exit
+			}
+		}
+		END {
+			if (!have_header || !found) exit 1
+		}
+	' "$table"
+}
 
 # Loop over each mod_file 
 for file in "${mod_files[@]}"
@@ -68,17 +119,36 @@ do
 
 	echo "$mass $teff"
 
-	# Update RSP controls.
-	if ! shmesa change inlist_rsp_Cepheid \
-		RSP_mass $mass \
-		RSP_Teff $teff \
-		RSP_L $lum \
-		'x_character_ctrl(10)' "'$mesa_out_file'" \
-		'x_integer_ctrl(10)' $mod_num
+	rsp_controls=(RSP_mass "$mass" RSP_Teff "$teff" RSP_L "$lum")
+	if [[ -n "$gyre_table" ]]; then
+		# Get Lab 1 X/Z.
+		if ! read -r rsp_x rsp_z < <(lookup_rsp_xz "$mod_num" "$gyre_table"); then
+			echo "Failed to find X/Z for model $mod_num in $gyre_table"
+			exit 1
+		fi
+		echo "X=$rsp_x Z=$rsp_z"
+		rsp_controls+=(RSP_X "$rsp_x" RSP_Z "$rsp_z")
+	fi
+
+	# Update scalar RSP controls.
+	if ! shmesa change inlist_rsp_Cepheid "${rsp_controls[@]}"
 	then
 		echo "Failed to update inlist_rsp_Cepheid for $mod_id"
 		exit 1
 	fi
+
+	# Set array controls directly.
+	tmp_inlist="${TMPDIR:-/tmp}/batch_LNA_inlist.$$"
+	awk -v out_file="$mesa_out_file" -v model_num="$mod_num" '
+		/^[[:space:]]*x_character_ctrl\(10\)[[:space:]]*=/ {
+			sub(/=.*/, "= '\''" out_file "'\''")
+		}
+		/^[[:space:]]*x_integer_ctrl\(10\)[[:space:]]*=/ {
+			sub(/=.*/, "= " model_num " ! Lab 1 model number")
+		}
+		{ print }
+	' inlist_rsp_Cepheid > "$tmp_inlist"
+	mv "$tmp_inlist" inlist_rsp_Cepheid
 
 	# Do the MESA run for this star 
 	# Count rows before MESA.
