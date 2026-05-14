@@ -28,10 +28,9 @@
 ! x_integer_ctrl(1) - output GYRE info at this step interval 
 ! x_integer_ctrl(2) - max number of modes to output per call 
 ! x_integer_ctrl(3) - mode l, should match gyre.in mode l 
-! x_integer_ctrl(5) - save .mod files at this step interval
+! x_integer_ctrl(4) - save .mod files at this step interval
 
-! x_ctrl(1) - existing frequency control
-! x_ctrl(3) - set Teff limit of when to start saving models
+! x_ctrl(1) - set Teff limit of when to start saving models
 
 module run_star_extras
 
@@ -324,7 +323,7 @@ contains
          gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist 
          max_mode_num = s% x_integer_ctrl(2) ! Sets how many modes should be saved 
          mode_l = s% x_integer_ctrl(3)       ! Sets l value of modes 
-         save_mod_interval = s% x_integer_ctrl(5) ! Sets how often to save .mod files
+         save_mod_interval = s% x_integer_ctrl(4) ! Sets how often to save .mod files
 
          save_mod_Teff_limit = s% x_ctrl(3) ! Sets minimum Teff necessary to save a model
          logTeff = safe_log10(s% Teff)
