@@ -54,9 +54,9 @@ Great, now MESA knows what mass we should _start_ to simulate. However, a MESA r
 
 **Task 2.2**: Implement a custom stopping condition in ```run_star_extras.f90```.
 
-In this first part of the run, we want to stop the simulation at the base of the Red Giant Branch (RGB). In this case, the most efficient way to do it is to consider a _stopping condition_ based on the **effective temperature** of the star because the RGB is a mostly vertical structure on the Hertzsprung-Russell diagram (HRD).
-<!-- Should we add a figure here?
-Yes, I think we should! -->
+In this first part of the run, we want to stop the simulation at the base of the Red Giant Branch (RGB). In this case, the most efficient way to do it is to consider a _stopping condition_ based on the **effective temperature** of the star because the RGB is a mostly vertical structure on the Hertzsprung-Russell diagram (HRD), as may be seen on the figure below where the RGB is highlighted in red.
+
+![mesa output](HRD_MS_RGB.png)
 
 However, in MESA there is **no pre-defined stopping condition that could do it**, so you need to implement it yourself. The best way to do it is create a condition in ```run_star_extras.f90```!
 
