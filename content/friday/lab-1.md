@@ -21,7 +21,7 @@ During this second part of the run, you will also save some models (called `.mod
 
 **Task 1.1**: Download and unzip the initial working directory.
 
-We have already prepared an input directory to get you started with this lab: you can find it [here](https://drive.google.com/file/d/1G-ynHYBxQH1-8FkAGBXRugMXMjq63mMi/view?usp=drive_link).
+We have already prepared an input directory to get you started with this lab: you can find it [here](https://drive.google.com/file/d/1UxLMBFTgl3q63SNrQwWSEsRIFm6O1v87/view?usp=drive_link).
 
 Download the work directory, move it to your location of choice and unpack it.
 
