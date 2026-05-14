@@ -43,7 +43,7 @@ module run_star_extras
 
    implicit none
 
-   real(dp) :: F_period, F_growth, O1_period, O1_growth, O2_period, O2_growth ! GYRE variables to write to history
+   real(dp) :: F_period, F_growth, O1_period, O1_growth, O2_period, O2_growth ! Variables to write to history file 
 
 contains
 
@@ -141,6 +141,13 @@ contains
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
          extras_check_model = keep_going
+         if (.false. .and. s% star_mass_h1 < 0.35d0) then
+            ! stop when star hydrogen mass drops to specified level
+            extras_check_model = terminate
+            write(*, *) 'have reached desired hydrogen mass'
+            return
+         end if
+
 
          ! if you want to check multiple conditions, it can be useful
          ! to set a different termination code depending on which
@@ -330,11 +337,11 @@ contains
          logTeff = safe_log10(s% Teff)
 
          ! ====== TODO: add stopping condition for effective temperature! ======
-!         if (logTeff .le. 3.7d0) then
-!            extras_finish_step = terminate
-!            write(*, *) '===== you have reached the end of the RGB! ===='
-!            s% termination_code = t_extras_finish_step
-!         end if
+         !if(logTeff .le. 3.7d0) then
+         !   extras_finish_step = terminate
+         !   write(*, *) '===== you have reached the end of the RGB! ===='
+         !   s% termination_code = t_extras_finish_step
+         !end if
 
          ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0. 
          F_period = 0d0 
@@ -360,7 +367,7 @@ contains
 
          if (call_gyre) then
 
-            ! This call gets the structure variables necessary to calculate the pulsations and stores them in global_data and point_data 
+            ! Add comment about where to find this routine 
             call star_get_pulse_data(s%id, 'GYRE', .FALSE., .FALSE., .FALSE., global_data, point_data, ierr)
             if (ierr /= 0) then
                print *,'Failed when calling star_get_pulse_data'
@@ -387,7 +394,10 @@ contains
             call get_modes(mode_l, process_mode_cepheid, ipar, rpar)
 
             s% ixtra3_array(1) = ipar(3) 
-            
+
+            ! L NOTE: Throw some warnings here if GYRE doesn't find 3 modes (seems unlikely) 
+            ! or finds modes with bad n values (probably related to difficulty of non-adiabatic mode id)? 
+
             ! Store mode information in variables that are called by data_for_extra_history_columns
             ! process_mode_cepheid saves periods in xtra1_array, and growth rates in xtra2_array
             F_period = s% xtra1_array(1)
@@ -531,7 +541,11 @@ contains
                ! xtra_arrays are used to store data
                s% ixtra1_array(num_written) = md%n_pg
                s% xtra1_array(num_written) = period/(24*3600) ! Save period in days 
-               s% xtra2_array(num_written) =  (2d0*pi*growth)/freq ! Save fractional growth rate 
+               if (growth > 0d0) then
+                  s% xtra2_array(num_written) =  (2d0*pi*growth)/freq ! Save fractional growth rate 
+               else
+                  s% xtra2_array(num_written) = -1d0 ! If stable, then save growth rate as -1 
+               end if
 
                retcode = 0
 
