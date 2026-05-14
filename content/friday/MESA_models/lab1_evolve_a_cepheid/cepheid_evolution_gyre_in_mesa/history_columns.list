@@ -47,7 +47,7 @@
       !star_age_sec ! elapsed simulated time in seconds since the start of the run
       !star_age_min ! elapsed simulated time in minutes since the start of the run
       !star_age_hr ! elapsed simulated time in hours since the start of the run
-      star_age_day ! elapsed simulated time in days since the start of the run
+      !star_age_day ! elapsed simulated time in days since the start of the run
       !day ! elapsed simulated time in days since the start of the run
 
       !log_star_age
@@ -75,7 +75,7 @@
 
    !## mass change
 
-      star_mdot ! d(star_mass)/dt (in msolar per year)
+      !star_mdot ! d(star_mass)/dt (in msolar per year)
       !log_abs_mdot ! log10(abs(star_mdot)) (in msolar per year)
 
    !## imposed surface conditions
@@ -109,7 +109,7 @@
 
    !## mixing regions
 
-      mass_conv_core ! (Msun) mass coord of top of convective core.  0 if core is not convective
+      !mass_conv_core ! (Msun) mass coord of top of convective core.  0 if core is not convective
 
       !  mx1 refers to the largest (by mass) convective region.
       !  mx2 is the 2nd largest.
@@ -118,14 +118,14 @@
       !  mx1_top and mx1_bot are the extent of all kinds of mixing, convective and other.
 
       ! values are m/Mstar
-      conv_mx1_top
-      conv_mx1_bot
-      conv_mx2_top
-      conv_mx2_bot
-      mx1_top
-      mx1_bot
-      mx2_top
-      mx2_bot
+      !conv_mx1_top
+      !conv_mx1_bot
+      !conv_mx2_top
+      !conv_mx2_bot
+      !mx1_top
+      !mx1_bot
+      !mx2_top
+      !mx2_bot
 
       ! radius -- values are radii in Rsun units
       !conv_mx1_top_r
@@ -239,7 +239,7 @@
       !log_power_nuc_burn ! total thermal power from all burning, excluding photodisintegrations
       log_LH ! log10 power_h_burn
       log_LHe ! log10 power_he_burn
-      log_LZ ! log10 total burning power including LC, but excluding LH and LHe and photodisintegrations
+      !log_LZ ! log10 total burning power including LC, but excluding LH and LHe and photodisintegrations
       log_Lnuc ! log(LH + LHe + LZ)
       !log_Lnuc_ergs_s
       !log_Lnuc_sub_log_L
@@ -249,7 +249,7 @@
       !log_extra_L ! log10 extra_L
 
    !## neutrino losses
-      log_Lneu ! log10 power emitted in neutrinos, nuclear and thermal (in Lsun units)
+      !log_Lneu ! log10 power emitted in neutrinos, nuclear and thermal (in Lsun units)
       !log_Lneu_nuc ! log10 power emitted in neutrinos, nuclear sources only (in Lsun units)
       !log_Lneu_nonnuc ! log10 power emitted in neutrinos, thermal sources only (in Lsun units)
 
@@ -328,15 +328,15 @@
       ! end1 is mass of outer edge where first zone ends (i.e. eps_nuc < burn_min1)
       ! similar for the second zone
 
-      epsnuc_M_1 ! start1 for 1st zone
-      epsnuc_M_2 ! start2
-      epsnuc_M_3 ! end2
-      epsnuc_M_4 ! end1
+      !epsnuc_M_1 ! start1 for 1st zone
+      !epsnuc_M_2 ! start2
+      !epsnuc_M_3 ! end2
+      !epsnuc_M_4 ! end1
 
-      epsnuc_M_5 ! start1 for 2nd zone
-      epsnuc_M_6 ! start2
-      epsnuc_M_7 ! end2
-      epsnuc_M_8 ! end1
+      !epsnuc_M_5 ! start1 for 2nd zone
+      !epsnuc_M_6 ! start2
+      !epsnuc_M_7 ! end2
+      !epsnuc_M_8 ! end1
 
 
       ! you might want to get a more complete list of burning regions by using the following
@@ -367,8 +367,8 @@
 !# information about core and envelope
 
    !## helium core
-      he_core_mass
-      he_core_radius
+      !he_core_mass
+      !he_core_radius
       !he_core_lgT
       !he_core_lgRho
       !he_core_L
@@ -378,9 +378,9 @@
       !he_core_k
 
    !## CO core
-      co_core_mass
+      !co_core_mass
       !CO_core
-      co_core_radius
+      !co_core_radius
       !co_core_lgT
       !co_core_lgRho
       !co_core_L
@@ -390,7 +390,7 @@
       !co_core_k
 
    !## ONe core
-      one_core_mass
+      !one_core_mass
       !one_core_radius
       !one_core_lgT
       !one_core_lgRho
@@ -401,7 +401,7 @@
       !one_core_k
 
    !## iron core
-      fe_core_mass
+      !fe_core_mass
       !fe_core_radius
       !fe_core_lgT
       !fe_core_lgRho
@@ -412,7 +412,7 @@
       !fe_core_k
 
    !## neutron rich core
-      neutron_rich_core_mass
+      !neutron_rich_core_mass
       !neutron_rich_core_radius
       !neutron_rich_core_lgT
       !neutron_rich_core_lgRho
@@ -464,7 +464,7 @@
 
    !## conditions at the photosphere
       !effective_T
-      !Teff
+      Teff
       log_Teff ! log10 effective temperature
          ! Teff is calculated using Stefan-Boltzmann relation L = 4 pi R^2 sigma Teff^4,
          ! where L and R are evaluated at the photosphere (tau_factor < 1)
@@ -501,12 +501,12 @@
       !luminosity_ergs_s ! luminosity in cgs units
       log_L ! log10 luminosity in Lsun units
       !log_L_ergs_s ! log10 luminosity in cgs units
-      radius ! Rsun
+      !radius ! Rsun
       log_R ! log10 radius in Rsun units
       !radius_cm
       !log_R_cm
 
-      log_g ! log10 gravity
+      !log_g ! log10 gravity
       !gravity
       !log_Ledd
       !log_L_div_Ledd ! log10(L/Leddington)
@@ -576,9 +576,9 @@
 
 !# conditions near center
 
-      log_center_T ! temperature
-      log_center_Rho ! density
-      log_center_P ! pressure
+      !log_center_T ! temperature
+      !log_center_Rho ! density
+      !log_center_P ! pressure
 
       ! shorter names for above
       !log_cntr_P
@@ -591,9 +591,9 @@
 
       !center_degeneracy ! the electron chemical potential in units of k*T
       !center_gamma ! plasma interaction parameter
-      center_mu
-      center_ye
-      center_abar
+      !center_mu
+      !center_ye
+      !center_abar
       !center_zbar
 
       !center_eps_grav
@@ -636,8 +636,8 @@
       ! individual central mass fractions (as many as desired)
       center h1
       center he4
-      center c12
-      center o16
+      !center c12
+      !center o16
 
       ! individual log10 central mass fractions (as many as desired)
       !log_center h1
@@ -648,7 +648,7 @@
    !## mass fractions near surface
 
       ! the following controls automatically add columns for all of the isos that are in the current net
-      add_surface_abundances
+      !add_surface_abundances
       !add_log_surface_abundances
 
       ! individual surface mass fractions (as many as desired)
@@ -832,11 +832,11 @@
          ! = total_energy - (total_energy_start + total_energy_sources_and_sinks)
       !cumulative_energy_error ! = sum over all steps of abs(error_in_energy_conservation)
       !rel_cumulative_energy_error ! = cumulative_energy_error/total_energy
-      log_rel_cumulative_energy_error ! = log10 of rel_cumulative_energy_error
-      log_rel_run_E_err ! shorter name for rel_cumulative_energy_error
+      !log_rel_cumulative_energy_error ! = log10 of rel_cumulative_energy_error
+      !log_rel_run_E_err ! shorter name for rel_cumulative_energy_error
 
       !rel_error_in_energy_conservation ! = error_in_energy_conservation/total_energy
-      log_rel_error_in_energy_conservation
+      !log_rel_error_in_energy_conservation
 
       !virial_thm_P_avg
       !virial_thm_rel_err
