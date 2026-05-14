@@ -245,11 +245,13 @@ contains
    subroutine my_before_struct_burn_mix(id, dt, res)
       use const_def, only: dp
       use star_def
+      use utils_lib, only: is_bad
       integer, intent(in) :: id
       real(dp), intent(in) :: dt
       integer, intent(out) :: res ! keep_going, redo, retry, terminate
-      real(dp) :: power_photo, v_esc
+      real(dp) :: power_photo, v_esc, dt_limit
       integer :: ierr, k
+      logical :: have_dt_limit
       type(star_info), pointer :: s
       include 'formats'
       ierr = 0
@@ -258,15 +260,31 @@ contains
 
       if (in_inlist_pulses) then
          if (s%model_number > timestep_drop_model_number) then
-            s%max_timestep = max_dt_during_pulse
+            if (max_dt_during_pulse > 0d0) s%max_timestep = max_dt_during_pulse
          else
-            s%max_timestep = max_dt_before_pulse
+            if (max_dt_before_pulse > 0d0) s%max_timestep = max_dt_before_pulse
          end if
 
-         ! time step control on pulsations
-         if (period > 0d0 .and. period/s%max_timestep < 600 .and. &
-             s%model_number > timestep_drop_model_number) then
-            s%max_timestep = period/600d0
+         have_dt_limit = .false.
+         dt_limit = 0d0
+         if (s%model_number > timestep_drop_model_number) then
+            if (num_periods < 1) then
+               if (.not. is_bad(s%dynamic_timescale) .and. s%dynamic_timescale > 0d0) then
+                  dt_limit = s%dynamic_timescale/600d0
+                  have_dt_limit = .true.
+               end if
+            else if (period > 0d0) then
+               dt_limit = period/600d0
+               have_dt_limit = .true.
+            end if
+         end if
+
+         if (have_dt_limit) then
+            if (s%max_timestep <= 0d0) then
+               s%max_timestep = dt_limit
+            else
+               s%max_timestep = min(s%max_timestep, dt_limit)
+            end if
          end if
 
          if (s%model_number > turn_off_remesh_model_number .and. turn_off_remesh) then
