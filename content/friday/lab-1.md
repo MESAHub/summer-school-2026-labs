@@ -62,7 +62,7 @@ However, in MESA there is **no pre-defined stopping condition that could do it**
 
 <!-- I recommend letting students think about where to implement this themselves before pointing them to extras_check_model. That might look a little something like this: -->
 
-**Question:** Check the (MESA documentation of ```run_star_extras.f90```)[https://docs.mesastar.org/en/latest/using_mesa/extending_mesa.html]. Where in the control flow does this stopping condition belong?
+**Question:** Check the (MESA documentation)[https://docs.mesastar.org/en/latest/using_mesa/extending_mesa.html] of ```run_star_extras.f90```. Where in the control flow does this stopping condition belong?
 
 {{< details title="Answer" closed="true" >}}
 
@@ -149,7 +149,7 @@ Here's how to implement the stopping condition based on the effective temperatur
 ! == TODO: add stopping condition for effective temperature! ==
          logTeff = safe_log10(s% Teff)
          if(logTeff .le. 3.7d0) then
-            extras_finish_step = terminate
+            extras_check_model = terminate
             write(*, *) '===== you have reached the end of the RGB! ===='
             s% termination_code = t_extras_finish_step
          end if
@@ -232,7 +232,8 @@ In this case, we want to stop the simulation when the core He burning ends, whic
 
 {{< details title="Answer 3.2" closed="true" >}}
 
-Here's how to implement the stopping condition based on the amount of leftover He in the core:
+Here's how to implement the stopping condition based on the amount of leftover He in the core.
+Add the following in the `&controls` section of *inliist_to_he_dep*:
 
 ```fortran
    ! == TODO: add a stopping condition here! ==
