@@ -19,11 +19,11 @@
 
 &controls
 ! Set parameters to build RSP envelope 
-    x_character_ctrl(10) = 'RSP_full_grid.dat'
+    x_character_ctrl(10) = 'RSP.dat'
     ! Change these parameters 
-    RSP_mass = 7.84
-    RSP_Teff = 4150.50
-    RSP_L = 17020.96
+    RSP_mass = 4.4158
+    RSP_Teff = 5153
+    RSP_L = 2572
 
     ! Fixed to match initial values from lab 1 
     RSP_X = 0.7440d0

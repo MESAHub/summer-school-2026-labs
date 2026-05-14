@@ -14,7 +14,7 @@ mod_files=`ls $mod_dir/*.mod`
 rm $out_file
 
 # Write a header in our output file 
-echo 'star_mass	luminosity	effective_temperature	 W_VI	RSP_F_period	RSP_F_growth	GYRE_F_Period	GRYE_F_Growth' > $out_file
+echo 'star_mass	luminosity	effective_temperature	 W_VI	RSP_FP	RSP_FGR	RSP_O1P	RSP_O1G	RSP_O2P	RSP_O2G' > $out_file
 
 # Loop over each mod_file 
 for file in $mod_files 
