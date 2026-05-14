@@ -137,27 +137,10 @@ contains
          integer, intent(in) :: id
          integer :: ierr
          type (star_info), pointer :: s
-         real(dp) :: logTeff, stopping_logTeff, stopping_tol
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
          extras_check_model = keep_going
-
-
-         ! ====== TODO: add stopping condition for effective temperature! ======
-!         logTeff = safe_log10(s% Teff)
-!         stopping_logTeff = 3.7d0 
-!         stopping_tol = 0.0001
-!         if(logTeff .gt. stopping_logTeff) then
-!           extras_check_model = keep_going 
-!         ! Avoid overshooting our desired stopping condition using retries 
-!         else if (abs(logTeff - stopping_logTeff) .lt. stopping_tol) then 
-!           extras_check_model = terminate
-!           write(*, *) '===== you have reached the end of the RGB! ===='
-!           s% termination_code = t_extras_check_model
-!         else 
-!           extras_check_model = retry
-!         end if
 
          ! if you want to check multiple conditions, it can be useful
          ! to set a different termination code depending on which
@@ -346,6 +329,13 @@ contains
          save_mod_Teff_limit = s% x_ctrl(3) ! Sets minimum Teff necessary to save a model
          logTeff = safe_log10(s% Teff)
 
+         ! ====== TODO: add stopping condition for effective temperature! ======
+!         if (logTeff .le. 3.7d0) then
+!            extras_finish_step = terminate
+!            write(*, *) '===== you have reached the end of the RGB! ===='
+!            s% termination_code = t_extras_finish_step
+!         end if
+
          ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0. 
          F_period = 0d0 
          F_growth = 0d0 
@@ -444,6 +434,7 @@ contains
                integer, intent(out) :: ierr
                integer :: io
                logical :: have_file
+               real(dp) :: photosphere_x, photosphere_z
 
                ierr = 0
                inquire(file='gyre_in_mesa.data', exist=have_file)
@@ -451,11 +442,17 @@ contains
                   position='append', action='write', iostat=ierr)
                if (ierr /= 0) return
 
+               photosphere_x = s% X(s% photosphere_cell_k)
+               photosphere_z = s% Z(s% photosphere_cell_k)
+
                if (.not. have_file) then
-                  write(io, '(a)') '# model_number Teff L F_period F_logKE_per_cycle O1_period O1_logKE_per_cycle O2_period O2_logKE_per_cycle'
+                  write(io, '(a1,1x,a12,11(1x,a20))') '#', 'model_number', 'star_mass', 'X', 'Z', &
+                     'Teff', 'L', 'F_period', 'F_logKE_per_cycle', 'O1_period', &
+                     'O1_logKE_per_cycle', 'O2_period', 'O2_logKE_per_cycle'
                end if
 
-               write(io, '(i10,1x,8e20.10)') s% model_number, s% Teff, s% L(1)/Lsun, &
+               write(io, '(i14,11(1x,e20.10))') s% model_number, s% star_mass, &
+                  photosphere_x, photosphere_z, s% Teff, s% L(1)/Lsun, &
                   unstable_period(F_period, F_growth), logKE_per_cycle(F_growth), &
                   unstable_period(O1_period, O1_growth), logKE_per_cycle(O1_growth), &
                   unstable_period(O2_period, O2_growth), logKE_per_cycle(O2_growth)
