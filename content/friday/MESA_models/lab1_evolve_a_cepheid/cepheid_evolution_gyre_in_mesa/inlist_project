@@ -53,52 +53,34 @@
    ! ====== TODO: add a stopping condition here! ======
    ! we want the second part of the run to stop when
    ! the mass fraction of he4 drops below 1d-4
-   !xa_central_lower_limit_species(1) = 'he4'
-   !xa_central_lower_limit(1) = 1d-4
+   xa_central_lower_limit_species(1) = 'he4'
+   xa_central_lower_limit(1) = 1d-4
 
-   ! GYRE output controls
-   !write_pulse_data_with_profile = .true.
-   pulse_data_format = 'GYRE'
-   
-   x_logical_ctrl(37) = .true.   ! if true, then run GYRE
-
-   x_integer_ctrl(1) = 1         ! output GYRE info at this step interval
-   x_logical_ctrl(1) = .false.   ! save GYRE info whenever save profile
+   ! GYRE output controls   
+   x_integer_ctrl(1) = 10        ! output GYRE info at this step interval
 
    x_integer_ctrl(2) = 3         ! max number of modes to output per call
-   x_logical_ctrl(2) = .false.   ! output eigenfunction files
 
    x_integer_ctrl(3) = 0         ! mode l (e.g. 0 for p modes, 1 for g modes)
                                     ! should match gyre.in mode l
-   x_integer_ctrl(4) = 1         ! order
-   x_integer_ctrl(5) = 1         ! save .mod files at this step interval
-   x_ctrl(1) = 0.158d-05         ! freq ~ this (Hz)
-   x_ctrl(2) = 0.33d+03          ! growth < this (days)
-   x_ctrl(3) = 0d0               ! save .mod files when Teff is greater than this
+   x_integer_ctrl(4) = 1         ! save .mod files at this step interval
+
+   x_ctrl(1) = 0d0               ! save .mod files when Teff is greater than this
 
 
-! see run_star_extras for stopping condition
-   when_to_stop_rtol = 1d-3
-   when_to_stop_atol = 1d-3
-   !max_model_number = 1970
-
-! convection controls
+! convection controls ! Lynn: all these need explanatory comments here or in the instructions 
     steps_before_use_TDC = 0
-    MLT_option = 'TDC'
+    MLT_option = 'TDC' 
     include_mlt_corr_to_TDC = .false.
-    mixing_length_alpha = 1.77d0
-    use_Ledoux_criterion = .false.
+    mixing_length_alpha = 1.77d0     
     recalc_mix_info_after_evolve = .true.
 
-    predictive_mix(1) = .true.
+    predictive_mix(1) = .true. 
     predictive_zone_type(1) = 'any'
     predictive_zone_loc(1) = 'core'
     predictive_bdy_loc(1) = 'any'
     predictive_superad_thresh(1) = 0.005d0
     predictive_avoid_reversal(1) = 'he4'
-
-    alpha_semiconvection = 0d0
-    thermohaline_coeff = 0d0
 
 ! wind model section: ! for M < 10
    cool_wind_full_on_T    = 9.99d9
@@ -142,18 +124,9 @@
 
    profile_interval = 20         
 
-   history_interval = 1             
+   history_interval = 10            
    terminal_interval = 10
    max_num_profile_models = 1000000 ! 100 ! RECOMMENDED 10000
-
-
-   num_trace_history_values = 2
-   trace_history_value_name(1) = 'log_rel_run_E_err'
-   trace_history_value_name(2) = 'rel_E_err'
-   warn_when_large_rel_run_E_err = 1d-2
-
- ! debugging
-   report_solver_progress = .false.
 
 / ! end of controls namelist
 
@@ -162,6 +135,7 @@
  read_extra_pgstar_inlist(1) = .true.
  extra_pgstar_inlist_name(1)= 'inlist_pgstar'
 
+ ! Lynn: Is there a good reason this is here and not all in the inlist_pgstar file? 
  Grid1_file_dir = 'png_evolution'
  History_Track1_file_flag = .false.
  History_Track2_file_flag = .false.
