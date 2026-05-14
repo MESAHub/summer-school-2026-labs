@@ -147,11 +147,11 @@ This is then followed by the usual MESA terminal output header, and one model's 
 
 ### Wesenheit Index - Period Relationship
 
-As more people fill in the spreadsheet, you may notice that the period luminosity relationship has a fair bit of scatter. This is because **Add more details here about where the theoretical color dependence comes from**. To reduced this scatter, instead of using luminosity we can use the Wesenheit index which is a parameter that corrects for reddening effects:
+As more people fill in the spreadsheet, you may notice that the period luminosity relationship has a fair bit of scatter. This is because the underlying relationship is actually between period, luminosity and *color*. We can collapse the color dependence by using the Wesenheit index:
 
 $ W_{VI} = I - R(V-I), $
 
-Where $V$ and $I$ are the absolute magnitudes in the V and I bands, respectively, and $R$ is a constant that parameterizes the color dependence. We'll use the value $R=1.55$ from Madore 1982, see also Smolec et al 2026. As we learned on day 1, MESA can now output these magnitudes using the `colors` module. Since these bands are included in the default list we can simply set
+Where $V$ and $I$ are the absolute magnitudes in the V and I bands, respectively, and $R$ is a constant that parameterizes the color dependence. For a more detailed discussion of this approach take a look at the appendices of [Madore and Freedman 1991](https://ui.adsabs.harvard.edu/abs/1991PASP..103..933M/abstract) or [Madore 1982](https://ui.adsabs.harvard.edu/abs/1982ApJ...253..575M/abstract). We'll use the value $R=1.55$ as was used by [Smolec et al 2026](https://arxiv.org/abs/2603.26111). As we learned on day 1, MESA can now output these magnitudes using the `colors` module. Since these bands are included in the default list we can simply set
 
 ```none
 &colors
@@ -176,7 +176,7 @@ To fill in our diagrams a little bit more, repeat this process (changing the inl
 
 ### Bonus task: Batch running RSP
 
-After setting up RSP for several different parameter combinations, you might notice that doing this manually is a little bit tedious (and if you're anything like me, very prone to human error). For the bonus task, you can try your hand at automating these runs. Depending on how you're feeling halfway through Friday, there are a few different difficulty levels that you can choose from, see below. Regardless of your chosen difficulty level, once you have your results please add the period, luminosity, and growth rate data to the shared spreadsheet.
+After setting up RSP for several different parameter combinations, you might notice that doing this manually is a little bit tedious (and if you're anything like me, very prone to human error). For the bonus task, you can try your hand at automating these runs. For this, focus first on the RSP information. Depending on how you're feeling halfway through Friday, there are a few different difficulty levels that you can choose from, see below. Regardless of your chosen difficulty level, once you have your results please add the luminosity, Wesenheit index, RSP period and RSP growth rate data to the shared spreadsheet.
 
 #### Let me cook
 
@@ -189,7 +189,6 @@ Come up with your own approach to automating this task. After you have a plan bu
 - How do you plan to loop over all the relevant models?
 - What output do you need to save?
 - How can you make this output easy to process (i.e., add to the spreadsheet)?
-- If you want to also include GYRE information in your output what steps do you need to take?
 
 {{< /details >}}
 
@@ -216,6 +215,12 @@ Start from the [partially complete solutions](https://drive.google.com/file/d/1-
 This is a [complete set of solutions](https://drive.google.com/file/d/1iDFPKm78-WKwMV0RNY-YAOLRIdj6P8a6/view?usp=drive_link) with comments explaining the code. Read through the code to understand what is happening and then run it using your results from lab 1.
 
 If you use these solutions files directly, you still need to pass the correct path for your `mod_dir` from lab 1 in `batch_LNA.sh`, and set `RSP_X` and `RSP_Z` to the correct values in `inlist_rsp_Cepheid` (using the same values as the main part of the lab).
+
+{{< /details >}}
+
+### Bonus Bonus task
+
+If you have completed your batch RSP-LNA runs, try to also add the GYRE period and growth rate values to the spreadsheet. **Hint**: Remember, this information is saved in the output of lab 1 and so you don't need to rerun any models.
 
 {{< /details >}}
 
