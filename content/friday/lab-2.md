@@ -154,11 +154,11 @@ This is then followed by the usual MESA terminal output header, and one model's 
 
 ### Wesenheit Index - Period Relationship
 
-As more people fill in the spreadsheet, you may notice that the period luminosity relationship has a fair bit of scatter. This is because **Add more details here about where the theoretical color dependence comes from**. To reduced this scatter, instead of using luminosity we can use the Wesenheit index which is a parameter that corrects for reddening effects:
+As more people fill in the spreadsheet, you may notice that the period luminosity relationship has a fair bit of scatter. This is because the underlying relationship is actually between period, luminosity and *color*. We can collapse the color dependence by using the Wesenheit index:
 
 $ W_{VI} = I - R(V-I), $
 
-Where $V$ and $I$ are the absolute magnitudes in the V and I bands, respectively, and $R$ is a constant that parameterizes the color dependence. We'll use the value $R=1.55$ from Madore 1982, see also Smolec et al 2026. As we learned on day 1, MESA can now output these magnitudes using the `colors` module. Since these bands are included in the default list we can simply set
+Where $V$ and $I$ are the absolute magnitudes in the V and I bands, respectively, and $R$ is a constant that parameterizes the color dependence. For a more detailed discussion of this approach take a look at the appendices of [Madore and Freedman 1991](https://ui.adsabs.harvard.edu/abs/1991PASP..103..933M/abstract) or [Madore 1982](https://ui.adsabs.harvard.edu/abs/1982ApJ...253..575M/abstract). We'll use the value $R=1.55$ as was used by [Smolec et al 2026](https://arxiv.org/abs/2603.26111). As we learned on day 1, MESA can now output these magnitudes using the `colors` module. Since these bands are included in the default list we can simply set
 
 ```none
 &colors
@@ -183,7 +183,7 @@ To fill in our diagrams a little bit more, repeat this process (changing the inl
 
 ### Bonus task: Batch running RSP
 
-After setting up RSP for several different parameter combinations, you might notice that doing this manually is a little bit tedious (and if you're anything like me, very prone to human error). For the bonus task, you can try your hand at automating these runs. Depending on how you're feeling halfway through Friday, there are a few different difficulty levels that you can choose from, see below. Regardless of your chosen difficulty level, once you have your results please add the period, luminosity, and growth rate data to the shared spreadsheet.
+After setting up RSP for several different parameter combinations, you might notice that doing this manually is a little bit tedious (and if you're anything like me, very prone to human error). For the bonus task, you can try your hand at automating these runs. For this, focus first on the RSP information. Depending on how you're feeling halfway through Friday, there are a few different difficulty levels that you can choose from, see below. Regardless of your chosen difficulty level, once you have your results please add the luminosity, Wesenheit index, RSP period and RSP growth rate data to the shared spreadsheet.
 
 #### Let me cook
 
