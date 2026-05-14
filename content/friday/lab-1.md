@@ -240,7 +240,7 @@ Add the following in the `&controls` section of *inliist_to_he_dep*:
    ! we want the second part of the run to stop when
    ! the mass fraction of he4 drops below 1d-14
    xa_central_lower_limit_species(1) = 'he4'
-   xa_central_lower_limit(1) = 1d-14
+   xa_central_lower_limit(1) = 1d-4
 ```
 
 {{< /details >}}
