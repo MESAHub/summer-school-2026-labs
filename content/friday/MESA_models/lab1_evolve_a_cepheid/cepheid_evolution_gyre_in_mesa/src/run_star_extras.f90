@@ -41,7 +41,7 @@ module run_star_extras
 
    implicit none
 
-   real(dp) :: F_period, F_growth, O1_period, O1_growth, O2_period, O2_growth ! Variables to write to history file 
+   real(dp) :: F_period, F_growth, O1_period, O1_growth, O2_period, O2_growth ! GYRE variables to write to history
 
 contains
 
