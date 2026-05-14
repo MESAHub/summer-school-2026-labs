@@ -60,20 +60,20 @@ In this first part of the run, we want to stop the simulation at the base of the
 
 However, in MESA there is **no pre-defined stopping condition that could do it**, so you need to implement it yourself. The best way to do it is create a condition in ```run_star_extras.f90```!
 
-<!-- I recommend letting students think about where to implement this themselves before pointing them to extras_check_model. That might look a little something like this: -->
+<!-- I recommend letting students think about where to implement this themselves before pointing them to extras_finish_step. That might look a little something like this: -->
 
 **Question:** Check the (MESA documentation)[https://docs.mesastar.org/en/latest/using_mesa/extending_mesa.html] of ```run_star_extras.f90```. Where in the control flow does this stopping condition belong?
 
 {{< details title="Answer" closed="true" >}}
 
-The function ```extras_check_model``` is called at the end of each solver step, to control if the conditions to stop the evolution are met
+The function ```extras_finish_step``` is called at the end of a time step to check if the conditions to stop the evolution are met.
 
 {{< /details >}}
 
-<!-- _First thing first_: open the ```run_star_extras.f90``` file and look for the ```extras_check_model``` subroutine. This subroutine will be called at the end of each solver step, to control if the conditions to stop the evolution are met. -->
+<!-- _First thing first_: open the ```run_star_extras.f90``` file and look for the ```extras_finish_step``` subroutine. This subroutine will be called at the end of each solver step, to control if the conditions to stop the evolution are met. -->
 
 > [!NOTE]
-> Similar functionality is available using the `extras_finish_step` model subroutine. However, that function is only able to return two options: `keep_going` or `terminate`. In addition to these two options, `extras_check_model` can also return `retry` which causes MESA to try again with a smaller time step.
+> Similar functionality is available using the `extras_finish_step` model subroutine. However, that function is only able to return two options: `keep_going` or `terminate`. In addition to these two options, `extras_finish_step` can also return `retry` which causes MESA to try again with a smaller time step.
 
 Now we have collected here some important information for you, that might help you with this task:
 
@@ -102,7 +102,7 @@ type (star_info), pointer :: s
 
 {{< details title="Initializing new variables" closed="true" >}}
 
-It can be beneficial to save the current $\log{T_\mathrm{eff}}$ in a separate floating-point variable. That makes your code more legible. To do so, add the following at the start of the ```extras_check_model``` function:
+It can be beneficial to save the current $\log{T_\mathrm{eff}}$ in a separate floating-point variable. That makes your code more legible. To do so, add the following at the start of the ```extras_finish_step``` function:
 
 ```fortran
 real(dp) :: logTeff
@@ -149,7 +149,7 @@ Here's how to implement the stopping condition based on the effective temperatur
 ! == TODO: add stopping condition for effective temperature! ==
          logTeff = safe_log10(s% Teff)
          if(logTeff .le. 3.7d0) then
-            extras_check_model = terminate
+            extras_finish_step = terminate
             write(*, *) '===== you have reached the end of the RGB! ===='
             s% termination_code = t_extras_finish_step
          end if
@@ -169,13 +169,13 @@ If we wanted to stop more precisely, say when $\log(T_{\mathrm{eff}}) =  3.7 \pm
          stopping_logTeff = 3.7d0
          stopping_tol = 0.0001d0
          if(logTeff .gt. stopping_logTeff) then
-           extras_check_model = keep_going
+           extras_finish_step = keep_going
          else if (abs(logTeff - stopping_logTeff) .lt. stopping_tol) then
-           extras_check_model = terminate
+           extras_finish_step = terminate
            write(*, *) '===== you have reached the end of the RGB! ===='
-           s% termination_code = t_extras_check_model
+           s% termination_code = t_extras_finish_step
          else ! Avoid overshooting our desired stopping condition using retries
-           extras_check_model = retry
+           extras_finish_step = retry
          end if
 ```
 
