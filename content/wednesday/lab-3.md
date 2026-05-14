@@ -459,6 +459,10 @@ You can supply your own tabulated weak rates to MESA. Here we will show you how 
 
 We first need to tell MESA the location of the directory (which we'll call `tables_custom`) to find the tabulated custom rates. This is an inlist option. 
 
+| 📋 TASK 5a |
+|:--------|
+| Edit `inlist_rates` to have it use your custom rate table. |
+
 {{< details title="Hint: how to find this inlist option?" closed="true" >}}
 Look up ``rate_table`` in ``$MESA_DIR/star/defaults/``:
 ```bash
@@ -471,6 +475,12 @@ Add the following to the ``star_job`` section of your inlist:
 ```fortran
 rate_table = 'tables_custom'
 ```
+
+You will also need to ask MESA to **not** use Suzuki weak rates, in the ``star_job`` section:
+```fortran
+use_suzuki_weak_rates = .false.
+```
+
 {{< /details >}}
 
 #### Step 5b: Download data
@@ -538,6 +548,67 @@ r_o20_wk-minus_f20 'on-the-fly_r_o20_wk-minus_f20.h5'
 
 MESA has the capability to calculate the weak reactions on-the-fly, if you supply the list of transitions and energy levels. 
 
+#### Step 5a: Telling MESA to use special (on-the-fly) weak rates
+
+This is an inlist option. 
+
+<!-- Edit inlist -->
+| 📋 TASK 5a |
+|:--------|
+| Edit `inlist_rates` to have MESA use special weak rates. |
+
+{{< details title="Hint: What inlist option to look for?" closed="true" >}}
+
+The on-the-fly capability is called `special_weak_rates` in MESA. You can search this as follows:
+
+```bash
+grep -r special_weak $MESA_DIR/star/defaults/
+```
+
+{{< /details >}}
+
+{{< details title="Partial solution" closed="true" >}}
+
+In `&star_job`, set
+```fortran
+use_special_weak_rates = .true.
+```
+
+{{< /details >}}
+
+
+#### Step 5b: Feeding MESA the states and transitions
+
+For MESA to calculate the weak rates, it needs to know the nuclear states of the isotopes (energies and spins), and the halftimes of the transitions between these states. 
+
+| 📋 TASK 5b |
+|:--------|
+| **Download** the states file and the transition file [here]() to your working directory. |
+
+| 📋 TASK 5c |
+|:--------|
+| **Edit `inlist_rates`** to supply MESA with the states file and the transitions file. |
+
+{{< details title="Hint: What inlist option to look for?" closed="true" >}}
+
+You have probably found them if you followed the hints from task 5a. You can search this as follows:
+
+```bash
+grep -r special_weak $MESA_DIR/star/defaults/
+```
+
+{{< /details >}}
+
+{{< details title="Partial solution" closed="true" >}}
+
+In `&star_job`, set
+```fortran
+special_weak_states_file = 'special_weak_rates.states'
+special_weak_transitions_file = 'special_weak_rates.transitions'
+```
+
+{{< /details >}}
+
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -558,7 +629,7 @@ Now you're ready to go!
 
 ## Review reaction flow with pynucastro
 
-We can easily visualize the reaction flow with the ``pynucastro`` and build up some intuition. 
+We can easily visualize the reaction flow with the ``pynucastro`` python package and build up some intuition. 
 Go to [this](blah) Google colab notebook and go through the exercises. 
 
 ## Bonus exercises 
@@ -567,14 +638,34 @@ We have done many things in this lab to ensure short runtimes. Here are a few su
 
 Do **not** attempt these all at once! Your run will be unbearably slow. 
 
-### Bigger reaction networks
+{{< tabs items="Bigger Reaction Networks,Time Resolution,Spatial Resolution,Skye EOS" >}}
+
+<!-- bigger nets -->
+{{< tab name="bigger net" >}}
+
+### Bigger reaction network
+
+#### Oxygen burning
+
+In this lab, we asked you to use ``r1616`` for oxygen burning. What exactly does it do? 
+
+| 📋 TASK |
+|:--------|
+| Look up ``r1616`` on ``$MESA_DIR/data/rates_data/reactions.list``.  |
 
 
 
-### Time Resolution
 
-### Spatial Resolution
+#### Other important reactions
 
-### Skye EOS
+So far we've told you what isotopes and reactions are important to include, but what other important reactions have we missed? Here we will use ``pynucastro`` to find out. 
+
+| 📋 TASK |
+|:--------|
+| Go to [this]() Google collab. Follow the instructions in asking ``pynucastro`` to tell you what isotopes and reactions are missing. |
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 
