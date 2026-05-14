@@ -6,7 +6,7 @@ linkTitle: Lab 1
 
 ## Summary
 
-In this lab you will learn how to evolve a classical Cepheid model, with an initial mass in the $3$-$10\,M_\odot$ range. The evolution will be divided in two steps:
+In this lab you will learn how to evolve a classical Cepheid model, with an initial mass in the $3.9-9.4\,$M$_\odot$ range. The evolution will be divided in two steps:
 
 1. **Step 1**: you will start from the Zero Age Main Sequence (ZAMS) and stop when a threshold in effective temperature $T_{\mathrm{eff}}$ is reached.
 
@@ -31,7 +31,7 @@ Download the work directory, move it to your location of choice and unpack it.
 
 **Task 2.1**: Set the initial mass
 
-Pick an initial mass in the range $3$-$10\,M_\odot$ from the options available in [this Google Sheet](https://docs.google.com/spreadsheets/d/1dVK0vpzgsAy0S7OG-qMyJlmwItwbp1JeB8B-xScV8WI/edit?usp=sharing). Put your name next to your chosen mass!
+Pick an initial mass in the range $3.9-9.4\,$M$_\odot$ from the options available in [this Google Sheet](https://docs.google.com/spreadsheets/d/1dVK0vpzgsAy0S7OG-qMyJlmwItwbp1JeB8B-xScV8WI/edit?usp=sharing). Put your name next to your chosen mass!
 
 > [!IMPORTANT]
 > Make sure that each person at your table has chosen a significantly different initial mass value: this will make later comparisons more interesting!
