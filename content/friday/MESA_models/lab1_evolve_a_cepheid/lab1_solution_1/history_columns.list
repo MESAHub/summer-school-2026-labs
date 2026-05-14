@@ -48,18 +48,18 @@
       !star_age_min ! elapsed simulated time in minutes since the start of the run
       !star_age_hr ! elapsed simulated time in hours since the start of the run
       !star_age_day ! elapsed simulated time in days since the start of the run
-      day ! elapsed simulated time in days since the start of the run
+      !day ! elapsed simulated time in days since the start of the run
 
-      log_star_age
-      log_star_age_sec
+      !log_star_age
+      !log_star_age_sec
 
    !## timestep
 
-      time_step ! timestep in years since previous model
+      !time_step ! timestep in years since previous model
       time_step_sec ! timestep in seconds since previous model
-      time_step_days
-      log_dt ! log10 time_step in years
-      log_dt_sec ! log10 time_step in seconds
+      !time_step_days
+      !log_dt ! log10 time_step in years
+      !log_dt_sec ! log10 time_step in seconds
       !log_dt_days ! log10 time_step in days
 
    !## mass
@@ -71,12 +71,12 @@
       !star_mass_grav_div_mass
 
       !delta_mass ! star_mass - initial_mass in Msun units
-      log_xmstar ! log10 mass exterior to M_center (grams)
+      !log_xmstar ! log10 mass exterior to M_center (grams)
 
    !## mass change
 
-      star_mdot ! d(star_mass)/dt (in msolar per year)
-      log_abs_mdot ! log10(abs(star_mdot)) (in msolar per year)
+      !star_mdot ! d(star_mass)/dt (in msolar per year)
+      !log_abs_mdot ! log10(abs(star_mdot)) (in msolar per year)
 
    !## imposed surface conditions
       !Tsurf_factor
@@ -109,7 +109,7 @@
 
    !## mixing regions
 
-      mass_conv_core ! (Msun) mass coord of top of convective core.  0 if core is not convective
+      !mass_conv_core ! (Msun) mass coord of top of convective core.  0 if core is not convective
 
       !  mx1 refers to the largest (by mass) convective region.
       !  mx2 is the 2nd largest.
@@ -118,14 +118,14 @@
       !  mx1_top and mx1_bot are the extent of all kinds of mixing, convective and other.
 
       ! values are m/Mstar
-      conv_mx1_top
-      conv_mx1_bot
-      conv_mx2_top
-      conv_mx2_bot
-      mx1_top
-      mx1_bot
-      mx2_top
-      mx2_bot
+      !conv_mx1_top
+      !conv_mx1_bot
+      !conv_mx2_top
+      !conv_mx2_bot
+      !mx1_top
+      !mx1_bot
+      !mx2_top
+      !mx2_bot
 
       ! radius -- values are radii in Rsun units
       !conv_mx1_top_r
@@ -239,7 +239,7 @@
       !log_power_nuc_burn ! total thermal power from all burning, excluding photodisintegrations
       log_LH ! log10 power_h_burn
       log_LHe ! log10 power_he_burn
-      log_LZ ! log10 total burning power including LC, but excluding LH and LHe and photodisintegrations
+      !log_LZ ! log10 total burning power including LC, but excluding LH and LHe and photodisintegrations
       log_Lnuc ! log(LH + LHe + LZ)
       !log_Lnuc_ergs_s
       !log_Lnuc_sub_log_L
@@ -249,7 +249,7 @@
       !log_extra_L ! log10 extra_L
 
    !## neutrino losses
-      log_Lneu ! log10 power emitted in neutrinos, nuclear and thermal (in Lsun units)
+      !log_Lneu ! log10 power emitted in neutrinos, nuclear and thermal (in Lsun units)
       !log_Lneu_nuc ! log10 power emitted in neutrinos, nuclear sources only (in Lsun units)
       !log_Lneu_nonnuc ! log10 power emitted in neutrinos, thermal sources only (in Lsun units)
 
@@ -328,15 +328,15 @@
       ! end1 is mass of outer edge where first zone ends (i.e. eps_nuc < burn_min1)
       ! similar for the second zone
 
-      epsnuc_M_1 ! start1 for 1st zone
-      epsnuc_M_2 ! start2
-      epsnuc_M_3 ! end2
-      epsnuc_M_4 ! end1
+      !epsnuc_M_1 ! start1 for 1st zone
+      !epsnuc_M_2 ! start2
+      !epsnuc_M_3 ! end2
+      !epsnuc_M_4 ! end1
 
-      epsnuc_M_5 ! start1 for 2nd zone
-      epsnuc_M_6 ! start2
-      epsnuc_M_7 ! end2
-      epsnuc_M_8 ! end1
+      !epsnuc_M_5 ! start1 for 2nd zone
+      !epsnuc_M_6 ! start2
+      !epsnuc_M_7 ! end2
+      !epsnuc_M_8 ! end1
 
 
       ! you might want to get a more complete list of burning regions by using the following
@@ -367,8 +367,8 @@
 !# information about core and envelope
 
    !## helium core
-      he_core_mass
-      he_core_radius
+      !he_core_mass
+      !he_core_radius
       !he_core_lgT
       !he_core_lgRho
       !he_core_L
@@ -378,9 +378,9 @@
       !he_core_k
 
    !## CO core
-      co_core_mass
+      !co_core_mass
       !CO_core
-      co_core_radius
+      !co_core_radius
       !co_core_lgT
       !co_core_lgRho
       !co_core_L
@@ -390,7 +390,7 @@
       !co_core_k
 
    !## ONe core
-      one_core_mass
+      !one_core_mass
       !one_core_radius
       !one_core_lgT
       !one_core_lgRho
@@ -401,7 +401,7 @@
       !one_core_k
 
    !## iron core
-      fe_core_mass
+      !fe_core_mass
       !fe_core_radius
       !fe_core_lgT
       !fe_core_lgRho
@@ -412,7 +412,7 @@
       !fe_core_k
 
    !## neutron rich core
-      neutron_rich_core_mass
+      !neutron_rich_core_mass
       !neutron_rich_core_radius
       !neutron_rich_core_lgT
       !neutron_rich_core_lgRho
@@ -435,7 +435,7 @@
 
 !# timescales
 
-      !dynamic_timescale ! dynamic timescale (seconds) -- estimated by 2*pi*sqrt(r^3/(G*m))
+      dynamic_timescale ! dynamic timescale (seconds) -- estimated by 2*pi*sqrt(r^3/(G*m))
       !kh_timescale ! kelvin-helmholtz timescale (years)
       !mdot_timescale ! star_mass/abs(star_mdot) (years)
       !kh_div_mdot_timescales ! kh_timescale/mdot_timescale
@@ -464,7 +464,7 @@
 
    !## conditions at the photosphere
       !effective_T
-      !Teff
+      Teff
       log_Teff ! log10 effective temperature
          ! Teff is calculated using Stefan-Boltzmann relation L = 4 pi R^2 sigma Teff^4,
          ! where L and R are evaluated at the photosphere (tau_factor < 1)
@@ -501,16 +501,16 @@
       !luminosity_ergs_s ! luminosity in cgs units
       log_L ! log10 luminosity in Lsun units
       !log_L_ergs_s ! log10 luminosity in cgs units
-      radius ! Rsun
+      !radius ! Rsun
       log_R ! log10 radius in Rsun units
       !radius_cm
       !log_R_cm
 
-      log_g ! log10 gravity
-      gravity
-      log_Ledd
-      log_L_div_Ledd ! log10(L/Leddington)
-      lum_div_Ledd
+      !log_g ! log10 gravity
+      !gravity
+      !log_Ledd
+      !log_L_div_Ledd ! log10(L/Leddington)
+      !lum_div_Ledd
       !log_surf_optical_depth
       !surface_optical_depth
 
@@ -524,9 +524,9 @@
       !surface_cell_entropy ! in units of kerg per baryon
           ! old name was surface_entropy
 
-      v_surf ! (cm/s)
-      v_surf_km_s ! (km/s)
-      v_div_csound_surf ! velocity divided by sound speed at outermost grid point
+      !v_surf ! (cm/s)
+      !v_surf_km_s ! (km/s)
+      !v_div_csound_surf ! velocity divided by sound speed at outermost grid point
       !v_div_csound_max ! max value of velocity divided by sound speed at face
       !v_div_vesc
       !v_phot_km_s
@@ -576,14 +576,14 @@
 
 !# conditions near center
 
-      log_center_T ! temperature
-      log_center_Rho ! density
-      log_center_P ! pressure
+      !log_center_T ! temperature
+      !log_center_Rho ! density
+      !log_center_P ! pressure
 
       ! shorter names for above
-      log_cntr_P
-      log_cntr_Rho
-      log_cntr_T
+      !log_cntr_P
+      !log_cntr_Rho
+      !log_cntr_T
 
       !center_T ! temperature
       !center_Rho ! density
@@ -591,9 +591,9 @@
 
       !center_degeneracy ! the electron chemical potential in units of k*T
       !center_gamma ! plasma interaction parameter
-      center_mu
-      center_ye
-      center_abar
+      !center_mu
+      !center_ye
+      !center_abar
       !center_zbar
 
       !center_eps_grav
@@ -636,8 +636,8 @@
       ! individual central mass fractions (as many as desired)
       center h1
       center he4
-      center c12
-      center o16
+      !center c12
+      !center o16
 
       ! individual log10 central mass fractions (as many as desired)
       !log_center h1
@@ -648,12 +648,13 @@
    !## mass fractions near surface
 
       ! the following controls automatically add columns for all of the isos that are in the current net
-      add_surface_abundances
+      !add_surface_abundances
       !add_log_surface_abundances
 
       ! individual surface mass fractions (as many as desired)
-      !surface h1
-      !surface he4
+      surface h1
+      surface he3
+      surface he4
       !surface c12
       !surface o16
       ! etc.
@@ -688,8 +689,8 @@
       !add_log_total_mass
 
       ! individual mass totals for entire star (as many as desired)
-      total_mass h1
-      total_mass he4
+      !total_mass h1
+      !total_mass he4
       ! etc.
 
       ! individial log10  mass totals for entire star (in Msun units)
@@ -734,17 +735,17 @@
 
 !# asteroseismology
 
-      delta_nu ! large frequency separation for p-modes (microHz)
+      !delta_nu ! large frequency separation for p-modes (microHz)
          ! 1e6/(seconds for sound to cross diameter of star)
-      delta_Pg ! g-mode period spacing for l=1 (seconds)
+      !delta_Pg ! g-mode period spacing for l=1 (seconds)
          ! sqrt(2) pi^2/(integral of brunt_N/r dr)
       !log_delta_Pg
-      nu_max ! estimate from scaling relation (microHz)
+      !nu_max ! estimate from scaling relation (microHz)
          ! nu_max = nu_max_sun * M/Msun / ((R/Rsun)^2 (Teff/Teff_sun)^0.5)
          ! with nu_max_sun = 3100 microHz, Teff_sun = 5777
       !nu_max_3_4th_div_delta_nu ! nu_max^0.75/delta_nu
-      acoustic_cutoff ! 0.5*g*sqrt(gamma1*rho/P) at surface
-      acoustic_radius ! integral of dr/csound (seconds)
+      !acoustic_cutoff ! 0.5*g*sqrt(gamma1*rho/P) at surface
+      !acoustic_radius ! integral of dr/csound (seconds)
       !ng_for_nu_max ! = 1 / (nu_max*delta_Pg)
          ! period for g-mode with frequency nu_max = nu_max_ng*delta_Pg
       !gs_per_delta_nu ! delta_nu / (nu_max**2*delta_Pg)
@@ -832,11 +833,11 @@
          ! = total_energy - (total_energy_start + total_energy_sources_and_sinks)
       !cumulative_energy_error ! = sum over all steps of abs(error_in_energy_conservation)
       !rel_cumulative_energy_error ! = cumulative_energy_error/total_energy
-      log_rel_cumulative_energy_error ! = log10 of rel_cumulative_energy_error
-      log_rel_run_E_err ! shorter name for rel_cumulative_energy_error
+      !log_rel_cumulative_energy_error ! = log10 of rel_cumulative_energy_error
+      !log_rel_run_E_err ! shorter name for rel_cumulative_energy_error
 
       !rel_error_in_energy_conservation ! = error_in_energy_conservation/total_energy
-      log_rel_error_in_energy_conservation
+      !log_rel_error_in_energy_conservation
 
       !virial_thm_P_avg
       !virial_thm_rel_err
@@ -849,7 +850,7 @@
  !# rotation
 
       !total_angular_momentum
-      log_total_angular_momentum
+      !log_total_angular_momentum
       !i_rot_total ! moment of inertia
 
       !total_rotational_kinetic_energy
@@ -1068,6 +1069,6 @@
       !elapsed_time ! time since start of run (seconds)
 
    !## Extras (were all 40)
-      burning_regions 20
-      mixing_regions 20
-      mix_relr_regions 20
+     ! burning_regions 20
+     ! mixing_regions 20
+     ! mix_relr_regions 20

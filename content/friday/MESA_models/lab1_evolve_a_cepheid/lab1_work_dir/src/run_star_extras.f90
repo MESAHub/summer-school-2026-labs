@@ -17,21 +17,20 @@
 !
 ! ***********************************************************************
 
-! This run_star_extras has been designed for Lab 1 of the Friday lab at the 2026 Summer School. 
-! It contains the following functionality: 
+! This run_star_extras has been designed for Lab 1 of the Friday lab at the 2026 Summer School.
+! It contains the following functionality:
 ! 1. Calling GYRE during core helium burning to determine period and growth rates of the radial fundamental, first & second overtones
-! 2. Saves GYRE output to history file 
-! 3. Saves models when near the instability strip (defined by effective temperature) with a custom name scheme 
+! 2. Saves GYRE output to history file
+! 3. Saves models when near the instability strip (defined by effective temperature) with a custom name scheme
 
-! We use the following user specified parameters: 
+! We use the following user specified parameters:
 
-! x_integer_ctrl(1) - output GYRE info at this step interval 
-! x_integer_ctrl(2) - max number of modes to output per call 
-! x_integer_ctrl(3) - mode l, should match gyre.in mode l 
-! x_integer_ctrl(5) - save .mod files at this step interval
+! x_integer_ctrl(1) - output GYRE info at this step interval
+! x_integer_ctrl(2) - max number of modes to output per call
+! x_integer_ctrl(3) - mode l, should match gyre.in mode l
+! x_integer_ctrl(4) - save .mod files at this step interval
 
-! x_ctrl(1) - existing frequency control
-! x_ctrl(3) - set Teff limit of when to start saving models
+! x_ctrl(1) - set Teff limit of when to start saving models
 
 module run_star_extras
 
@@ -39,11 +38,11 @@ module run_star_extras
    use star_def
    use const_def
    use math_lib
-   use gyre_mesa_m ! Load in the GYRE library 
+   use gyre_mesa_m ! Load in the GYRE library
 
    implicit none
 
-   real(dp) :: F_period, F_growth, O1_period, O1_growth, O2_period, O2_growth ! Variables to write to history file 
+   real(dp) :: F_period, F_growth, O1_period, O1_growth, O2_period, O2_growth ! GYRE variables to write to history
 
 contains
 
@@ -162,7 +161,7 @@ contains
          ierr = 0
          call star_ptr(id, s, ierr)
          if (ierr /= 0) return
-         how_many_extra_history_columns = 6 ! Period and growth for F, O1, O2
+         how_many_extra_history_columns = 8 ! Period/growth for F, O1, O2 plus photosphere X/Z
       end function how_many_extra_history_columns
 
 
@@ -180,8 +179,8 @@ contains
          ! the history_columns.list is only for the built-in history column options.
          ! it must not include the new column names you are adding here.
 
-         names(1) = 'F_period' 
-         vals(1) = F_period 
+         names(1) = 'F_period'
+         vals(1) = F_period
 
          names(2) = 'F_growth'
          vals(2) = F_growth
@@ -189,15 +188,20 @@ contains
          names(3) = 'O1_period'
          vals(3) = O1_period
 
-         names(4) = 'O1_growth' 
-         vals(4) = O1_growth 
+         names(4) = 'O1_growth'
+         vals(4) = O1_growth
 
-         names(5) = 'O2_period' 
+         names(5) = 'O2_period'
          vals(5) = O2_period
-          
-         names(6) = 'O2_growth' 
+
+         names(6) = 'O2_growth'
          vals(6) = O2_growth
 
+         names(7) = 'photosphere_X'
+         vals(7) = s% X(s% photosphere_cell_k)
+
+         names(8) = 'photosphere_Z'
+         vals(8) = s% Z(s% photosphere_cell_k)
 
       end subroutine data_for_extra_history_columns
 
@@ -305,7 +309,7 @@ contains
          real(dp), allocatable     :: global_data(:)
          real(dp), allocatable     :: point_data(:,:)
          character(len=150) :: name
-         logical :: call_gyre, need_to_save_model 
+         logical :: call_gyre, need_to_save_model, in_gyre_region
          integer :: gyre_interval, max_mode_num, mode_l, save_mod_interval, ipar(3), Teff, lumi
          real(dp), parameter :: gyre_logTeff_min = 3.66d0
          real(dp) :: save_mod_Teff_limit, rpar(1), mass
@@ -317,16 +321,16 @@ contains
          if (ierr /= 0) return
          extras_finish_step = keep_going
 
-         call_gyre = .false. ! Assume we don't need to call GYRE 
+         call_gyre = .false. ! Assume we don't need to call GYRE
          need_to_save_model = .false.
 
          ! Save user specified parameters with meaningful names
-         gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist 
-         max_mode_num = s% x_integer_ctrl(2) ! Sets how many modes should be saved 
-         mode_l = s% x_integer_ctrl(3)       ! Sets l value of modes 
-         save_mod_interval = s% x_integer_ctrl(5) ! Sets how often to save .mod files
+         gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist
+         max_mode_num = s% x_integer_ctrl(1) ! Sets how many modes should be saved
+         mode_l = s% x_integer_ctrl(1)       ! Sets l value of modes
+         save_mod_interval = s% x_integer_ctrl(1) ! Sets how often to save .mod files
 
-         save_mod_Teff_limit = s% x_ctrl(3) ! Sets minimum Teff necessary to save a model
+         save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
          logTeff = safe_log10(s% Teff)
 
          ! ====== TODO: add stopping condition for effective temperature! ======
@@ -336,31 +340,37 @@ contains
 !            s% termination_code = t_extras_finish_step
 !         end if
 
-         ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0. 
-         F_period = 0d0 
-         F_growth = 0d0 
-         O1_period = 0d0 
-         O1_growth = 0d0 
-         O2_period = 0d0 
-         O2_growth = 0d0 
+         ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0.
+         F_period = 0d0
+         F_growth = 0d0
+         O1_period = 0d0
+         O1_growth = 0d0
+         O2_period = 0d0
+         O2_growth = 0d0
 
-         ! Check if in He burning and we're calling GYRE 
-         ! L NOTE: Could use same if statement as stopping condition for MS evolution 
-         if (s% center_h1 <= 1d-12 .and. safe_log10(s% power_he_burn) >1d0) then
-            if (logTeff > gyre_logTeff_min .and. gyre_interval > 0 .and. &
-                  MOD(s% model_number, gyre_interval) == 0) then
+         ! Check if in He burning and we're calling GYRE.
+         in_gyre_region = s% center_h1 <= 1d-12 .and. &
+            safe_log10(s% power_he_burn) >1d0 .and. logTeff > gyre_logTeff_min
+         if (in_gyre_region) then
+            save_mod_interval = 1
+            s% history_interval = 1
+            s% terminal_interval = 1
+            if (gyre_interval > 0 .and. MOD(s% model_number, gyre_interval) == 0) then
                call_gyre = .true.
-            end if 
+            end if
             if (save_mod_interval > 0 .and. MOD(s% model_number, save_mod_interval) == 0) then
                need_to_save_model = .true.
             end if
+         else
+            s% history_interval = 10
+            s% terminal_interval = 10
          end if
 
     ! If necessary, call GYRE
 
          if (call_gyre) then
 
-            ! This call gets the structure variables necessary to calculate the pulsations and stores them in global_data and point_data 
+            ! This call gets the structure variables necessary to calculate the pulsations and stores them in global_data and point_data
             call star_get_pulse_data(s%id, 'GYRE', .FALSE., .FALSE., .FALSE., global_data, point_data, ierr)
             if (ierr /= 0) then
                print *,'Failed when calling star_get_pulse_data'
@@ -370,7 +380,7 @@ contains
             ! This subroutine constructs the data structure that GYRE uses to calculate modes
             call set_model(global_data, point_data, s%gyre_data_schema)
 
-            ! Write header to terminal 
+            ! Write header to terminal
             write(*, 100) 'model', 'order', 'freq (Hz)', &
                'P (sec)', 'P (day)', 'growth (day)', 'growth', 'cycles to double'
 100            format(2A8,99A20)
@@ -379,23 +389,23 @@ contains
             ipar(2) = max_mode_num
             ipar(3) = 0 ! num_written
 
-            ! The subroutine calls GYRE to find the modes. 
+            ! The subroutine calls GYRE to find the modes.
             ! After each mode is found, it calls the subroutine process_mode_cepheid defined below
             ! Integer parameters are passed with ipar and real parameters are passed with rpar
-            ! These two arrays allow us to pass information back and forth with the process mode subroutine 
-            ! However we choose to use the xtra#_array values that are a part of the star_info structure, so indexing is less confusing 
+            ! These two arrays allow us to pass information back and forth with the process mode subroutine
+            ! However we choose to use the xtra#_array values that are a part of the star_info structure, so indexing is less confusing
             call get_modes(mode_l, process_mode_cepheid, ipar, rpar)
 
-            s% ixtra3_array(1) = ipar(3) 
-            
+            s% ixtra3_array(1) = ipar(3)
+
             ! Store mode information in variables that are called by data_for_extra_history_columns
             ! process_mode_cepheid saves periods in xtra1_array, and growth rates in xtra2_array
             F_period = s% xtra1_array(1)
-            F_growth = s% xtra2_array(1) 
+            F_growth = s% xtra2_array(1)
             O1_period = s% xtra1_array(2)
-            O1_growth = s% xtra2_array(2) 
-            O2_period = s% xtra1_array(3) 
-            O2_growth = s% xtra2_array(3) 
+            O1_growth = s% xtra2_array(2)
+            O2_period = s% xtra1_array(3)
+            O2_growth = s% xtra2_array(3)
 
             call write_gyre_in_mesa_data(ierr)
             if (ierr /= 0) then
@@ -412,9 +422,9 @@ contains
             lumi = int(s% L(1) / Lsun)
 
             if (Teff > save_mod_Teff_limit) then
-               write(name, '(a,i0,a,f6.4,a,i0,a,i0,a)') 'mod_dir/', s%model_number, '_', mass, '_', Teff, '_', lumi, '.mod'               
+               write(name, '(a,i0,a,f6.4,a,i0,a,i0,a)') 'mod_dir/', s%model_number, '_', mass, '_', Teff, '_', lumi, '.mod'
                call star_write_model(id, name, ierr)
-            end if 
+            end if
          end if
 
 
@@ -428,7 +438,7 @@ contains
          ! by default, indicate where (in the code) MESA terminated
          if (extras_finish_step == terminate) s% termination_code = t_extras_finish_step
 
-      contains 
+      contains
 
              subroutine write_gyre_in_mesa_data(ierr)
                integer, intent(out) :: ierr
@@ -484,7 +494,7 @@ contains
             end function logKE_per_cycle
 
              subroutine process_mode_cepheid (md, ipar, rpar, retcode)
-             
+
 
                type(mode_t), intent(in) :: md
                integer, intent(inout)   :: ipar(:)
@@ -505,8 +515,8 @@ contains
 
                ! Since we only want to save three modes with the lowest frequencies,
                ! exit if we have already found three frequencies.
-               ! GYRE returns modes from lowest to highest frequency. 
-               max_to_write = ipar(2) 
+               ! GYRE returns modes from lowest to highest frequency.
+               max_to_write = ipar(2)
                num_written = ipar(3)
                if (num_written >= max_to_write) return
                num_written = num_written + 1
@@ -526,12 +536,12 @@ contains
                   write(*, 110) model_number, md%n_pg, &
                      freq, period, period/(24*3600), 'stable'
 110               format(2I8,E20.4,2F20.4,A20)
-               end if              
+               end if
 
                ! xtra_arrays are used to store data
                s% ixtra1_array(num_written) = md%n_pg
-               s% xtra1_array(num_written) = period/(24*3600) ! Save period in days 
-               s% xtra2_array(num_written) =  (2d0*pi*growth)/freq ! Save fractional growth rate 
+               s% xtra1_array(num_written) = period/(24*3600) ! Save period in days
+               s% xtra2_array(num_written) =  (2d0*pi*growth)/freq ! Save fractional growth rate
 
                retcode = 0
 
