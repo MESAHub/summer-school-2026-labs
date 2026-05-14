@@ -13,7 +13,7 @@ Friday is built around classical Cepheids in the $3$-$8\,M_\odot$ range.
 
 ## Lab 1 - Evolving a Cepheid into the Instability Strip
 
-**Directory:** `content/friday/MESA_models/lab1_evolve_a_cepheid/cepheid_evolution_gyre_in_mesa/`
+**Directory:** `lab1_work_dir/`
 
 **Goal**
 
@@ -53,7 +53,7 @@ Optional background on grid assumptions:
 
 **Directories**
 
-- `content/friday/MESA_models/lab1_evolve_a_cepheid/cepheid_evolution_gyre_in_mesa/`
+- `lab1_work_dir/`
 - `content/friday/MESA_models/lab2_GYRE_vs_LNA_P_L/rsp_Cepheid_LNA/`
 
 **Goal**

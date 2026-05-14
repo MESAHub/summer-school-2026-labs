@@ -7,9 +7,9 @@ program run
    integer :: ierr
 
    ierr = 0
-   call do_read_star_job('inlist', ierr)
+   call do_read_star_job('inlist_project', ierr)
    if (ierr /= 0) stop 1
 
-   call do_run_star
+   call do_run_star('inlist_project')
 
 end program run

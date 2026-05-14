@@ -1,5 +1,18 @@
 &pgstar
 
+pause_flag = .false.
+pause_interval = -1
+
+pgstar_interval = 10 ! show PGSTAR early while checking the live window.
+pgstar_show_age_in_years = .true.
+pgstar_show_age_in_seconds = .false.
+pgstar_sleep = 0.0
+
+! some global grid plot settings at end
+
+pgstar_show_model_number = .false.
+pgstar_show_age = .false.
+
 !------------------------------------------------------------------------------------
 
 Grid1_win_flag = .true.
@@ -170,8 +183,8 @@ Profile_Panels1_num_panels = 1 ! Modificato a 1 per lasciare solo log_opacity
 
 Profile_Panels1_yaxis_name(1) = 'log_opacity' ! Spostato log_opacity al primo panel
 !Profile_Panels1_dymin(1) = 0.14
-Profile_Panels1_other_yaxis_name(1) = ''!'Uq'!'lum_conv'
-!Profile_Panels1_other_dymin(1) = 0.14
+Profile_Panels1_other_yaxis_name(1) = 'gradr'
+Profile_Panels1_other_dymin(1) = 0.14
 
 Profile_Panels1_yaxis_name(2) = 'logT'!'logdq'!'radius'!'entropy'
 Profile_Panels1_other_yaxis_name(2) = 'mlt_Y_face'! 'Lc_div_L'!'log_dt_cs_div_dr'!'pgas_div_p'
@@ -258,9 +271,9 @@ show_TRho_Profile_burn_labels = .true.
       
 ! axis limits
 TRho_Profile_xmin = -15.0
-TRho_Profile_xmax = 0!5d0!10.0
+TRho_Profile_xmax = 5d0
 TRho_Profile_ymin = 2.5
-TRho_Profile_ymax = 7.5!8.5d0!10.0        
+TRho_Profile_ymax = 9.5d0
 
 ! these are shown if show_TRho_Profile_mass_locs = .true.         
 ! set all the entries
@@ -509,7 +522,7 @@ Mixing_file_aspect_ratio = -1 ! negative means use same value as for window
 
 
 
-    History_Panels1_xaxis_name = 'yr_since_coll'
+    History_Panels1_xaxis_name = 'model_number'
 
 
          ! axis limits -- to override system default selections
@@ -532,7 +545,7 @@ Mixing_file_aspect_ratio = -1 ! negative means use same value as for window
          HR_step_min = -1 ! only plot models with model number >= this
          HR_step_max = -1 ! only plot models with model number <= this
 
-         show_HR_classical_instability_strip = .true.
+         !show_HR_classical_instability_strip = .true.
          show_HR_Mira_instability_region = .false.
          show_HR_WD_instabilities = .false.
 
@@ -566,8 +579,8 @@ Mixing_file_aspect_ratio = -1 ! negative means use same value as for window
 
     History_Panels1_title = ''
 
-    History_Panels1_xaxis_name = 'day'!'model_number'
-    History_Panels1_max_width = 50! 10000
+    History_Panels1_xaxis_name = 'model_number'
+    History_Panels1_max_width = -1
 
     !History_Panels1_xaxis_name = 'star_age'
     !History_Panels1_max_width = 10
@@ -582,7 +595,7 @@ Mixing_file_aspect_ratio = -1 ! negative means use same value as for window
 
       ! ::
 
-    History_Panels1_num_panels = 2 ! Ridotto a 2 per lasciare log_L e radius
+    History_Panels1_num_panels = 2 ! log_L/log_Teff and log_R
 
       ! ::
 
@@ -602,7 +615,7 @@ Mixing_file_aspect_ratio = -1 ! negative means use same value as for window
 
       ! ::
 
-    History_Panels1_yaxis_name(2) = 'radius' ! Spostato radius al secondo panel
+    History_Panels1_yaxis_name(2) = 'log_R'
     History_Panels1_yaxis_reversed(2) = .false.
     History_Panels1_ymin(2) = -101d0
     History_Panels1_ymax(2) = -101d0
@@ -618,7 +631,7 @@ Mixing_file_aspect_ratio = -1 ! negative means use same value as for window
 
       ! ::
 
-    History_Panels1_yaxis_name(3) = 'radius'
+    History_Panels1_yaxis_name(3) = 'log_R'
     History_Panels1_yaxis_reversed(3) = .false.
     History_Panels1_ymin(3) = -101d0
     History_Panels1_ymax(3) = -101d0
@@ -735,4 +748,3 @@ History_Track2_reverse_xaxis = .false.
 !History_Track2_ymax = 3.98d0
 
 / ! end of pgstar namelist
-
