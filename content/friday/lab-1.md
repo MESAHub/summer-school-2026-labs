@@ -18,7 +18,6 @@ During this second part of the run, you will also save some models (called `.mod
 
 ## 1: Let's get it started in here: setting up the work directory
 
-
 **Task 1.1**: Download and unzip the initial working directory.
 
 We have already prepared an input directory to get you started with this lab: you can find it [here](https://drive.google.com/file/d/1UxLMBFTgl3q63SNrQwWSEsRIFm6O1v87/view?usp=drive_link).
@@ -60,6 +59,7 @@ In this first part of the run, we want to stop the simulation at the base of the
 
 However, in MESA there is **no pre-defined stopping condition that could do it**, so you need to implement it yourself. The best way to do it is create a condition in ```run_star_extras.f90```!
 
+<!-- Lynn: this is not true, there are both Teff_upper_limit and Teff_lower limit stopping conditions built in. I would just acknowledge this and then say but for practice we'll do it ourselves. -->
 <!-- I recommend letting students think about where to implement this themselves before pointing them to extras_finish_step. That might look a little something like this: -->
 
 **Question:** Check the [MESA documentation](https://docs.mesastar.org/en/latest/using_mesa/extending_mesa.html) of ```run_star_extras.f90```. Where in the control flow does this stopping condition belong?
@@ -156,12 +156,7 @@ Here's how to implement the stopping condition based on the effective temperatur
 ```
 {{< /details >}}
 
-<!-- Mathijs: I made this a collapsible bonus task to not confuse students unnecessarily with the two possible solutions -->
-{{< details title="BONUS: Stopping at a precise effective temperature" closed="true" >}}
-
-If we wanted to stop more precisely, say when $\log(T_{\mathrm{eff}}) = 3.7 \pm \rm{tol}$ where $\rm{tol}$ is some numeric tolerance, we would need a routine that can ask MESA to retry the step with a smaller timestep. That is available through `extras_check_model`, but for this exercise we are using the simpler `extras_finish_step` approach.
-
-{{< /details >}}
+<!-- Lynn: At this point you should acknowledge the GYRE stuff that's also in the extras_finish_step but note that we'll come back to it later in the lab.-->
 
 To check that everything is working correctly, let's first **compile** the model using
 
@@ -267,10 +262,11 @@ If we want to restart from a specific photo we pass it to the `re` script like t
 
 However, if you know you want to start from the most recent photo, you can simply call `./re`.
 
-Another thing to know, restarts can cause your history file to jump around as restarts only append to the existing `history.data` file. That is, if you run a track to model number 500 then restart from model number 300, the original time steps will remain in the history file, which may confuse your later analysis of the history. Another consequence of this is that you cannot change the history column outputs between restarts without causing an error.
+> [!NOTE]
+> Another thing to know, restarts can cause your history file to jump around as restarts only append to the existing `history.data` file. That is, if you run a track to model number 500 then restart from model number 300, the original time steps will remain in the history file, which may confuse your later analysis of the history. Another consequence of this is that you cannot change the history column outputs between restarts without causing an error.
 
 > [!CAUTION]
-> The method that we have used today (running a model to a stopping condition, then changing `run_star_extras` and starting again from a photo) is fine for exploration runs or debugging things. However, it isn't the most reproducible method, since it's easy to forget what you changed or accidentally restart your run and overwrite the previous results. Since we're not really changing the physics of our models this isn't a problem but if you're doing science runs it's better to use saved `.mod` files and multiple inlists to stop the run and restart with changes.
+> The method that we have used today (running a model to a stopping condition, then changing `run_star_extras` and starting again) is fine for exploration runs or debugging things. However, it isn't the most reproducible method, since it's easy to forget what you changed or accidentally restart your run and overwrite the previous results. Since we're not really changing the physics of our models this isn't a problem but if you're doing science runs it's better to set everything up before going. For changes to the inlists, you can accomplish this by using multiple inlists (for an example see the `1M_pre_ms_to_wd` case in the test suite). If you need to change functionally in the `run_star_extras`, `if` statements and the `x_logical_ctrl` variables will be useful. 
 
 With all that out of the way go ahead and restart your run from the most recently saved photo.
 
@@ -310,33 +306,150 @@ Error termination. Backtrace:
 
 Although the first line of the error message points to a file in the MESA source code, the later error message tells us that the error is actually in `run_star_extras` during the `extras_finish_step` routine. To understand how to fix this, we need to look a bit deeper at the provided `run_star_extras` file.
 
- In previous labs, you used GYRE as a post-processing code on profile files saved by MESA. There is also a way to run GYRE on-the-fly during the evolution, which is what we will use in this lab. In order to use GYRE in this way we have to load the GYRE library with the statement
+This `run_star_extras` file does two important things: calls GYRE as MESA is running to save data to the history file and saves some `.mod` files with custom names and based on a custom criteria.
+
+We'll focus first on the GYRE portion. In previous labs, you used GYRE as a post-processing code on profile files saved by MESA. There is also a way to run GYRE on-the-fly during the evolution, which is what we will use in this lab. In order to use GYRE in this way we have to load the GYRE library with the statement
 
 ```fortran
    use gyre_mesa_M
 ```
 
 at the top of the `run_star_extras` file. We also added a few variables to pass the values returned by GYRE from one `run_star_extras` routine to another. These variables are
+
 ```fortran
    real(dp) :: F_period, F_growth, O1_period, O1_growth, O2_period, O2_growth ! GYRE variables to write to history
 ```
-<!-- Mathijs: I think it helps to show what these variables are so the students see what you're talking about and will think about how they might show up again later -->
-The next necessary step is to set up GYRE in the `extras_startup` routine. <!-- No matter what you are using GYRE for, these two steps are always necessary! -->
-These two steps are always mandatory when using GYRE within MESA.
 
-Scrolling down further to the `data_for_extra_history_columns` routine, you should see that here that we just pass each of the columns we want to save using the variables defined at the start of the file. However, these values are not calculated here. Instead, we calculate them in the `extras_finish_step` function.
+In addition to loading the GYRE library we also need to initialize GYRE and set some constants for GYRE to use. Since we only need to do this once per run, we use the `extras_startup` routine for this. This is mandatory any time you want to use GYRE within MESA. The code for this looks like
 
-After the usual variable declarations and getting the `star_info` data structure, there is a logical called `call_gyre` that is initially set to `.false.`. This structure is useful if you don't want to call GYRE on every single step which can significantly increase the run time of a given evolutionary track (depending on what kind of star you're modelling).
+```fortran
+      ! Initialize GYRE
 
-We then have a few lines of code which use the `x_integer_ctrl(1:3)` parameters to set other variables. This renaming isn't strictly necessary, but it makes the code more legible. We then zero out the variables that we saw used in `data_for_extra_history_columns`. As you saw we are only calling GYRE every `s% x_integer_ctrl(1)` time steps, so if we left these variables undefined the time steps during which we don't call GYRE would just keep their values from the previous time step. This can be a bit confusing so by setting everything to zero we ensure that the time steps where GYRE is actually called are clear.
-<!-- Mathijs: I don't understand this last sentence -->
+      call init('gyre.in')
 
-The code then checks if we need to call GYRE during this time step. If we do, some additional set-up is required before calling GYRE. First, we need to get the stellar structure data that will be passed to the GYRE pulsation code. This is accomplished with the `star_get_pulse_data` subroutine. This routine has three logical input parameters, take a moment to search the code base and try to figure out what each parameter controls.
+      ! Set constants
+
+      call set_constant('G_GRAVITY', standard_cgrav)
+      call set_constant('C_LIGHT', clight)
+      call set_constant('A_RADIATION', crad)
+
+      call set_constant('M_SUN', Msun)
+      call set_constant('R_SUN', Rsun)
+      call set_constant('L_SUN', Lsun)
+
+      call set_constant('GYRE_DIR', TRIM(mesa_dir)//'/build/gyre/src')
+   ```
+
+Scrolling down further to the `data_for_extra_history_columns` routine, you should see that here that we just pass each of the columns we want to save using the variables defined at the start of the file.
+
+```fortran
+         names(1) = 'F_period' 
+         vals(1) = F_period 
+
+         names(2) = 'F_growth'
+         vals(2) = F_growth
+
+         names(3) = 'O1_period'
+         vals(3) = O1_period
+
+         names(4) = 'O1_growth' 
+         vals(4) = O1_growth 
+
+         names(5) = 'O2_period' 
+         vals(5) = O2_period
+          
+         names(6) = 'O2_growth' 
+         vals(6) = O2_growth
+```
+
+However, these values are not calculated here. Instead, we calculate them in the `extras_finish_step` function.
+
+Let's go back to the `extras_finish_step`routine and see how that's done, look specifically for the section marked by
+
+```none
+! ======= Routines for the core-helium burning part of the evolution ! ======
+```
+
+Right after this comment we set two logical variables: `call_gyre` and `need_to_save_model` both set to `.false.` This is because we want to decide at run time when GYRE will be called and when we will save models.
+
+We then have a few lines of code which set parse the `x_integer_ctrl` and `x_ctrl` values set in the inlist. This renaming isn't strictly necessary, but it makes the code more legible.
+
+```fortran
+      ! Save user specified parameters with meaningful names
+      gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist 
+      max_mode_num = s% x_integer_ctrl(1) ! Sets how many modes should be saved 
+      mode_l = s% x_integer_ctrl(1)       ! Sets l value of modes 
+      save_mod_interval = s% x_integer_ctrl(1) ! Sets how often to save .mod files
+      save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
+```
+
+However, you might notice that the current code sets all the new integer variables to `x_integer_ctrl(1)`.
+
+**Task 5.1** Use the comments in `inlist_project` to correct this and set each value correctly.
+
+{{< details title="Answer 5.1" closed="true" >}}
+
+The correct assignments are
+
+```fortran
+   ! Save user specified parameters with meaningful names
+   gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist 
+   max_mode_num = s% x_integer_ctrl(2) ! Sets how many modes should be saved 
+   mode_l = s% x_integer_ctrl(3)       ! Sets l value of modes 
+   save_mod_interval = s% x_integer_ctrl(4) ! Sets how often to save .mod files
+   save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
+   
+```
+
+{{< /details >}}
+
+We then zero out the variables that we saw used in `data_for_extra_history_columns`.
+
+```fortran
+
+   ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0. 
+   F_period = 0d0 
+   F_growth = 0d0 
+   O1_period = 0d0 
+   O1_growth = 0d0 
+   O2_period = 0d0 
+   O2_growth = 0d0 
+
+```
+
+As you saw we are only calling GYRE every `s% x_integer_ctrl(1)` time steps. If we don't update the values each time step (because we did't call GYRE), the values from the previous GYRE call will persist. This might be confusing as we'll have values at time steps where GYRE wasn't actually called. By setting everything to zero we ensure that we only have results for time steps where GYRE was actually called.
+
+The code then checks if we need to call GYRE during this time step. We want to call GYRE when
+
+1. We are in the core helium burning stage.
+2. Every `gyre_interval` models.
+3. Models have logTeff below 3.66d0 (this ensures that these models work well for lab 2).
+
+If these conditions are met we set `call_gyre = .true.`. We preform a similar check to determine if we need to save a model.
+
+These checks are done by this bit of code:
+
+```fortran
+   ! Check if in He burning and we're calling GYRE 
+   if (s% center_h1 <= 1d-12 .and. safe_log10(s% power_he_burn) >1d0) then
+      if (logTeff > gyre_logTeff_min .and. gyre_interval > 0 .and. &
+            MOD(s% model_number, gyre_interval) == 0) then
+         call_gyre = .true.
+      end if 
+      if (save_mod_interval > 0 .and. MOD(s% model_number, save_mod_interval) == 0) then
+         need_to_save_model = .true.
+      end if
+   end if
+```
+
+Then, if we need to call GYRE there's some further set up necessary. GYRE needs the structure variables from MESA in a specific format. Getting this format is a two-step process. First, we need to get the stellar structure data that will be passed to the GYRE pulsation code. This is accomplished with the `star_get_pulse_data` subroutine.
+
+**Task 5.2** This routine has three logical input parameters, take a moment to search the code base and try to figure out what each parameter controls.
 
 > [!TIP]
 > To find the source code, you can use `shmesa grep star_get_pulse_data`. This searches all the MESA source code regardless of whether you are in `$MESA_DIR`.
 
-{{< details title="Answer" closed="true" >}}
+{{< details title="Answer 5.2" closed="true" >}}
 
 As we want to find where the routine is defined we can ignore any line that begins with `call` or is in a print statement. After running `shmesa grep star_get_pulse_data` in terminal, you should see a line like
 ```none
@@ -347,12 +460,14 @@ In this file, we find that this function points to another function in the `puls
 
 {{< /details >}}
 
-After getting the pulse data, we now need to put it into a form that GYRE can handle. Take a look at `$MESA_DIR/gyre/public/gyre_mesa_m.f90` to see if you can figure out the correct subroutine to call.
+After getting the pulse data, we now need to put it into a form that GYRE can handle.
+
+**Task 5.3** Take a look at `$MESA_DIR/gyre/public/gyre_mesa_m.f90` to see if you can figure out the correct subroutine to call.
 
 > [!TIP]
 > You might want to take another look at the `star_get_pulse_data` call. We've named some variables the same as are used in the GYRE module subroutine to help you.
 
-{{< details title="Answer" closed="true" >}}
+{{< details title="Answer 5.3" closed="true" >}}
 
 The correct routine is `set_model` and the necessary code is
 
@@ -378,11 +493,9 @@ As noted in the comments:
 ! However we choose to use the xtra#_array values that are a part of the star_info structure, so indexing is less confusing
 ```
 
-We then move the information returned by GYRE to the variables used by `data_for_extra_history_columns`. In this setup, GYRE in MESA should start printing mode information to the terminal only once `log_Teff = log10(T_eff/K)` is greater than `3.66`.
+We then move the information returned by GYRE to the variables used by `data_for_extra_history_columns`. In this setup, GYRE in MESA also prints some information to the  terminal but again only once `log_Teff = log10(T_eff/K)` is greater than `3.66`.
 
-The same GYRE-in-MESA block also appends one compact output file, `gyre_in_mesa.data`, with the model number, current mass, photospheric `X` and `Z`, `T_eff`, luminosity, and the period/growth information for the fundamental, first-overtone, and second-overtone modes. Keep this file for Lab 2.
-
-The last additional steps in this subroutine check whether we need to save a `.mod` file. The saved models go into `mod_dir/`; keep that directory because Lab 3 uses these saved models as starting points for nonlinear saturation runs. In the starter inlist, `x_integer_ctrl(5) = 1` saves at every eligible step during core helium burning, while `x_ctrl(3) = 0d0` means the effective-temperature cut does not reject any of those saves. The GYRE calls themselves, including the terminal printout and `gyre_in_mesa.data` output, are restricted to models with `log_Teff > 3.66`.
+The last additional steps in this subroutine check whether we need to save a `.mod` file. The saved models go into `mod_dir/`; keep that directory because Lab 3 uses these saved models as starting points for nonlinear saturation runs. In the starter inlist, `x_integer_ctrl(4) = 1` saves at every eligible step during core helium burning, while `x_ctrl(1) = 0d0` means the effective-temperature cut does not reject any of those saves.
 
 ## 6. Nice! Now let's change the ```pgplot``` window _during_ the run!
 
@@ -391,7 +504,7 @@ You might have already noticed from the MESA simulations in the previous days, t
 
 Let's take advantage of this awesome feature, shall we?
 
-**Task 1**: Add the instability strip to the HRD
+**Task 6**: Add the instability strip to the HRD
 
 Since we are looking at the evolution of a Cepheid star, an extremely useful feature we can add to our HRD is the classical instability strip. In this region, stars usually pulsate, and we want to know if your model enters this phase or not.
 

@@ -53,8 +53,8 @@
    ! ====== TODO: add a stopping condition here! ======
    ! we want the second part of the run to stop when
    ! the mass fraction of he4 drops below 1d-4
-   !xa_central_lower_limit_species(1) = 'he4'
-   !xa_central_lower_limit(1) = 1d-4
+   xa_central_lower_limit_species(1) = 'he4'
+   xa_central_lower_limit(1) = 1d-4
 
    ! GYRE output controls   
    x_integer_ctrl(1) = 10        ! output GYRE info at this step interval

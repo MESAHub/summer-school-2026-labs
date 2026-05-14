@@ -308,7 +308,6 @@ contains
          integer :: gyre_interval, max_mode_num, mode_l, save_mod_interval, ipar(3), Teff, lumi
          real(dp), parameter :: gyre_logTeff_min = 3.66d0
          real(dp) :: save_mod_Teff_limit, rpar(1), mass
-
          real(dp) :: logTeff     ! log value of the effective temperature
 
          ierr = 0
@@ -316,24 +315,30 @@ contains
          if (ierr /= 0) return
          extras_finish_step = keep_going
 
+
+         ! ====== TODO: add stopping condition for effective temperature! ======
+         ! Lynn: Remove these lines for the starting directory 
+          logTeff = safe_log10(s% Teff) 
+
+      !  if (logTeff .le. 3.7d0) then
+      !     extras_finish_step = terminate
+      !     write(*, *) '===== you have reached the end of the RGB! ===='
+      !     s% termination_code = t_extras_finish_step
+      !  end if
+
+
+         ! ======= Routines for the core-helium burning part of the evolution ! ======
          call_gyre = .false. ! Assume we don't need to call GYRE 
          need_to_save_model = .false.
 
          ! Save user specified parameters with meaningful names
+         ! Lynn: set all to (1) for the starting directory -- they'll look up the correct values as a task. 
          gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist 
          max_mode_num = s% x_integer_ctrl(2) ! Sets how many modes should be saved 
          mode_l = s% x_integer_ctrl(3)       ! Sets l value of modes 
          save_mod_interval = s% x_integer_ctrl(4) ! Sets how often to save .mod files
-
-         save_mod_Teff_limit = s% x_ctrl(3) ! Sets minimum Teff necessary to save a model
-         logTeff = safe_log10(s% Teff)
-
-         ! ====== TODO: add stopping condition for effective temperature! ======
-!         if (logTeff .le. 3.7d0) then
-!            extras_finish_step = terminate
-!            write(*, *) '===== you have reached the end of the RGB! ===='
-!            s% termination_code = t_extras_finish_step
-!         end if
+         save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
+         
 
          ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0. 
          F_period = 0d0 
@@ -343,17 +348,7 @@ contains
          O2_period = 0d0 
          O2_growth = 0d0 
 
-         ! Check if in He burning and we're calling GYRE 
-         ! L NOTE: Could use same if statement as stopping condition for MS evolution 
-         if (s% center_h1 <= 1d-12 .and. safe_log10(s% power_he_burn) >1d0) then
-            if (logTeff > gyre_logTeff_min .and. gyre_interval > 0 .and. &
-                  MOD(s% model_number, gyre_interval) == 0) then
-               call_gyre = .true.
-            end if 
-            if (save_mod_interval > 0 .and. MOD(s% model_number, save_mod_interval) == 0) then
-               need_to_save_model = .true.
-            end if
-         end if
+
 
     ! If necessary, call GYRE
 
@@ -396,12 +391,6 @@ contains
             O2_period = s% xtra1_array(3) 
             O2_growth = s% xtra2_array(3) 
 
-            call write_gyre_in_mesa_data(ierr)
-            if (ierr /= 0) then
-               print *,'Failed when writing gyre_in_mesa.data'
-               return
-            end if
-
          end if
 
          ! Decide if we need to save a model based on the interval and Teff limit.
@@ -428,59 +417,6 @@ contains
          if (extras_finish_step == terminate) s% termination_code = t_extras_finish_step
 
       contains 
-
-             subroutine write_gyre_in_mesa_data(ierr)
-               integer, intent(out) :: ierr
-               integer :: io
-               logical :: have_file
-               real(dp) :: photosphere_x, photosphere_z
-
-               ierr = 0
-               inquire(file='gyre_in_mesa.data', exist=have_file)
-               open(newunit=io, file='gyre_in_mesa.data', status='unknown', &
-                  position='append', action='write', iostat=ierr)
-               if (ierr /= 0) return
-
-               photosphere_x = s% X(s% photosphere_cell_k)
-               photosphere_z = s% Z(s% photosphere_cell_k)
-
-               if (.not. have_file) then
-                  write(io, '(a1,1x,a12,11(1x,a20))') '#', 'model_number', 'star_mass', 'X', 'Z', &
-                     'Teff', 'L', 'F_period', 'F_logKE_per_cycle', 'O1_period', &
-                     'O1_logKE_per_cycle', 'O2_period', 'O2_logKE_per_cycle'
-               end if
-
-               write(io, '(i14,11(1x,e20.10))') s% model_number, s% star_mass, &
-                  photosphere_x, photosphere_z, s% Teff, s% L(1)/Lsun, &
-                  unstable_period(F_period, F_growth), logKE_per_cycle(F_growth), &
-                  unstable_period(O1_period, O1_growth), logKE_per_cycle(O1_growth), &
-                  unstable_period(O2_period, O2_growth), logKE_per_cycle(O2_growth)
-               close(io)
-
-            end subroutine write_gyre_in_mesa_data
-
-             real(dp) function unstable_period(period, growth)
-               real(dp), intent(in) :: period, growth
-
-               if (growth > 0d0) then
-                  unstable_period = period
-               else
-                  unstable_period = -1d0
-               end if
-
-            end function unstable_period
-
-             real(dp) function logKE_per_cycle(growth)
-               real(dp), intent(in) :: growth
-
-               if (growth > 0d0) then
-                  ! xtra2_array stores 2*pi*IM(freq)/REAL(freq); RSP uses twice that.
-                  logKE_per_cycle = 2d0*growth
-               else
-                  logKE_per_cycle = -1d0
-               end if
-
-            end function logKE_per_cycle
 
              subroutine process_mode_cepheid (md, ipar, rpar, retcode)
              
