@@ -77,13 +77,13 @@ The only other RSP control we will change is `RSP_max_num_periods` which we will
 >
 > 1. Because we have mass loss turned on, the mass of each model will not be the initial mass we started with in lab 1.
 > 2. RSP does not read the envelope composition from the `.mod` file. Set `RSP_X` and `RSP_Z` from the `photosphere_X` and `photosphere_Z` history columns for the Lab 1 model you chose, while `Y` is implied by `1-X-Z`. First, however, we should check that the surface abundances are representative of the composition in the envelope. You can do this using the saved model which includes the abundance profiles of all isotopes throughout the star. Check that the `h1`, `he3`, and `he4` values of the surface zone are representative of the stellar envelope.
-> 3.Double check that you are inputting your values in the units expected by RSP: mass in Msun, Teff in K, L in Lsun, X and Z as mass fractions.
+> 3. Double check that you are inputting your values in the units expected by RSP: mass in Msun, Teff in K, L in Lsun, X and Z as mass fractions.
 
 {{< /details >}}
 
 ### Run RSP LNA
 
-Once you have set necessary inlist controls, run MESA in the normal way.
+**Task** Once you have set necessary inlist controls, run MESA in the normal way.
 
 > [!TIP]
 > Since this is new working directory, don't forget to compile MESA before calling it.
@@ -170,7 +170,9 @@ read inlist_rsp_Cepheid
 
 This is then followed by the usual MESA terminal output header, and one model's worth of output before MESA terminates with `termination code: reached max number of periods`.
 
-Of this information, the part we are most interested in is the period and growth rate information printed right after `create initial RSP model`. RSP indexes the modes in order of decreasing period (increasing frequency). In our case, the mode labeled 0 should be the fundamental radial mode, followed by the first and second overtones (modes 1 and 2). Using this output, add your RSP results for the fundamental period and growth rate to the shared spreadsheet (put this on the same line as your GYRE results).
+Of this information, the part we are most interested in is the period and growth rate information printed right after `create initial RSP model`. RSP indexes the modes in order of decreasing period (increasing frequency). In our case, the mode labeled 0 should be the fundamental radial mode, followed by the first and second overtones (modes 1 and 2). 
+
+**Task** Using this output, add your RSP results for the fundamental period and growth rate to the shared spreadsheet (put this on the same line as your GYRE results).
 
 ### Wesenheit Index - Period Relationship
 
@@ -178,7 +180,9 @@ As more people fill in the spreadsheet, you may notice that the period luminosit
 
 $ W_{VI} = I - R(V-I), $
 
-where $V$ and $I$ are the absolute magnitudes in the V and I bands, respectively, and $R$ is a constant that parameterizes the color dependence. For a more detailed discussion of this approach take a look at the appendices of [Madore and Freedman 1991](https://ui.adsabs.harvard.edu/abs/1991PASP..103..933M/abstract) or [Madore 1982](https://ui.adsabs.harvard.edu/abs/1982ApJ...253..575M/abstract). We'll use the value $R=1.55$ as was used by [Smolec et al 2026](https://arxiv.org/abs/2603.26111). As we learned on Monday, MESA can now output these magnitudes using the `colors` module. Since these bands are included in the default list we can simply set
+where $V$ and $I$ are the absolute magnitudes in the V and I bands, respectively, and $R$ is a constant that parameterizes the color dependence. For a more detailed discussion of this approach take a look at the appendices of [Madore and Freedman 1991](https://ui.adsabs.harvard.edu/abs/1991PASP..103..933M/abstract) or [Madore 1982](https://ui.adsabs.harvard.edu/abs/1982ApJ...253..575M/abstract). We'll use the value $R=1.55$ as was used by [Smolec et al 2026](https://arxiv.org/abs/2603.26111). As we learned on Monday, MESA can now output these magnitudes using the `colors` module.
+
+**Task** Since these bands are included in the default list we can simply set
 
 ```none
 &colors
@@ -186,7 +190,9 @@ where $V$ and $I$ are the absolute magnitudes in the V and I bands, respectively
 / ! end of colors namelist
 ```
 
-as the `colors` section of the inlist. When you rerun the RSP model now, the provided `run_star_extras` will print the `RSP_W_VI` value to the terminal. Please add this value to your row of data.
+as the `colors` section of the inlist. 
+
+**Task** When you rerun the RSP model now, the provided `run_star_extras` will print the `RSP_W_VI` value to the terminal. Please add this value to your row of data.
 
 To fill in our diagrams a little bit more, repeat this process (changing the inlist parameters and running RSP LNA) for different timesteps from your lab 1 results.
 
