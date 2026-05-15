@@ -1,9 +1,9 @@
 ---
 title: Pulsations in MESA
-weight: 1
+weight: 3
 ---
 
-# How many ways to do pulsations in MESA?
+## How many ways to do pulsations in MESA?
 
 As you have seen today, there are many different codes packaged with MESA designed for analyzing stellar pulsations/oscillations. Which particular code is best, will depend on the type of star/pulsations you plan to study. We’ve compiled a list here, with some references to help you choose.
 
