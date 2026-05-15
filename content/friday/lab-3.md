@@ -108,7 +108,7 @@ It can take a very long time for a MESA TDC model to start pulsating "naturally"
 
 From the figure below, read off a reasonable initial kick for your chosen model.
 
-![kicks](initial_kick.png)
+![kicks](initial_kicks.png)
 
 Now add this value into your *inlist_pulses*. **Question:** Can you find which variable stores the initial kick?
 
@@ -201,10 +201,10 @@ Signs that the run is doing the right thing:
 
 You can see an example of healthy, developed pulsation below.
 
-![pgstar](example_pgstar_labeled.gif)
+![pgstar](pgstar_example_labeled.gif)
 
 
-The five panels labelled with a red number are the most relevant. They show
+The five panels labeled with a red number are the most relevant. They show
 
 1. Hertzsprung-Russell diagram. Initially, we expect an ellipsoidal path until the bump develops.
 2. luminosity variation in solar luminosity over time, also called the light curve
