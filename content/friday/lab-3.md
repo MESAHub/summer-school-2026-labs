@@ -152,7 +152,7 @@ If the compilation succeeds, start the nonlinear run:
 ./rn
 ```
 
-> [!CAUTION]
+> [!WARNING]
 > These inlists are set up so this TDC run continues **indefinitely**! As such, it is up to you to decide when to end the run using ctrl+C (Linux) or cmd+C (Mac).
 > Be warned, this will likely take at least 10 minutes. In the meantime, read through the tasks below. If you reach the end of these tasks and your waveform has not stabilised, take a look at the _If You Are Still Waiting on a Run_ section.
 
