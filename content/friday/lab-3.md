@@ -15,7 +15,11 @@ This is the nonlinear pulsation lab for Friday. That means the details are a lit
 
 ## Background
 
-Many classical Cepheids show a distinctive "bump" in their waveform. The location of that bump changes with period. In the standard picture, this is related to a near `2:1` resonance between the second overtone and the fundamental mode, so a useful quantity to keep in mind is
+Many classical Cepheids show a distinctive "bump" in their waveform. The figure below shows a few examples of folded Cepheid light curves observed by the OGLE study:
+
+![OGLE](OGLE_compilation.png)
+
+The location of that bump changes with the pulsation period. In the standard picture, this is related to a near `2:1` resonance between the second overtone and the fundamental mode, so a useful quantity to keep in mind is
 
 $$
 P_2/P_0 \approx 0.5.
@@ -23,59 +27,29 @@ $$
 
 As the stellar structure changes across the instability strip, the bump shifts from the descending branch, through the middle of the cycle, and onto the rising branch. In this lab, you will see that progression directly in nonlinear MESA models.
 
-## What You Should Already Have
+## Setting up the work directory
 
-Before starting Lab 3, you should have completed the main parts of Lab 1:
+Download `lab3_work_dir.zip` from this [Google Drive](https://drive.google.com/file/d/11S0DjI8fPOw3Szli0Zpn-k8VdDDfP7YQ/view?usp=drive_link), unzip it into some empty directory and `cd` into that directory. You'll see that it already contains the inlists you will need. However, we need to provide TDC with a starting model to make an envelope model from to track the pulsations, just as we did with RSP in lab 2. To that end, copy the `.mod` files you created in lab 1
 
-- you created a local Friday work directory and unpacked the Lab 1 input directory there
-- you evolved a star into the Cepheid phase
-- you restarted the run after the first stopping point
-- GYRE ran automatically during the pulsational phase
-- MESA wrote one or more saved models into `mod_dir/`
+```bash
+cp -r /path/to/your/lab1/mod_dir/ .
+```
 
-If you also completed Lab 2, that is helpful. In Lab 2 you may already have identified which saved models:
+> [!IMPORTANT]
+> Keep your Lab 1 and Lab 3 runs in separate working directories.
 
-- show positive fundamental-mode growth
-- have a usable period estimate
-- are good candidates for nonlinear follow-up
+Alternatively, you can download the models from the [Lab 1 mod file solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link), which are zipped by mass.
 
 > [!IMPORTANT]
 > Lab 3 uses a saved `.mod` file from Lab 1. It does **not** use a `photos/` restart file from Lab 1.
 
-It is also helpful if you still have the following information from Lab 1 written down somewhere:
+<!-- It is also helpful if you still have the following information from lab 1 written down somewhere:
 
 - your initial mass
 - the name of the saved `.mod` file you want to carry forward
 - the matching `log L` and `log T_eff`
-- any period or growth-rate information you identified from the GYRE output
+- any period or growth-rate information you identified from the GYRE output -->
 
-## Where You Will Be Working
-
-The relevant work directories for this lab are:
-
-- `lab1_work_dir/`
-- `content/friday/MESA_models/lab3_Hertzsprung_progression/TDC_Cepheid/`
-
-However, during the lab you should not work inside the website source tree. Instead, create a separate local Lab 3 working directory inside the same Friday workspace you used for Lab 1.
-
-For example, if you created a Friday workspace like
-
-```bash
-~/MESA_ss_2026/friday
-```
-
-then a good Lab 3 setup would be:
-
-```bash
-cd ~/MESA_ss_2026/friday
-mkdir -p lab3
-cd lab3
-```
-
-Now download or copy the Lab 3 input directory into that new `lab3` folder and work from there.
-
-> [!IMPORTANT]
-> Keep your Lab 1 and Lab 3 runs in separate working directories. Lab 1 is where your original evolutionary track and saved `.mod` files live. Lab 3 should be a new run directory that loads one of those saved models.
 
 ## Main Goal
 
@@ -87,15 +61,13 @@ By the end of this lab, your group should be able to answer:
 
 ## Task 1: Choose a Starting Model
 
-Go to your Lab 1 work directory and look inside `mod_dir/`. These are the saved stellar structures that Lab 3 can use.
+Take a look inside `mod_dir/`. These are the saved stellar structures that Lab 3 can use.
 
-In the standard Friday setup, the filenames are written in the form
+The filenames are written in the form
 
 ```text
-modelnumber_currentmass_Teff_luminosity.mod
+modelNumber_currentMass_effectiveTemperature_luminosity.mod
 ```
-
-or in a similar format that still identifies the saved Cepheid model.
 
 Choose a model that:
 
@@ -113,30 +85,7 @@ Choose a model that:
 > [!CAUTION]
 > In Lab 1, restarting with `./re` appends to the existing `history.data` file. That means model numbers in the history output may not increase monotonically. If you go back to Lab 1 to recover period or growth information for a saved model, keep that in mind while matching rows in `history.data`.
 
-## Task 2: Prepare the Nonlinear Work Directory
-
-Move into your Lab 3 work directory:
-
-```bash
-cd path/to/your/lab3/TDC_Cepheid
-```
-
-Create a `mod_dir/` if needed, and copy the Lab 1 model you chose into it:
-
-```bash
-mkdir -p mod_dir
-cp path/to/your/lab1/mod_dir/YOUR_MODEL.mod mod_dir/
-```
-
-If your Lab 1 and Lab 3 directories live elsewhere on your machine, adjust the path accordingly.
-
-> [!CAUTION]
-> Do not copy a file from `photos/`. For Lab 3 you need a saved stellar structure from `mod_dir/`.
-
-> [!NOTE]
-> If the class was given separate downloaded input directories for the different Friday labs, make sure you are copying from your Lab 1 run directory into your Lab 3 run directory, not between website source folders.
-
-## Task 3: Edit the Lab 3 Inlist
+## Task 2: Edit the Lab 3 Inlist
 
 Open `inlist_pulses` in your editor.
 
@@ -153,13 +102,49 @@ For your first run:
 > [!NOTE]
 > In this setup, MESA loads the saved stellar structure, removes the core, remeshes the envelope for time-dependent convection, and then uses a GYRE kick to seed the fundamental radial mode.
 
+## Task 3: Choose and set an initial kick
+
+It can take a very long time for a MESA TDC model to start pulsating "naturally". Therefore, we enforce a given radial velocity on the envelope to get the pulsating going, known as an 'initial kick'. The closer this kick is to the final pulsational radial velocity, the faster a bump in the light curve will develop.
+
+From the figure below, read off a reasonable initial kick for your chosen model.
+
+![kicks](initial_kicks.png)
+
+Now add this value into your *inlist_pulses*. **Question:** Can you find which variable stores the initial kick?
+
+{{< details title="Hint: where to look" closed="true" >}}
+
+There exists no dedicated field for the initial kick of a Cepheid in MESA, so the official MESA documentation won't be of help.
+
+Instead, think about which variables one uses when defining custom quantities in a MESA inlist.
+
+{{< /details >}}
+
+
+{{< details title="Answer" closed="true" >}}
+
+Find and update this line in the `&controls` of *inlist_pulses*:
+
+```fortran
+    x_ctrl(6) = 10d0 ! initial vsurf (kms)
+```
+
+{{< /details >}}
+
+> [!CAUTION]
+> In real scientific applications, it is safest to give the Cepheid a small initial kick and give the model a long time to converge to its final value. In this lab however, it is ok to risk using a large kick to save time.
+
 ## Task 4: Compile and Run the Model
 
 First compile the work directory:
 
 ```bash
+./clean
 ./mk
 ```
+
+> [!TIP]
+> Make sure you are running inside your extracted Lab 3 work directory before calling `./clean`, `./mk` or `./rn`.
 
 If the compilation succeeds, start the nonlinear run:
 
@@ -167,10 +152,13 @@ If the compilation succeeds, start the nonlinear run:
 ./rn
 ```
 
-> [!TIP]
-> Make sure you are running inside your extracted Lab 3 work directory before calling `./mk` or `./rn`.
+> [!WARNING]
+> These inlists are set up so this TDC run continues **indefinitely**! As such, it is up to you to decide when to end the run using ctrl+C (Linux) or cmd+C (Mac).
+> Be warned, this will likely take at least 10 minutes. In the meantime, read through the tasks below. If you reach the end of these tasks and your waveform has not stabilised, take a look at the _If You Are Still Waiting on a Run_ section.
+
 
 ## Task 5: Watch the Diagnostics
+
 
 The main outputs from the run are written to:
 
@@ -210,6 +198,20 @@ Signs that the run is doing the right thing:
 - `growth` is positive for at least part of the run
 - `delta_R`, `delta_logL`, or `delta_Mag` are no longer consistent with numerical noise
 - the light, radius, or velocity curves begin to repeat from cycle to cycle
+
+You can see an example of healthy, developed pulsation below.
+
+![pgstar](pgstar_example_labeled.gif)
+
+
+The five panels labeled with a red number are the most relevant. They show
+
+1. Hertzsprung-Russell diagram. Initially, we expect an ellipsoidal path until the bump develops.
+2. luminosity variation in solar luminosity over time, also called the light curve
+3. absolute magnitude variation over time
+4. radial variation over time
+5. radial velocity profile. The initial kick should be plainly visible here
+
 
 Signs that you should stop and rethink:
 
@@ -343,6 +345,17 @@ If you have a clearly pulsating model, compare the bump location in:
 
 You may find that the bump is easier to identify in one diagnostic than another. Record that in your notes if it helps explain your classification.
 
+<!-- Mathijs to Andy: If you alter the options in here per my comments, you may also want to move this little task someplace higher. I'll leave that up to your sound judgement! -->
+### Option E: Making a movie
+
+Isn't that animated PGSTAR window neat?! Unfortunately, it vanishes once you end the run. Luckily, a bunch of `.png` files are outputted by MESA, which can be used to recreate the animated PGSTAR plots. You could either flick through them in an image viewer or combine them into a proper movie. MESA comes packaged with some tools to make such movies. To do so, run the following in your terminal
+
+```bash
+images_to_movie "png_pulsation/*.png" my_Cepheid_movie.mp4
+```
+
+> [!TIP]
+> This `images_to_movie` command lives in the MESA SDK. If the command above ever fails, double-check that the SDK is initialised using `echo $MESASDK_ROOT`.
 
 ## Troubleshooting
 
@@ -498,6 +511,7 @@ You can either:
 After editing the Fortran source:
 
 ```bash
+./clean
 ./mk
 ./rn
 ```
@@ -505,6 +519,7 @@ After editing the Fortran source:
 or, if you want to continue from a previously saved nonlinear run after recompiling:
 
 ```bash
+./clean
 ./mk
 ./re
 ```
