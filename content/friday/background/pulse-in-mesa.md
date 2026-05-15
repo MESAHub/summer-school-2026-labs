@@ -1,5 +1,5 @@
 ---
-title: How many ways to do pulsations in MESA?
+title: "How many ways to do pulsations in MESA?"
 weight: 1
 ---
 
