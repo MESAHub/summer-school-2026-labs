@@ -15,7 +15,11 @@ This is the nonlinear pulsation lab for Friday. That means the details are a lit
 
 ## Background
 
-Many classical Cepheids show a distinctive "bump" in their waveform. The location of that bump changes with period. In the standard picture, this is related to a near `2:1` resonance between the second overtone and the fundamental mode, so a useful quantity to keep in mind is
+Many classical Cepheids show a distinctive "bump" in their waveform. The figure below shows a few examples of folded Cepheid light curves observed by the OGLE study:
+
+![OGLE](OGLE_compilation.png)
+
+The location of that bump changes with the pulsation period. In the standard picture, this is related to a near `2:1` resonance between the second overtone and the fundamental mode, so a useful quantity to keep in mind is
 
 $$
 P_2/P_0 \approx 0.5.
@@ -23,59 +27,29 @@ $$
 
 As the stellar structure changes across the instability strip, the bump shifts from the descending branch, through the middle of the cycle, and onto the rising branch. In this lab, you will see that progression directly in nonlinear MESA models.
 
-## What You Should Already Have
+## Setting up the work directory
 
-Before starting Lab 3, you should have completed the main parts of Lab 1:
+Download `lab3_work_dir.zip` from this [Google Drive](https://drive.google.com/file/d/11S0DjI8fPOw3Szli0Zpn-k8VdDDfP7YQ/view?usp=drive_link), unzip it into some empty directory and `cd` into that directory. You'll see that it already contains the inlists you will need. However, we need to provide TDC with a starting model to make an envelope model from to track the pulsations, just as we did with RSP in lab 2. To that end, copy the `.mod` files you created in lab 1
 
-- you created a local Friday work directory and unpacked the Lab 1 input directory there
-- you evolved a star into the Cepheid phase
-- you restarted the run after the first stopping point
-- GYRE ran automatically during the pulsational phase
-- MESA wrote one or more saved models into `mod_dir/`
+```bash
+cp -r /path/to/your/lab1/mod_dir/ .
+```
 
-If you also completed Lab 2, that is helpful. In Lab 2 you may already have identified which saved models:
+> [!IMPORTANT]
+> Keep your Lab 1 and Lab 3 runs in separate working directories.
 
-- show positive fundamental-mode growth
-- have a usable period estimate
-- are good candidates for nonlinear follow-up
+Alternatively, you can download the models from the [Lab 1 mod file solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link), which are zipped by mass.
 
 > [!IMPORTANT]
 > Lab 3 uses a saved `.mod` file from Lab 1. It does **not** use a `photos/` restart file from Lab 1.
 
-It is also helpful if you still have the following information from Lab 1 written down somewhere:
+<!-- It is also helpful if you still have the following information from lab 1 written down somewhere:
 
 - your initial mass
 - the name of the saved `.mod` file you want to carry forward
 - the matching `log L` and `log T_eff`
-- any period or growth-rate information you identified from the GYRE output
+- any period or growth-rate information you identified from the GYRE output -->
 
-## Where You Will Be Working
-
-The relevant work directories for this lab are:
-
-- `lab1_work_dir/`
-- `content/friday/MESA_models/lab3_Hertzsprung_progression/TDC_Cepheid/`
-
-However, during the lab you should not work inside the website source tree. Instead, create a separate local Lab 3 working directory inside the same Friday workspace you used for Lab 1.
-
-For example, if you created a Friday workspace like
-
-```bash
-~/MESA_ss_2026/friday
-```
-
-then a good Lab 3 setup would be:
-
-```bash
-cd ~/MESA_ss_2026/friday
-mkdir -p lab3
-cd lab3
-```
-
-Now download or copy the Lab 3 input directory into that new `lab3` folder and work from there.
-
-> [!IMPORTANT]
-> Keep your Lab 1 and Lab 3 runs in separate working directories. Lab 1 is where your original evolutionary track and saved `.mod` files live. Lab 3 should be a new run directory that loads one of those saved models.
 
 ## Main Goal
 
@@ -87,15 +61,13 @@ By the end of this lab, your group should be able to answer:
 
 ## Task 1: Choose a Starting Model
 
-Go to your Lab 1 work directory and look inside `mod_dir/`. These are the saved stellar structures that Lab 3 can use.
+Take a look inside `mod_dir/`. These are the saved stellar structures that Lab 3 can use.
 
-In the standard Friday setup, the filenames are written in the form
+The filenames are written in the form
 
 ```text
-modelnumber_currentmass_Teff_luminosity.mod
+modelNumber_currentMass_effectiveTemperature_luminosity.mod
 ```
-
-or in a similar format that still identifies the saved Cepheid model.
 
 Choose a model that:
 
@@ -113,30 +85,7 @@ Choose a model that:
 > [!CAUTION]
 > In Lab 1, restarting with `./re` appends to the existing `history.data` file. That means model numbers in the history output may not increase monotonically. If you go back to Lab 1 to recover period or growth information for a saved model, keep that in mind while matching rows in `history.data`.
 
-## Task 2: Prepare the Nonlinear Work Directory
-
-Move into your Lab 3 work directory:
-
-```bash
-cd path/to/your/lab3/TDC_Cepheid
-```
-
-Create a `mod_dir/` if needed, and copy the Lab 1 model you chose into it:
-
-```bash
-mkdir -p mod_dir
-cp path/to/your/lab1/mod_dir/YOUR_MODEL.mod mod_dir/
-```
-
-If your Lab 1 and Lab 3 directories live elsewhere on your machine, adjust the path accordingly.
-
-> [!CAUTION]
-> Do not copy a file from `photos/`. For Lab 3 you need a saved stellar structure from `mod_dir/`.
-
-> [!NOTE]
-> If the class was given separate downloaded input directories for the different Friday labs, make sure you are copying from your Lab 1 run directory into your Lab 3 run directory, not between website source folders.
-
-## Task 3: Edit the Lab 3 Inlist
+## Task 2: Edit the Lab 3 Inlist
 
 Open `inlist_pulses` in your editor.
 
@@ -153,11 +102,12 @@ For your first run:
 > [!NOTE]
 > In this setup, MESA loads the saved stellar structure, removes the core, remeshes the envelope for time-dependent convection, and then uses a GYRE kick to seed the fundamental radial mode.
 
-## Task 4: Compile and Run the Model
+## Task 3: Compile and Run the Model
 
 First compile the work directory:
 
 ```bash
+./clean
 ./mk
 ```
 
@@ -168,9 +118,9 @@ If the compilation succeeds, start the nonlinear run:
 ```
 
 > [!TIP]
-> Make sure you are running inside your extracted Lab 3 work directory before calling `./mk` or `./rn`.
+> Make sure you are running inside your extracted Lab 3 work directory before calling `./clean`, `./mk` or `./rn`.
 
-## Task 5: Watch the Diagnostics
+## Task 4: Watch the Diagnostics
 
 The main outputs from the run are written to:
 
@@ -198,7 +148,7 @@ Useful quantities already written by the setup include:
 
 You do **not** need to understand every quantity in detail to complete the lab. Focus on whether the pulsation becomes coherent and whether the waveform becomes interpretable.
 
-## Task 6: Decide Whether the Run Is Good Enough
+## Task 5: Decide Whether the Run Is Good Enough
 
 For the purpose of this lab, the run is useful once you can see that the kick has produced a coherent pulsation and the amplitude is either:
 
@@ -220,7 +170,7 @@ Signs that you should stop and rethink:
 > [!IMPORTANT]
 > You do not need a perfect production-quality nonlinear model. You only need a waveform that is good enough to classify the bump.
 
-## Task 7: Restart the Run If Needed
+## Task 6: Restart the Run If Needed
 
 If the run stops but has already written restart photos, you can continue from the most recent one:
 
@@ -239,7 +189,7 @@ This is useful if the model is progressing normally but simply needs more cycles
 > [!NOTE]
 > Just as in Lab 1, these `photos/` files are for continuing your own run on your own machine.
 
-## Task 8: Inspect the Waveform
+## Task 7: Inspect the Waveform
 
 Now look at the waveform and decide where the bump appears in the cycle.
 
@@ -261,7 +211,7 @@ Use the following simple classification:
 > [!TIP]
 > Do not spend too long debating a borderline case. If the bump is ambiguous, record that uncertainty and move on.
 
-## Task 9: Record Your Result
+## Task 8: Record Your Result
 
 Add one row for your successful model to the shared class table.
 
@@ -277,7 +227,7 @@ At minimum, record:
 
 Once the class table starts to fill up, sort the entries by period and look for the bump progression across the sample.
 
-## Task 10: If You Have Extra Time
+## Task 9: If You Have Extra Time
 
 If your group finishes the core lab early, here are the most useful next steps, in recommended order:
 
@@ -498,6 +448,7 @@ You can either:
 After editing the Fortran source:
 
 ```bash
+./clean
 ./mk
 ./rn
 ```
@@ -505,6 +456,7 @@ After editing the Fortran source:
 or, if you want to continue from a previously saved nonlinear run after recompiling:
 
 ```bash
+./clean
 ./mk
 ./re
 ```
