@@ -201,6 +201,9 @@ Signs that the run is doing the right thing:
 
 You can see an example of healthy, developed pulsation below.
 
+![pgstar](example_pgstar_labeled.gif)
+
+
 The five panels labelled with a red number are the most relevant. They show
 
 1. Hertzsprung-Russell diagram. Initially, we expect an ellipsoidal path until the bump develops.
