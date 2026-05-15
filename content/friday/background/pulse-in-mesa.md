@@ -1,6 +1,6 @@
 ---
 title: Pulsations in MESA
-weight: 3
+weight: 2
 ---
 
 ## How many ways to do pulsations in MESA?
