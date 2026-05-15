@@ -105,9 +105,11 @@ Check the Google spreadsheet [here](https://docs.google.com/spreadsheets/d/15PK9
 <!-- Suzuki rates -->
 {{< tab name="Suzuki Rates" >}}
 
+#### Suzuki Rates
+
 #### Step 4: Using Suzuki Rates
 
-| 📋 TASK 5 |
+| 📋 TASK 4 |
 |:--------|
 | **Edit your ``inlist_rates``** to ask MESA to use Suzuki weak rates. |
 
@@ -132,6 +134,8 @@ use_suzuki_weak_rates = .true.
 
 <!-- Custom weak rates -->
 {{< tab name="Custom Weak Rates" default="true" >}}
+
+#### Custom Weak Rates
 
 You can supply your own tabulated weak rates to MESA. Here we will show you how to use this feature. 
 
@@ -170,7 +174,7 @@ use_suzuki_weak_rates = .false.
 
 | 📋 TASK 4b |
 |:--------|
-| **Download** the weak rate tables [here](https://drive.google.com/file/d/1qtQLwOf2qovA8pI5miiD6kxgNBJVe28x/view?usp=drive_link) to your working directory and **unzip** it. |
+| **Download** the weak rate tables [here](https://drive.google.com/file/d/1R9DOoAh8IkojyJa752aPxKLLUNlwf8nu/view?usp=drive_link) to your working directory and **unzip** it. |
 
 After that, your working directory should look like:
 
@@ -228,6 +232,8 @@ r_o20_wk-minus_f20 'on-the-fly_r_o20_wk-minus_f20.h5'
 
 <!-- Special rates -->
 {{< tab name="Special (on-the-fly) rates" >}}
+
+#### Special (on-the-fly) Rates
 
 MESA has the capability to calculate the weak reactions on-the-fly, if you supply the list of transitions and energy levels. 
 
@@ -359,7 +365,12 @@ We have done many things in this lab to ensure short runtimes. Here are a few su
 Do **not** attempt these all at once! Your run will be unbearably slow. 
 
 
-{{< tabs items="Bigger Net,Soft-wired Net,Time Resolution,Spatial Resolution,Skye EOS,Name Your Bison" >}}
+{{< tabs items=",Bigger Net,Soft-wired Net,Time Resolution,Spatial Resolution,Skye EOS,Name Your Bison" >}}
+
+<!-- empty -->
+{{< tab name="empty" >}}
+Click on these tabs. They are in no particular order. 
+{{< /tab >}}
 
 <!-- bigger nets -->
 {{< tab name="bigger net" >}}
@@ -508,6 +519,74 @@ Now you're ready to run.
 <!-- time resolution -->
 {{< tab name="Time Resolution" >}}
 
+### Time Resolution
+
+In this lab, we relaxed the time resolution when it comes to the white dwarf's surface luminosity and temperature:
+```fortran
+delta_lgL_limit = 0.2d0
+delta_lgTeff_limit = 0.05d0
+```
+
+These two items mainly affect the time stepping that matters more for the accretion (because compressional heating changes the surface luminosity). But otherwise, we didn't do anything to relax the time resolution. 
+
+<!-- #### Limiting changes in $T_{c}$ and $\rho_{c}$
+
+Now, when the core undergoes weak reactions and oxygen ignition, we've seen that it undergoes rapid changes in $T_{c}$ and $\rho_{c}$. 
+
+We will work through some useful controls to limit these changes.  -->
+
+| 📋 TASK |
+|:--------|
+| Check out which inlist options are related to timestepping limited by changes in $T_{c}$ and $\rho_{c}$. **Add these controls** into your inlist. |
+
+{{< details title="Hint: which inlist section?" closed="true" >}}
+
+Time stepping controls are in the ``&controls`` section. Check out ``$MESA_DIR/star/defaults/controls.defaults``. 
+
+{{< /details >}}
+
+{{< details title="Partial solutions" closed="true" >}}
+
+These are actually commented out in ``inlist_commons``. 
+
+The options like
+```fortran
+delta_lgT_cntr_limit = 2d-2  ! default is 0.01d0
+delta_lgRho_cntr_limit = 5d-3  ! default is 0.05d0
+```
+
+{{< /details >}}
+
+| 📋 TASK |
+|:--------|
+| **Add these controls** into your inlist and run MESA again. What values to use? A good starting point is in the ``partial solutions`` above. |
+
+> [!WARNING]
+> Make sure you do ``./clean`` and ``./mk`` first. 
+
+#### Limiting changes in nuclear burning luminosity$
+
+When oxygen burning starts, the temperature profile changes very rapidly. A good way to limit these changes would be to use 
+```fortran
+delta_lgT_max_limit = 0.01d0 ! default is -1, meaning this is turned off
+delta_lgT_max_limit_lgT_min = 8.8d0 
+```
+This combination will limit the change in $\log_{10}T_{\rm max}$ by less than $0.01$ once $\log_{10}T_{\rm max} > 8.8$, and has no effect for lower temperatures. 
+
+Alternatively, you can try to limit changes in the nuclear burning luminosity $L_{\rm nuc}$. Normally, you can use ``delta_lgL_nuc_limit`` to limit changes in $\log_{10}(L_{\rm nuc}/L_{\odot})$. The problem is, here the weak reactions produce a lot of cooling and cancel out the overall nuclear burning luminosity globally (but not locally). So, here we will show you how to do this with ``run_star_extras``, particularly with ``other_timestep_limit``. 
+
+| 📋 TASK |
+|:--------|
+| Add ``use_other_timestep_limit = .true. `` in ``inlist_common``. |
+
+| 📋 TASK |
+|:--------|
+| Add ``use_other_timestep_limit = .true. `` in ``inlist_common``. |
+
+
+
+
+
 
 
 {{< /tab >}}
@@ -539,7 +618,7 @@ track the mass fraction of particular species and put more resolution where more
 {{< /details >}}
 
 > [!TIP]
-> You would think that higher spatial resolution would slow your run down. While mostly true, this also **helps with convergence**. When encountering convergence problems, one generally useful technique is to ensure that you have enough spatial resolution. 
+> You would think that higher spatial resolution would slow your run down. While kinda true, this also **helps with convergence** and reduces retries. 
 
 | 📋 TASK |
 |:--------|
@@ -563,6 +642,19 @@ Of course, we lowered the overall spatial resolution by setting a large ``mesh_d
 
 > [!WARNING]
 > **Uncomment** the `xa_function*` options in ``inlist_common`` first. We want the resolution around Urca shells!
+
+{{< /tab >}}
+
+<!-- Skye EOS -->
+{{< tab name="Skye EOS" >}}
+
+
+{{< /tab >}}
+
+<!-- Name your bison -->
+{{< tab name="Name your bison" >}}
+
+Go to the Google spreadsheet [here]() and add names of your bison. Our lecturer Mike will reward valuable MESA summer school points for his favorite name(s). 
 
 {{< /tab >}}
 
