@@ -331,12 +331,9 @@ contains
          save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
          logTeff = safe_log10(s% Teff)
 
-         ! ====== TODO: add stopping condition for effective temperature! ======
-!         if (logTeff .le. 3.7d0) then
-!            extras_finish_step = terminate
-!            write(*, *) '===== you have reached the end of the RGB! ===='
-!            s% termination_code = t_extras_finish_step
-!         end if
+         ! ====== TODO: add stopping condition here! ======
+
+         ! ================================================
 
          ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0.
          F_period = 0d0
