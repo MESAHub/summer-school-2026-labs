@@ -28,7 +28,6 @@
 ! x_integer_ctrl(1) - output GYRE info at this step interval
 ! x_integer_ctrl(2) - max number of modes to output per call
 ! x_integer_ctrl(3) - mode l, should match gyre.in mode l
-! x_integer_ctrl(4) - save .mod files at this step interval
 
 ! x_ctrl(1) - set Teff limit of when to start saving models
 
@@ -321,10 +320,9 @@ contains
          extras_finish_step = keep_going
 
 
-         ! ====== TODO: add stopping condition for effective temperature! ======
-         ! Lynn: Remove these lines for the starting directory
          logTeff = safe_log10(s% Teff)
 
+         ! The effective-temperature stop from the first part is disabled for this restart.
       !  if (logTeff .le. 3.7d0) then
       !     extras_finish_step = terminate
       !     write(*, *) '===== you have reached the end of the RGB! ===='
@@ -337,11 +335,9 @@ contains
          need_to_save_model = .false.
 
          ! Save user specified parameters with meaningful names
-         ! Lynn: set all to (1) for the starting directory -- they'll look up the correct values as a task.
          gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist
          max_mode_num = s% x_integer_ctrl(2) ! Sets how many modes should be saved
          mode_l = s% x_integer_ctrl(3)       ! Sets l value of modes
-         save_mod_interval = s% x_integer_ctrl(4) ! Sets how often to save .mod files
          save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
 
 
@@ -358,9 +354,9 @@ contains
          in_gyre_region = s% center_h1 <= 1d-12 .and. &
             safe_log10(s% power_he_burn) >1d0 .and. logTeff > gyre_logTeff_min
          if (in_gyre_region) then
-            save_mod_interval = 1
-            s% history_interval = 1
-            s% terminal_interval = 1
+            save_mod_interval = gyre_interval
+            s% history_interval = gyre_interval
+            s% terminal_interval = gyre_interval
             if (gyre_interval > 0 .and. MOD(s% model_number, gyre_interval) == 0) then
                call_gyre = .true.
             end if
@@ -368,6 +364,7 @@ contains
                need_to_save_model = .true.
             end if
          else
+            save_mod_interval = -1
             s% history_interval = 10
             s% terminal_interval = 10
          end if
