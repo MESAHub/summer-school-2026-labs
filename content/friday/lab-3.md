@@ -104,7 +104,7 @@ For your first run:
 
 ## Task 3: Choose and set an initial kick
 
-It can take a very long time for a MESA TDC model to start pulsating "naturally". Therefore, we enforce a given radial velocity on the envelope to get the pulsating going, known as an 'initial kick'. The closer this kick is to the final pulsational radial velocity, the faster a bump in the light curve will develop. 
+It can take a very long time for a MESA TDC model to start pulsating "naturally". Therefore, we enforce a given radial velocity on the envelope to get the pulsating going, known as an 'initial kick'. The closer this kick is to the final pulsational radial velocity, the faster a bump in the light curve will develop.
 
 From the figure below, read off a reasonable initial kick for your chosen model.
 
@@ -198,6 +198,17 @@ Signs that the run is doing the right thing:
 - `growth` is positive for at least part of the run
 - `delta_R`, `delta_logL`, or `delta_Mag` are no longer consistent with numerical noise
 - the light, radius, or velocity curves begin to repeat from cycle to cycle
+
+You can see an example of healthy, developed pulsation below.
+
+The five panels labelled with a red number are the most relevant. They show
+
+1. Hertzsprung-Russell diagram. Initially, we expect an ellipsoidal path until the bump develops.
+2. luminosity variation in solar luminosity over time, also called the light curve
+3. absolute magnitude variation over time
+4. radial variation over time
+5. radial velocity profile. The initial kick should be plainly visible here
+
 
 Signs that you should stop and rethink:
 
