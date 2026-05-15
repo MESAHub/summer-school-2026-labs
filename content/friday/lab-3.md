@@ -302,7 +302,14 @@ You may find that the bump is easier to identify in one diagnostic than another.
 <!-- Mathijs to Andy: If you alter the options in here per my comments, you may also want to move this little task someplace higher. I'll leave that up to your sound judgement! -->
 ### Option E: Making a movie
 
+Isn't that animated PGSTAR window neat?! Unfortunately, it vanishes once you end the run. Luckily, a bunch of `.png` files are outputted by MESA, which can be used to recreate the animated PGSTAR plots. You could either flick through them in an image viewer or combine them into a proper movie. MESA comes packaged with some tools to make such movies. To do so, run the following in your terminal
 
+```bash
+images_to_movie "png_pulsation/*.png" my_Cepheid_movie.mp4
+```
+
+> [!TIP]
+> This `images_to_movie` command lives in the MESA SDK. If the command above ever fails, double-check that the SDK is initialised using `echo $MESASDK_ROOT`.
 
 ## Troubleshooting
 
