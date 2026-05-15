@@ -1,6 +1,7 @@
 ---
-title: Pulsations in MESA
-weight: 5
+weight: 3
+title: Bonus Info: How many ways to do pulsations in MESA?
+linkTitle: BonusInfo
 ---
 
 ## How many ways to do pulsations in MESA?
