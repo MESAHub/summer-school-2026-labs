@@ -102,7 +102,39 @@ For your first run:
 > [!NOTE]
 > In this setup, MESA loads the saved stellar structure, removes the core, remeshes the envelope for time-dependent convection, and then uses a GYRE kick to seed the fundamental radial mode.
 
-## Task 3: Compile and Run the Model
+## Task 3: Choose and set an initial kick
+
+It can take a very long time for a MESA TDC model to start pulsating "naturally". Therefore, we enforce a given radial velocity on the envelope to get the pulsating going, known as an 'initial kick'. The closer this kick is to the final pulsational radial velocity, the faster a bump in the light curve will develop. 
+
+From the figure below, read off a reasonable initial kick for your chosen model.
+
+![kicks](initial_kick.png)
+
+Now add this value into your *inlist_pulses*. **Question:** Can you find which variable stores the initial kick?
+
+{{< details title="Hint: where to look" closed="true" >}}
+
+There exists no dedicated field for the initial kick of a Cepheid in MESA, so the official MESA documentation won't be of help.
+
+Instead, think about which variables one uses when defining custom quantities in a MESA inlist.
+
+{{< /details >}}
+
+
+{{< details title="Answer" closed="true" >}}
+
+Find and update this line in the `&controls` of *inlist_pulses*:
+
+```fortran
+    x_ctrl(6) = 10d0 ! initial vsurf (kms)
+```
+
+{{< /details >}}
+
+> [!CAUTION]
+> In real scientific applications, it is safest to give the Cepheid a small initial kick and give the model a long time to converge to its final value. In this lab however, it is ok to risk using a large kick to save time.
+
+## Task 4: Compile and Run the Model
 
 First compile the work directory:
 
@@ -125,7 +157,7 @@ If the compilation succeeds, start the nonlinear run:
 > Be warned, this will likely take at least 10 minutes. In the meantime, read through the tasks below. If you reach the end of these tasks and your waveform has not stabilised, take a look at the _If You Are Still Waiting on a Run_ section.
 
 
-## Task 4: Watch the Diagnostics
+## Task 5: Watch the Diagnostics
 
 
 The main outputs from the run are written to:
@@ -154,7 +186,7 @@ Useful quantities already written by the setup include:
 
 You do **not** need to understand every quantity in detail to complete the lab. Focus on whether the pulsation becomes coherent and whether the waveform becomes interpretable.
 
-## Task 5: Decide Whether the Run Is Good Enough
+## Task 6: Decide Whether the Run Is Good Enough
 
 For the purpose of this lab, the run is useful once you can see that the kick has produced a coherent pulsation and the amplitude is either:
 
@@ -176,7 +208,7 @@ Signs that you should stop and rethink:
 > [!IMPORTANT]
 > You do not need a perfect production-quality nonlinear model. You only need a waveform that is good enough to classify the bump.
 
-## Task 6: Restart the Run If Needed
+## Task 7: Restart the Run If Needed
 
 If the run stops but has already written restart photos, you can continue from the most recent one:
 
@@ -195,7 +227,7 @@ This is useful if the model is progressing normally but simply needs more cycles
 > [!NOTE]
 > Just as in Lab 1, these `photos/` files are for continuing your own run on your own machine.
 
-## Task 7: Inspect the Waveform
+## Task 8: Inspect the Waveform
 
 Now look at the waveform and decide where the bump appears in the cycle.
 
@@ -217,7 +249,7 @@ Use the following simple classification:
 > [!TIP]
 > Do not spend too long debating a borderline case. If the bump is ambiguous, record that uncertainty and move on.
 
-## Task 8: Record Your Result
+## Task 9: Record Your Result
 
 Add one row for your successful model to the shared class table.
 
@@ -233,7 +265,7 @@ At minimum, record:
 
 Once the class table starts to fill up, sort the entries by period and look for the bump progression across the sample.
 
-## Task 9: If You Have Extra Time
+## Task 10: If You Have Extra Time
 
 If your group finishes the core lab early, here are the most useful next steps, in recommended order:
 
