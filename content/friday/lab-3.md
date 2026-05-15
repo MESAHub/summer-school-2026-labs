@@ -111,16 +111,22 @@ First compile the work directory:
 ./mk
 ```
 
+> [!TIP]
+> Make sure you are running inside your extracted Lab 3 work directory before calling `./clean`, `./mk` or `./rn`.
+
 If the compilation succeeds, start the nonlinear run:
 
 ```bash
 ./rn
 ```
 
-> [!TIP]
-> Make sure you are running inside your extracted Lab 3 work directory before calling `./clean`, `./mk` or `./rn`.
+> [!CAUTION]
+> These inlists are set up so this TDC run continues **indefinitely**! As such, it is up to you to decide when to end the run using ctrl+C (Linux) or cmd+C (Mac).
+> Be warned, this will likely take at least 10 minutes. In the meantime, read through the tasks below. If you reach the end of these tasks and your waveform has not stabilised, take a look at the _If You Are Still Waiting on a Run_ section.
+
 
 ## Task 4: Watch the Diagnostics
+
 
 The main outputs from the run are written to:
 
@@ -292,6 +298,10 @@ If you have a clearly pulsating model, compare the bump location in:
 - surface velocity
 
 You may find that the bump is easier to identify in one diagnostic than another. Record that in your notes if it helps explain your classification.
+
+<!-- Mathijs to Andy: If you alter the options in here per my comments, you may also want to move this little task someplace higher. I'll leave that up to your sound judgement! -->
+### Option E: Making a movie
+
 
 
 ## Troubleshooting
