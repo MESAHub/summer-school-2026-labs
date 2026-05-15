@@ -529,11 +529,11 @@ delta_lgTeff_limit = 0.05d0
 
 These two items mainly affect the time stepping that matters more for the accretion (because compressional heating changes the surface luminosity). But otherwise, we didn't do anything to relax the time resolution. 
 
-<!-- #### Limiting changes in $T_{c}$ and $\rho_{c}$
+#### Limiting changes in $T_{c}$ and $\rho_{c}$
 
 Now, when the core undergoes weak reactions and oxygen ignition, we've seen that it undergoes rapid changes in $T_{c}$ and $\rho_{c}$. 
 
-We will work through some useful controls to limit these changes.  -->
+We will work through some useful controls to limit these changes. 
 
 | 📋 TASK |
 |:--------|
@@ -647,6 +647,26 @@ Of course, we lowered the overall spatial resolution by setting a large ``mesh_d
 
 <!-- Skye EOS -->
 {{< tab name="Skye EOS" >}}
+
+#### Skye EOS
+
+In this lab, we have turned off the Skye EOS, in favor of the HELM EOS. They both cover the degenerate region, but Skye EOS has better treatment of Coulomb effects in these dense regions. Sadly, better physics (thermodynamics) sometimes means more convergence issues. So to speed things up, we turned off Skye EOS. 
+
+> [!IMPORTANT]
+> For low accretion rates (like $10^{-8}M_{\odot}\rm{yr}^{-1}), Urca cooling will cool the core sufficiently that it reaches crystallization. The thermodynamics of crystallization, and Coulomb effects under degenerate coniditions, are more properly treated with the Skye EOS, so it is important to consider using Skye EOS. 
+
+| 📋 TASK |
+|:--------|
+| **Set ``use_Skye = .true.``** in ``inlist_common``, and **run MESA again**. Check if the evolution is any different. |
+
+> [!WARNING]
+> Make sure you do ``./clean`` and ``./mk`` first. 
+
+> [!IMPORTANT]
+> We recommend $\dot{M} > 10^{-7} M_{\odot} \rm{yr}^{-1}$ (``mass_change = 1d-7`` or greater). Lower values will result in hours-long runs because the Coulomb effects are stronger and there are more convergence issues. 
+
+> [!NOTE]
+> We also set ``mass_fraction_limit_for_Skye = 1d-10``. By default, this is ``1d-4``. We lowered this number so that the EOS considers even trace elements on the thermodynamics. We do not recommend even lower values. 
 
 
 {{< /tab >}}
