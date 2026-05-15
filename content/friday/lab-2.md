@@ -47,6 +47,13 @@ There are a few inlist parameters you will need to change in `inlist_rsp_Cepheid
 
 **Task: Turning on RSP** To use RSP within MESA, we need to set `create_RSP_model = .true.` in the `star_job` section of `inlist_rsp_Cepheid`.
 
+**Task: Keeping the model number** In the same section, set `initial_model_number` to the model number of the Lab 1 model you are using. This keeps the RSP model number matched to the GYRE output from Lab 1.
+
+```fortran
+      set_initial_model_number = .true.
+      initial_model_number =
+```
+
 For consistency with the GYRE results obtained in lab 1, we keep the same settings in both the `eos` and `kap` sections of the inlist.
 
 Most of the inlist parameters used by RSP are found in the `controls` section of the inlist. Take a minute to look at the documentation of these controls [found here](https://docs.mesastar.org/en/26.4.1/reference/controls.html#radial-stellar-pulsations-rsp).
@@ -215,6 +222,8 @@ You should aim to run 2-3 models. For lab 3, when we'll evolve the pulsations, i
 
 After setting up RSP for several different parameter combinations, you might notice that doing this manually is a little bit tedious (and if you're anything like me, very prone to human error). For the bonus task, you can try your hand at automating these runs. For this, focus first on the RSP information.
 
+The starting working directory includes a `batch_LNA.sh` template for this bonus task. You can fill in that template, adapt it, or replace it with your own script.
+
 Depending on how you're feeling halfway through Friday, there are a few different difficulty levels that you can choose from, see below. Regardless of your chosen difficulty level, once you have your results please add the luminosity, Wesenheit index, RSP period and RSP growth rate data to the shared spreadsheet. When you do this, please add your information at the bottom of the spreadsheet to avoid overwriting other people's values.
 
 #### Option 1: Let me cook
@@ -240,15 +249,15 @@ Below, you'll find an outline of one possible approach to solve this problem. Us
 
 - Conveniently, the `.mod` files saved in lab 1 contain the mass, effective temperature, and luminosity for RSP in their filenames. As you saw from the history file, the photosphere values of X and Z (used to set `RSP_X` and `RSP_Z`) remain constant during this part of evolution.
 - You can create a bash script which will loop over all the files in the `mod_dir` and parse the file names to get the values needed to run RSP.
-- In this loop you can use `shmesa change` to update the relevant inlist parameters `RSP_mass`, `RSP_Teff`, and `RSP_L` before running MESA.
-- As you saw in the main lab, RSP prints the period and growth rates to the terminal and we provided code to print the RSP Wesenheit index. Additionally, the `extras_start_step` routine in `run_star_extras` is already configured to write LNA data to an output file.
-- You will need to figure out the control necessary to trigger this output and to modify this routine to ensure that the output is not overwritten when you call MESA again for each new model (the keyword `position` in the fortran `open` call may be useful). You may also want to double check the units of this output.
+- In this loop you can use `shmesa change` to update the relevant inlist parameters `initial_model_number`, `RSP_mass`, `RSP_Teff`, and `RSP_L` before running MESA. This preserves the Lab 1 model number in the output table.
+- As you saw in the main lab, RSP prints the period and growth rates to the terminal and we provided code to print the RSP Wesenheit index.
+- For the batch run, you will need to write one row of LNA data to an output file for each model. You will need to figure out the control necessary to trigger this output and modify the file opening so that the output is not overwritten when you call MESA again for each new model (the keyword `position` in the fortran `open` call may be useful). You may also want to double check the units of this output.
 
 {{< /details >}}
 
 #### Option 3: Take my hand
 
-Start from these [partially complete solutions](https://drive.google.com/file/d/1YXyy03R6unwUVqn8J1Ej9TOM1ZmYnyoz/view?usp=share_link) which use the method described in the hint above. As with the inlist, all the changes you need to make are marked with `!!!`.
+Start from these [partially complete solutions](https://drive.google.com/file/d/1YXyy03R6unwUVqn8J1Ej9TOM1ZmYnyoz/view?usp=share_link) which use the method described in the hint above. They include a starter `batch_LNA.sh` and output-writing scaffold; all the changes you need to make are marked with `!!!`.
 
 #### Option 4: Show me how it's done
 
@@ -256,12 +265,12 @@ Start from these [partially complete solutions](https://drive.google.com/file/d/
 
 This is a [complete set of solutions](https://drive.google.com/file/d/1q_ieQpw9ggKxSQ-5eoDLMWcuXlMX4hrQ/view?usp=share_link) with comments explaining the code. Read through the code to understand what is happening and then run it using your results from lab 1.
 
-If you use these solutions files directly, you still need to pass the correct path for your `mod_dir` from lab 1 to `batch_LNA.sh`. The supplied script updates `RSP_mass`, `RSP_Teff`, and `RSP_L` from the `.mod` filenames. Set `RSP_X` and `RSP_Z` in `inlist_rsp_Cepheid` to the composition you want to use before launching the bash script using the command `./batch_LNA.sh`. If you get a permissions error simply run `chmod u+x batch_LNA.sh` and try to run the script again.
+If you use these solutions files directly, you still need to pass the correct path for your `mod_dir` from lab 1 to `batch_LNA.sh`. The supplied script updates `initial_model_number`, `RSP_mass`, `RSP_Teff`, and `RSP_L` from the `.mod` filenames. Set `RSP_X` and `RSP_Z` in `inlist_rsp_Cepheid` to the composition you want to use before launching the bash script using the command `./batch_LNA.sh`. If you get a permissions error simply run `chmod u+x batch_LNA.sh` and try to run the script again.
 
 {{< /details >}}
 
 > [!TIP]
-> For options 2-4, your output will be a tab-separated file. Most spreadsheet programs (Excel, LibreOffice Calc, GoogleSheets) will be able to import a tab-separated file. Then, the columns of this new spreadsheet can easily by copied into the class spreadsheet.
+> For options 2-4, your output will be a whitespace-separated table. Most spreadsheet programs (Excel, LibreOffice Calc, GoogleSheets) can import this kind of text file. Then, the columns of this new spreadsheet can easily be copied into the class spreadsheet.
 
 ### Bonus task part 2
 

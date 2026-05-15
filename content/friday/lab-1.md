@@ -385,13 +385,12 @@ We then have a few lines of code which parse the `x_integer_ctrl` and `x_ctrl` v
       gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist
       max_mode_num = s% x_integer_ctrl(1) ! Sets how many modes should be saved
       mode_l = s% x_integer_ctrl(1)       ! Sets l value of modes
-      save_mod_interval = s% x_integer_ctrl(1) ! Sets how often to save .mod files
       save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
 ```
 
-However, you might notice that the current code sets all the new integer variables to `x_integer_ctrl(1)`.
+However, you might notice that the current code sets the mode-control variables to `x_integer_ctrl(1)`, even though the inlist provides separate controls for them.
 
-**Task 5.1** Use the comments in `inlist_project` to correct this and set each value correctly.
+**Task 5.1** Use the comments in `inlist_project` to correct `max_mode_num` and `mode_l`.
 
 {{< details title="Answer 5.1" closed="true" >}}
 
@@ -402,7 +401,6 @@ The correct assignments are
    gyre_interval = s% x_integer_ctrl(1)! Sets how often to call GYRE in the inlist
    max_mode_num = s% x_integer_ctrl(2) ! Sets how many modes should be saved
    mode_l = s% x_integer_ctrl(3)       ! Sets l value of modes
-   save_mod_interval = s% x_integer_ctrl(4) ! Sets how often to save .mod files
    save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
 
 ```
@@ -423,14 +421,14 @@ We then zero out the variables that we saw used in `data_for_extra_history_colum
 
 ```
 
-As you saw we are only calling GYRE every `s% x_integer_ctrl(1)` time steps. If we don't update the values each time step (because we did't call GYRE), the values from the previous GYRE call will persist. This might be confusing as we'll have values at time steps where GYRE wasn't actually called. By setting everything to zero we ensure that we only have results for time steps where GYRE was actually called.
+The supplied inlist sets `s% x_integer_ctrl(1) = 1`, so GYRE is called every step in the dense-output part of the run. If you later increase this interval, the values from the previous GYRE call would otherwise persist on steps where GYRE was not actually called. By setting everything to zero we ensure that we only have results for time steps where GYRE was actually called.
 
 The code then checks if we are in the part of the evolution where we want GYRE output. We want the GYRE region to begin when
 
 1. We are in the core helium burning stage.
 2. Models have logTeff above 3.66d0 (this ensures that these models work well for lab 2).
 
-Inside this region, we write history output, print terminal output, and save `.mod` files every model, but only call GYRE every `gyre_interval` models. If the GYRE cadence condition is also met, we set `call_gyre = .true.`.
+Inside this region, the history output, terminal output, and `.mod` file saves all follow the GYRE cadence, which is controlled by `gyre_interval` and set to 1 in the supplied inlist. Outside this region, history and terminal output return to every 10 models, and `.mod` file saving is disabled.
 
 These checks are done by this bit of code:
 
@@ -439,9 +437,9 @@ These checks are done by this bit of code:
    in_gyre_region = s% center_h1 <= 1d-12 .and. &
       safe_log10(s% power_he_burn) >1d0 .and. logTeff > gyre_logTeff_min
    if (in_gyre_region) then
-      save_mod_interval = 1
-      s% history_interval = 1
-      s% terminal_interval = 1
+      save_mod_interval = gyre_interval
+      s% history_interval = gyre_interval
+      s% terminal_interval = gyre_interval
       if (gyre_interval > 0 .and. MOD(s% model_number, gyre_interval) == 0) then
          call_gyre = .true.
       end if
@@ -449,6 +447,7 @@ These checks are done by this bit of code:
          need_to_save_model = .true.
       end if
    else
+      save_mod_interval = -1
       s% history_interval = 10
       s% terminal_interval = 10
    end if
@@ -507,7 +506,7 @@ As noted in the comments:
 
 We then move the information returned by GYRE to the variables used by `data_for_extra_history_columns`. In this setup, GYRE in MESA also prints some information to the  terminal but again only once `log_Teff = log10(T_eff/K)` is greater than `3.66`.
 
-The last additional steps in this subroutine check whether we need to save a `.mod` file. The saved models go into `mod_dir/`; keep that directory because Lab 3 uses these saved models as starting points for nonlinear saturation runs. In the GYRE region, the model-save interval is temporarily set to 1, while `x_ctrl(1) = 0d0` means the effective-temperature cut does not reject any of those saves.
+The last additional steps in this subroutine check whether we need to save a `.mod` file. The saved models go into `mod_dir/`; keep that directory because Lab 3 uses these saved models as starting points for nonlinear saturation runs. In the GYRE region, the model-save interval is temporarily set to `gyre_interval`, while `x_ctrl(1) = 0d0` means the effective-temperature cut does not reject any of those saves.
 
 ## 6. Nice! Now let's change the ```pgplot``` window _during_ the run!
 

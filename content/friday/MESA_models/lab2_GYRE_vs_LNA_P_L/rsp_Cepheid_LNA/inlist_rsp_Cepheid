@@ -3,6 +3,8 @@
 
       show_log_description_at_start = .false.
       create_RSP_model = .true.
+      set_initial_model_number = .true.
+      initial_model_number = 0 ! Update to the Lab 1 model number for single-model runs.
       
 / ! end of star_job namelist
 
@@ -20,8 +22,6 @@
 
 &controls
 ! Set parameters to build RSP envelope 
-    x_character_ctrl(10) = 'RSP.dat'
-    x_integer_ctrl(10) = 0 ! optional Lab 1 model number written to the RSP output table
     ! Change these parameters 
     RSP_mass = 4.4158
     RSP_Teff = 5153

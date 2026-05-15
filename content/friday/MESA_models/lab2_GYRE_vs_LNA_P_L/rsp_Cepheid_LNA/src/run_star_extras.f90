@@ -19,10 +19,10 @@
 
 !!! Solutions for the bonus task of Lab 2 for Friday's lab at the 2026 MESA Summer school
 !!! This file runs RSP-LNA using the parameters specified in the inlist. 
-!!! It then saves the following in an output specified by x_character_ctrl(10): 
-!!! model number, M, L, Teff, RSP Wesenheit index, RSP F/F1 periods, and RSP F/F1 growth rates
-!!! This run_star_extras is designed to be called within a bash script that loops over a number of models 
-!!! and so it appends to the file. 
+!!! It then saves the following in RSP.dat:
+!!! Lab 1 model number, M, L, Teff, RSP Wesenheit index, RSP F/F1 periods,
+!!! and RSP F/F1 growth rates
+!!! This run_star_extras is designed to append to the file when called from the bonus bash script.
 
 module run_star_extras
 
@@ -35,6 +35,7 @@ module run_star_extras
       implicit none
 
       logical :: need_to_write_LNA_data
+      character(len=*), parameter :: lna_output_file = 'RSP.dat'
 
       contains
 
@@ -68,7 +69,7 @@ module run_star_extras
          if (ierr /= 0) return
 !         call test_suite_startup(s, restart, ierr)
          if (.not. restart) then
-            need_to_write_LNA_data = len_trim(s% x_character_ctrl(10)) > 0
+            need_to_write_LNA_data = .true.
          else  ! it is a restart
             need_to_write_LNA_data = .false.
          end if
@@ -80,7 +81,7 @@ module run_star_extras
          use colors_def, only: Colors_General_Info, get_colors_ptr
          use colors_lib, only: how_many_colors_history_columns, data_for_colors_history_columns
          integer, intent(in) :: id
-         integer :: ierr, io, i, output_model_number
+         integer :: ierr, io, i
          type (star_info), pointer :: s
          real(dp) :: m_div_h, min_m_div_h, max_m_div_h, V_mag, I_mag, R_VI, W_VI
          type(colors_general_info), pointer :: colors_settings => null()
@@ -140,16 +141,13 @@ module run_star_extras
          end if 
 
          if (need_to_write_LNA_data) then
-            output_model_number = s% x_integer_ctrl(10)
-            if (output_model_number <= 0) output_model_number = s% model_number
-
             io = 61
-            open(io,file=trim(s% x_character_ctrl(10)),status='unknown', position='append')
-            write(io, '(i12,8(1x,e20.10))') output_model_number, s% RSP_mass, s% RSP_L, s% RSP_Teff, W_VI, &
+            open(io,file=lna_output_file,status='unknown', position='append')
+            write(io, '(i12,8(1x,e20.10))') s% model_number, s% RSP_mass, s% RSP_L, s% RSP_Teff, W_VI, &
                s% rsp_LINA_periods(1)/86400.d0, s% rsp_LINA_growth_rates(1), &
                s% rsp_LINA_periods(2)/86400.d0, s% rsp_LINA_growth_rates(2)
             close(io)
-            write(*,*) 'write ' // trim(s% x_character_ctrl(10))
+            write(*,*) 'write ' // lna_output_file
             need_to_write_LNA_data = .false.
          end if
 

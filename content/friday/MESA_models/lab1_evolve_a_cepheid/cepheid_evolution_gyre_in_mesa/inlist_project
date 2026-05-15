@@ -34,7 +34,7 @@
 / !end of eos namelist
 
 &colors
-   use_colors = .true.
+   use_colors = .false.
    instrument = 'data/colors_data/filters/Generic/Johnson'
    stellar_atm = 'data/colors_data/stellar_models/Kurucz2003all/'
    vega_sed = 'data/colors_data/stellar_models/vega_flam.csv'
@@ -57,16 +57,14 @@
    xa_central_lower_limit(1) = 1d-4
 
    ! GYRE output controls
-   x_integer_ctrl(1) = 10        ! output GYRE info at this step interval
+   x_integer_ctrl(1) = 1         ! output GYRE info at this step interval
 
    x_integer_ctrl(2) = 3         ! max number of modes to output per call
 
    x_integer_ctrl(3) = 0         ! mode l (e.g. 0 for p modes, 1 for g modes)
                                     ! should match gyre.in mode l
-   x_integer_ctrl(4) = 10        ! save .mod files at this step interval
 
    x_ctrl(1) = 0d0               ! save .mod files when Teff is greater than this
-
 
 ! convection controls
     steps_before_use_TDC = 0
@@ -138,7 +136,6 @@
  read_extra_pgstar_inlist(1) = .true.
  extra_pgstar_inlist_name(1)= 'inlist_pgstar'
 
- ! Lynn: Is there a good reason this is here and not all in the inlist_pgstar file?
  Grid1_file_dir = 'png_evolution'
  History_Track1_file_flag = .false.
  History_Track2_file_flag = .false.
