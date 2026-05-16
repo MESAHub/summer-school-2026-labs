@@ -73,7 +73,7 @@ Choose a model that:
 - preferably showed positive fundamental-mode growth in Lab 1 or Lab 2
 - is part of the shared class sample, so different groups cover different periods
 
-If you completed Lab 2, an especially good choice is a model with a relatively large fundamental-mode growth rate. If you also estimated that `P_0/P_2` is close to `0.5`, that makes the model even more interesting for this lab.
+If you completed Lab 2, an especially good choice is a model with a relatively large fundamental-mode growth rate. If you also estimated that `P_2/P_0` is close to `0.5`, that makes the model even more interesting for this lab.
 
 {{< /details >}}
 
