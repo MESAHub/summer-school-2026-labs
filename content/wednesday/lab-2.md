@@ -16,12 +16,12 @@ Each cycle emits two neutrinos that carry energy directly out of the star, provi
 
 In this lab you will:
 1. Add the **A=23 Urca pair** (Na²³ ↔ Ne²³) to your nuclear network and observe the Urca shell in real time with pgstar.
-2. Add the **A=25 Urca pair** (Mg²⁵ → Na²⁵ → Ne²⁵) and compare its effect against the A=23 run using a Google Colab notebook.
+2. Add the **A=25 Urca pair** (Mg²⁵ → Na²⁵ → Ne²⁵) and compare its effect against the A=23 run using pgstar plots and terminal history output.
 3. Estimate the **compressional heating and Urca cooling timescales** of the white dwarf.
 
 ### Helpful Links
 
-The general Google Drive for these Wednesday labs can be found [HERE]( FIXLINK ).
+The general Google Drive for these Wednesday labs can be found [HERE](https://drive.google.com/drive/folders/1OkVI_D5ilrETjjRzcqswcafA9bwROWfV?usp=drive_link).
 
 More specifically, the files for Lab 2 can be found [HERE]( FIXLINK ).
 The drive contains the starting point, partial solutions, and a full solution.
@@ -277,7 +277,7 @@ add_reactions(
 {{< details title="Partial Solution" closed="true" >}}
 ```fortran
 ! in &star_job
-    load_model_filename = '../make_one_wd/1.1Msun_ONeMg2Na.mod'  !!!!!
+    load_model_filename = '1.1Msun_ONeMg2Na.mod'                                !!!!!
     new_net_name = 'ONeNaMg25.net'                                !!!!!
 
 ! in &controls
@@ -298,15 +298,69 @@ add_reactions(
 {{< /details >}}
 
 > [!NOTE]
-> `run_star_extras.f90` already computes the A=25 lambda rates, so the A=25 pgstar panel (`Profile_Panels2`) will appear automatically.
-> You do **not** need to recompile unless you changed the Fortran source.
+> Before running the A=25 case, two updates are needed:
+> 1. **`run_star_extras.f90`**: extend the rate computation to include the A=25 pair (4 profile columns instead of 2). You **will** need to recompile with `./mk`.
+> 2. **`inlist_pgstar`**: expand `Profile_Panels1` to 3 panels — A=23 rates (panel 1), A=25 rates (panel 2), and the neutrino emissivity (panel 3).
+
+{{< details title="Hint: run_star_extras.f90 — changes for A=25 rates" closed="true" >}}
+In `how_many_extra_profile_columns`, change `2` to `4`.
+
+In `data_for_extra_profile_columns`, extend `nr`, the column names, and the species pairs:
+```fortran
+! Change:
+how_many_extra_profile_columns = 4
+
+! In data_for_extra_profile_columns:
+names(1) = 'lambda_na23_ne23'
+names(2) = 'lambda_ne23_na23'
+names(3) = 'lambda_mg25_na25'    ! A=25 EC: Mg25 + e- -> Na25
+names(4) = 'lambda_na25_mg25'    ! A=25 BD: Na25 -> Mg25 + e-
+
+nr = 4     ! was 2
+! allocate(...) call stays the same — nr now controls the size
+
+weak_lhs(1) = 'na23'; weak_rhs(1) = 'ne23'
+weak_lhs(2) = 'ne23'; weak_rhs(2) = 'na23'
+weak_lhs(3) = 'mg25'; weak_rhs(3) = 'na25'
+weak_lhs(4) = 'na25'; weak_rhs(4) = 'mg25'
+```
+{{< /details >}}
+
+{{< details title="Hint: inlist_pgstar — expand to 3 panels" closed="true" >}}
+Change `profile_panels1_num_panels = 2` to `3` and update the title. Then add panel 2 (A=25 rates) and renumber the neutrino emissivity to panel 3:
+```fortran
+profile_panels1_num_panels = 3
+profile_panels1_title = 'Urca Shells'
+
+! Panel 2: A=25 pair — Mg25 e-capture (left) vs Na25 beta-decay (right)
+profile_panels1_yaxis_name(2) = 'lambda_mg25_na25'
+profile_panels1_yaxis_log(2) = .true.
+profile_panels1_ymin(2) = -40d0
+profile_panels1_ymax(2) = 5d0
+profile_panels1_other_yaxis_name(2) = 'lambda_na25_mg25'
+profile_panels1_other_yaxis_log(2) = .true.
+profile_panels1_other_ymin(2) = -40d0
+profile_panels1_other_ymax(2) = 5d0
+
+! Panel 3: neutrino emissivity (was panel 2 — update both index and name)
+profile_panels1_yaxis_name(3) = 'eps_nuc_neu_total'
+profile_panels1_yaxis_log(3) = .true.
+profile_panels1_ymin(3) = -5d0
+profile_panels1_ymax(3) = 10d0
+profile_panels1_other_yaxis_name(3) = 'non_nuc_neu'
+profile_panels1_other_yaxis_log(3) = .true.
+profile_panels1_other_ymin(3) = -5d0
+profile_panels1_other_ymax(3) = 10d0
+```
+Also delete or comment out the old `profile_panels1_yaxis_name(2)` block that pointed to `eps_nuc_neu_total`.
+{{< /details >}}
 
 
 ### Step 6: Run and Compare with pgstar
 
 | 📋 TASK 7 |
 |:--------|
-| Run the A=25 case (`./rn`) and observe **both** `Profile_Panels1` (A=23 shell) and `Profile_Panels2` (A=25 shell). |
+| Run the A=25 case (`./rn`) and observe the **`Profile_Panels1`** window — it now shows three panels: A=23 rates (panel 1), A=25 rates (panel 2), and the combined neutrino emissivity (panel 3). |
 
 Look for:
 - A second Urca shell appearing at a **higher density** than the A=23 shell.
@@ -317,44 +371,150 @@ Look for:
 > $$\log_{10} \rho_{\rm thresh} \approx 9.3 \quad (^{25}\mathrm{Mg}/^{25}\mathrm{Na})$$
 
 
-### Step 7: Notebook Comparison
+### Step 7: Compare the Two Runs
 
 | 📋 TASK 8 |
 |:--------|
-| Open the **Google Colab notebook** ([link]( FIXLINK )) and upload your two LOGS directories (`LOGS_ONeNa_1d-6` and `LOGS_ONeNaMg25_1d-6`). Follow the notebook to plot the central temperature, density, and neutrino luminosity from both runs. |
+| Compare your A=23-only run against the A=23+A=25 run using the pgstar windows and terminal output. Look at the central temperature and density evolution — does adding the second Urca pair make a measurable difference to the thermal history? |
 
-The notebook guides you through:
-1. Plotting central T and ρ evolution for both runs.
-2. Comparing neutrino luminosities.
-3. Estimating compressional heating and Urca cooling timescales (see Part 3 below).
-4. Profile snapshots of the Na²³/Ne²³ and Mg²⁵/Na²⁵ mass fractions at the Urca shells.
+Things to compare:
+- Central temperature $T_c$ and density $\rho_c$ at the end of the run.
+- Neutrino luminosity (`log_Lneu`) from your history file.
+- The density at which the A=25 Urca shell becomes active compared to A=23.
 
 ---
 
-## Part 3: Compressional Heating and Urca Cooling Timescales
+## Bonus: Compressional Heating and Urca Cooling Timescales
+
+> [!NOTE]
+> For background on the physics in this bonus section, see Appendix A of [Schwab et al. 2017](https://arxiv.org/pdf/1708.07514).
 
 As the white dwarf accretes mass, compressional work heats the core.
 The Urca shells remove this energy via neutrinos.
 The competition between these rates governs the thermal evolution and ultimately the ignition conditions.
 
-The relevant timescales are:
+Three timescales capture this competition:
 
-$$\tau_{\rm heat} = \frac{E_{\rm th}}{L_{\rm comp}} \approx \frac{k_B T_c \, M_{\rm WD}/m_u}{G M_{\rm WD} \dot{M} / R_{\rm WD}}$$
+| Symbol | Formula | Physical meaning |
+|:-------|:--------|:----------------|
+| $\tau_\rho$ | $\delta t \,/\, \lvert\delta \ln \rho_c\rvert$ | How long it takes to compress the core by $e$-fold |
+| $\tau_\times$ | $(9/\eta)\,\tau_\rho$ | Time for the core to sweep through the Urca shell (shell width $\sim 9/\eta$ in $\ln\rho$) |
+| $\tau_\nu$ | $c_v T \,/\, \epsilon_\nu$ | Thermal energy content divided by neutrino loss rate |
 
-$$\tau_{\rm cool} = \frac{E_{\rm th}}{L_\nu}$$
+Here $\eta = \mu_e / k_B T$ is the electron degeneracy parameter and $\epsilon_\nu$ is the net neutrino energy loss rate per gram.
+All three timescales are accessible at each timestep through the `star_info` pointer `s`.
 
-where $L_\nu$ is the total neutrino luminosity from the Urca shells.
+### Bonus Step 1: Add timescale history columns
 
-| 📋 TASK 9 |
+MESA lets you log custom quantities by implementing two functions in `run_star_extras.f90`:
+
+- `how_many_extra_history_columns` — returns the number of extra columns
+- `data_for_extra_history_columns` — fills in the column names and values
+
+Open `src/run_star_extras.f90`. You will find both functions already stubbed out (the history counterparts of the profile lambda columns you added in Part 1).
+
+The `star_info` fields you need are all evaluated at zone index `s% nz` (the innermost zone, i.e. the stellar centre):
+
+| Field | Units | Quantity |
+|:------|:------|:---------|
+| `s% dt` | s | Current timestep |
+| `s% dxh_lnd(s% nz)` | — | $\delta\ln\rho_c$ over this step |
+| `s% eta(s% nz)` | — | Electron degeneracy parameter $\eta$ |
+| `s% cv(s% nz)` | erg g⁻¹ K⁻¹ | Heat capacity at constant volume |
+| `s% T(s% nz)` | K | Temperature |
+| `s% eps_nuc_neu_total(s% nz)` | erg g⁻¹ s⁻¹ | Net neutrino energy loss rate |
+| `secyer` | s yr⁻¹ | Seconds per year (from `const_def`, already `use`d) |
+
+| 📋 BONUS TASK 1 |
 |:--------|
-| Using the notebook (Section 3), compute $\tau_{\rm heat}$ and $\tau_{\rm cool}$ at a late stage of your run. Which timescale is shorter? What does this imply for the white dwarf's thermal state as it approaches oxygen ignition? |
+| In `run_star_extras.f90`, change `how_many_extra_history_columns` to return **3**. Then populate `data_for_extra_history_columns` with names `'tau_rho'`, `'tau_cross'`, and `'tau_cool'` (in years). Recompile with `./mk`. |
+
+{{< details title="Hint: code for data_for_extra_history_columns" closed="true" >}}
+```fortran
+subroutine data_for_extra_history_columns(id, n, names, vals, ierr)
+   ...
+   real(dp) :: tau_rho, tau_cross, tau_cool
+
+   names(1) = 'tau_rho'
+   names(2) = 'tau_cross'
+   names(3) = 'tau_cool'
+
+   ! tau_rho: compressional timescale
+   tau_rho = s% dt / max(abs(s% dxh_lnd(s% nz)), 1d-99)
+   vals(1) = tau_rho / secyer
+
+   ! tau_cross: time to sweep through the Urca shell
+   tau_cross = 9d0 / max(s% eta(s% nz), 1d-10) * tau_rho
+   vals(2) = tau_cross / secyer
+
+   ! tau_cool: neutrino cooling timescale
+   if (s% eps_nuc_neu_total(s% nz) > 0d0) then
+      tau_cool = s% cv(s% nz) * s% T(s% nz) / s% eps_nuc_neu_total(s% nz)
+   else
+      tau_cool = 1d99
+   end if
+   vals(3) = min(tau_cool / secyer, 1d99)
+```
+The `max(...)` guards prevent division by zero during the early stages of a run.
+{{< /details >}}
+
+### Bonus Step 2: Display the timescales in pgstar
+
+MESA's `History_Panels` plot type can display any history column (including your new extras) against any other history column or model number.
+Each panel has a left and right y-axis; set `yaxis_log = .true.` to display $\log_{10}$ of the value.
+
+Add a `History_Panels1` block to `inlist_pgstar` that shows the three timescales vs $\log\rho_c$ — no recompile needed.
+
+| 📋 BONUS TASK 2 |
+|:--------|
+| Add a `History_Panels1` window to `inlist_pgstar` with 2 panels: one comparing $\tau_\rho$ and $\tau_\nu$, another comparing $\tau_\times$ and $\tau_\nu$. Use `log_center_Rho` as the x-axis. Run with `./rn` and watch the timescales evolve. |
+
+{{< details title="Hint: inlist_pgstar controls" closed="true" >}}
+```fortran
+  History_Panels1_win_flag = .true.
+  History_Panels1_win_width = 10
+  History_Panels1_title = 'Timescales'
+
+  History_Panels1_xaxis_name = 'log_center_Rho'
+  History_Panels1_xmin = 8.5d0
+  History_Panels1_xmax = -101d0   ! -101 means auto
+
+  History_Panels1_num_panels = 2
+
+  ! Panel 1: compressional vs cooling
+  History_Panels1_yaxis_name(1) = 'tau_rho'
+  History_Panels1_yaxis_log(1) = .true.
+  History_Panels1_ymin(1) = 0d0
+  History_Panels1_ymax(1) = 15d0
+  History_Panels1_other_yaxis_name(1) = 'tau_cool'
+  History_Panels1_other_yaxis_log(1) = .true.
+  History_Panels1_other_ymin(1) = 0d0
+  History_Panels1_other_ymax(1) = 15d0
+
+  ! Panel 2: crossing vs cooling
+  History_Panels1_yaxis_name(2) = 'tau_cross'
+  History_Panels1_yaxis_log(2) = .true.
+  History_Panels1_ymin(2) = 0d0
+  History_Panels1_ymax(2) = 15d0
+  History_Panels1_other_yaxis_name(2) = 'tau_cool'
+  History_Panels1_other_yaxis_log(2) = .true.
+  History_Panels1_other_ymin(2) = 0d0
+  History_Panels1_other_ymax(2) = 15d0
+```
+{{< /details >}}
+
+### Bonus Step 3: Interpret the results
+
+| 📋 BONUS TASK 3 |
+|:--------|
+| At late times ($\log\rho_c \gtrsim 9$), which timescale is shortest: $\tau_\rho$, $\tau_\times$, or $\tau_\nu$? What does the ordering imply for whether the Urca shells can efficiently regulate the core temperature? |
 
 {{< details title="Discussion hint" closed="true" >}}
-If $\tau_{\rm cool} \ll \tau_{\rm heat}$, the Urca shells cool the WD faster than compressional work can heat it — the core stays cold, favouring core collapse (cECSNe).
+- If $\tau_\nu \ll \tau_\rho$: the Urca shells cool the WD faster than compression heats it — the core stays cold, favouring core collapse (**cECSNe**).
+- If $\tau_\rho \ll \tau_\nu$: compressional heating wins and the WD warms up, favouring thermonuclear runaway (**ECSNe**).
+- If $\tau_\times \ll \tau_\rho$: the core sweeps through the Urca shell quickly, so even a narrow shell can radiate efficiently.
 
-If $\tau_{\rm heat} \ll \tau_{\rm cool}$, the WD heats up, favouring thermonuclear runaway (ECSNe).
-
-This transition is sensitive to $\dot{M}$ and the Urca pair threshold densities — exactly the crowdsourcing exercise you will explore in Lab 3!
+This balance is sensitive to $\dot{M}$ and the Urca pair threshold densities — exactly the crowdsourcing question you will explore in Lab 3!
 {{< /details >}}
 
 ---
