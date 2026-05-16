@@ -23,7 +23,7 @@ In this lab you will:
 
 The general Google Drive for these Wednesday labs can be found [HERE](https://drive.google.com/drive/folders/1OkVI_D5ilrETjjRzcqswcafA9bwROWfV?usp=drive_link).
 
-More specifically, the files for Lab 2 can be found [HERE]( FIXLINK ).
+More specifically, the files for Lab 2 can be found [HERE](https://drive.google.com/drive/folders/1AIM4g5PDbi5xV7wByY-F9xBA317evdMB?usp=drive_link).
 The drive contains the starting point, partial solutions, and a full solution.
 
 Consult the [MESA documentation](https://docs.mesastar.org/en/latest/) throughout this lab.
@@ -45,7 +45,7 @@ Consult the [MESA documentation](https://docs.mesastar.org/en/latest/) throughou
 
 | 📋 TASK 1 |
 |:--------|
-| **Download** the Lab 2 starting point from the [Google Drive]( FIXLINK ) to a local working directory. |
+| **Download** the Lab 2 starting point from the [Google Drive](https://drive.google.com/file/d/1V68deP8I-exN8hjD3N-BFnvtl8AkZr91/view?usp=sharing) to a local working directory. |
 
 The starting point is your completed Lab 1 setup, now configured to load a 1.1 M<sub>&#9737;</sub> O-Ne-Na white dwarf model.
 
@@ -521,6 +521,6 @@ This balance is sensitive to $\dot{M}$ and the Urca pair threshold densities —
 
 ## Solution / End Point
 
-The full solution for Lab 2 (which also serves as the starting point for Lab 3) can be downloaded [HERE]( FIXLINK ).
+The full solution for Lab 2 (which also serves as the starting point for Lab 3) can be downloaded [HERE](https://drive.google.com/file/d/1fkBKUwb70Wf44Lxis7w530GLdj-JmPi_/view?usp=sharing).
 
 [^1]: Suzuki et al. 2016, ApJ 817, 163 — sd-shell electron capture and β-decay rates at stellar densities.
