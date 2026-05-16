@@ -594,10 +594,10 @@ Suppose you want to add two new history columns:
 Then one possible change is:
 
 ```fortran
-      TDC_pulsation_how_many_extra_history_columns = 13
+      TDC_pulsation_how_many_extra_history_columns = 14
 ```
 
-instead of `11`.
+instead of `12`.
 
 Then append the new columns in `TDC_pulsation_data_for_extra_history_columns`, for example:
 
