@@ -154,7 +154,7 @@ If the compilation succeeds, start the non-linear run:
 ```
 
 > [!WARNING]
-> These inlists are set up so this TDC run continues **indefinitely**. It is up to you to decide when to end the run using `Ctrl+C` on Linux or `Cmd+C` on macOS.
+> These inlists are set up so this TDC run continues **indefinitely**. It is up to you to decide when to end the run using `Ctrl+C` in the terminal on both Linux and macOS.
 > Be warned, this will likely take at least 10 minutes. In the meantime, read through the tasks below. If you reach the end of these tasks and your waveform has not stabilised, take a look at the _If You Are Still Waiting on a Run_ section.
 
 
