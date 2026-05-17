@@ -90,9 +90,9 @@ At this stage, we are now ready to dive into some inlists!
 
 `inlist_common` holds the set of "defaults" that we want to be common between various accretion runs. The primary point of this is to make changes to more modular. Instead of having to sort through walls of variables for each change, the core functionality can be stored in... common.
 
-Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances and help the model converge at later times. The associated citation links for within the drop down are [^6] [^7] [^4] [^5]
+Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances and help the model converge at later times. Check the aside below **after** the lab for more details on particular choices in this file [^6] [^7] [^4] [^5]
 
-{{< details title="Aside on miscellanous variable choices in `inlist_common` (Click after completing lab)" closed="true" >}}
+{{< details title="Aside on miscellanous variable choices in `inlist_common`" closed="true" >}}
 
 The work that will be done throughout this lab requires careful consideration of input physics for real science cases. Much of this has been smoothed over for the sake of brevity, as many of the necessary inputs would also scale up runtimes, but some important eos and coulomb correction details have been retained.
 
@@ -144,7 +144,7 @@ The parameters that should be updated/added are:
 ```
 {{< /details >}}
 
-Next, we want to record the point of oxygen ignition in the white dwarf, but **DO NOT** want to try running through explosion/collapse during these labs. Set the maximum temperature of the model to 10<sup>9.1</sup> K. 
+Next, we want to record the point of oxygen ignition in the white dwarf, but **DO NOT** want to try running through explosion/implosion during these labs. Set the maximum temperature of the model to 10<sup>9.1</sup> K (when the white dwarf begins to ignite oxygen). 
 
 | 📋 TASK 3 |
 |:--------|
@@ -170,9 +170,9 @@ The parameter that should be added is:
 
 ### Step 3: Inlist Accrete
 
-With the common variables set, now we can focus on the fun part: throwing material on the surface. We will control the reaction network of the model and the material accreted within `inlist_accrete`. Unlike our previous inlist, this file has been provided mostly empty. 
+With the common variables set, now we can focus on the fun part: throwing material on the surface. We will control which reaction network is used and the material accreted within `inlist_accrete`. Unlike our previous inlist, this file has been provided mostly empty. 
 
-Starting in `&star_jobs`, load in the downloaded model `1.1Msun_ONe.mod`, change the initial network to a file we will later create called `ONe.net`, and set the weak rates to those of Suzuki+2016[^1]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the URCA process. 
+Starting in `&star_jobs`, load in the downloaded model (`1.1Msun_ONe.mod`), change the initial network to a file we will later create called `ONe.net`, and set the weak rates to those of Suzuki+2016[^1]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the URCA process. 
 
 
 | 📋 TASK 4 |
@@ -208,12 +208,12 @@ The parameters that should be added are:
 
 Next, we want to accrete material of a given composition at a given rate. This material need not be the same composition as the surface star and may be defined as mass fractions of a variety of species. 
 
-In `&controls`, set the accretion to 10<sup>-6</sup> M<sub>&#9737;</sub> / year of equal mass fractions of Oxygen-16 and Neon-20. Also, set the log output directory to a more descriptive name, `LOGS_ONe_1d-6`.
+In `&controls`, set the accretion rate to 10<sup>-6</sup> M<sub>&#9737;</sub> / year of equal mass fractions of Oxygen-16 and Neon-20. Also, set the log output directory to a more descriptive name, `LOGS_ONe_1d-6`.
 
 
 | 📋 TASK 5 |
 |:--------|
-| In `&controls`, **update `inlist_accrete`** to rename the LOGS directory to `LOGS_ONe_1d-6` and set the accretion rate to 10<sup>-6</sup> M<sub>&#9737;</sub> / year of equal mass fractions of Oxygen-16 and Neon-20|
+| In `&controls`, **update `inlist_accrete`** to rename the LOGS directory to `LOGS_ONe_1d-6` and set the accretion rate to 10<sup>-6</sup> M<sub>&#9737;</sub> / year of equal mass fractions of Oxygen-16 and Neon-20. |
 
 > [!NOTE]
 > You will need to both explicitly stop MESA from accreting the same composition as the surface and flag that the new accretion composition will be given as mass fractions.
@@ -229,9 +229,9 @@ The parameters that should be added are:
 {{< /details >}}
 
 {{< details title="Hint: How is accreting material defined?" closed="true" >}}
-The accretion of various species is primarily governed by two arrays: `accretion_species_id` and `accretion_specia_xa`. Additionally, `num_accretion_species` provides MESA with an expectation of the length of these two arrays. 
+The accretion of various species is primarily governed by two arrays: `accretion_species_id` and `accretion_specia_xa`. Additionally, `num_accretion_species` provides MESA with an expectation value for the lengths of these two arrays. 
 
-The `id` of a particular species is defined through abbreviated isotopic hyphen notation (minus the hyphen) as <\Chemical Symbol><\Mass Number>. For example, Selenium-80 is se80 and Nickel-56 is ni56. More information on the variety of isotopes available in MESA can be found in `$MESA_DIR/chem/public/chem_def.f90`
+The `id` of a particular species is defined through abbreviated isotopic hyphen notation (minus the hyphen) as [Chemical Symbol][Mass Number]. For example, Selenium-80 is se80 and Nickel-56 is ni56. More information on the variety of isotopes available in MESA can be found in `$MESA_DIR/chem/public/chem_def.f90`.
 
 The `xa` is the mass fraction of the particular species, some decimal value less than or equal to 1. 
 
@@ -276,17 +276,17 @@ Therefore, if we wanted to accrete only Hydrogen-2, we would use:
 
 ### Step 4: Building a Nuclear Network
 
-As you may have guessed from our prior flags to change the initial net, MESA allows for the creation of custom reaction networks. The default net, `basic.net`, is a sufficient case for basic hydrogen and helium burning on the main sequence, but insufficient for more detailed nucleosynthesis studies. In general, the use of a particular network should be motivated by the physics that one seeks to explore traded against the additional computational time required on larger nets. Take a look over the format and structure of this default reaction network.
+As you may have guessed from our prior flags to change the initial net, MESA allows for the creation of custom reaction networks. The default net, `basic.net`, is a sufficient case for basic hydrogen and helium burning on the main sequence, but is insufficient outside of that regime or in more detailed nucleosynthesis studies. In general, the use of a particular network should be motivated by the physics that one seeks to explore traded against the additional computational time required on larger nets. Take a look over the format and structure of this default reaction network.
 
 | 📋 TASK 6 |
 |:--------|
-| **Open `basic.net`**, peruse the included isotopes and reactions, and take note of the format |
+| **Open `basic.net`**, peruse the included isotopes and reactions, and take note of the format. |
 
 > [!NOTE]
 > The reaction networks included in MESA can be found at `$MESA_DIR/data/net_data/nets/`
 
 
-In pursuit of our central question, "implode or explode", the critical physics is whether our ONe white dwarf enters thermal runaway, producing an electron capture supernova (ECSNe) or collapse under its own gravity as a collapsing ECSNe (cECSNe).  This balance requires a nuclear network that accounts for the critical electron-capture chain Neon-20 -> Fluorine-20 -> Oxygen-20 and the burning of Oxygen-16 to Silicon-28. An overview of each of these reactions is below:
+In pursuit of our central question, "implode or explode", the critical physics is whether our ONe white dwarf enters thermal runaway, producing an thermonuclear electron capture supernova (tECSNe), or collapses under its own gravity as a collapsing ECSNe (cECSNe).  This balance requires a nuclear network that accounts for the critical electron-capture chain Neon-20 -> Fluorine-20 -> Oxygen-20 and the burning of Oxygen-16 to Silicon-28. An overview of each of these reactions is below:
 | Reaction                     | Equation                                                         |
 |------------------------------|------------------------------------------------------------------|
 | $\beta$ : Ne-20 -> F-20      | $$\ce{^{20}_{10}Ne + e- -> ^{20}_{9}F + \nu_e}$$                 |
@@ -327,7 +327,15 @@ add_isos(
 	)
 ```
 
-Isotopes of the same element can either be written separately on new lines, or written on the same line with mass numbers separated by a space (ie. `Zn64 \n Zn66` or `Zn 64 66` where \n is a newline)
+Isotopes of the same element can either be written separately on new lines, or written on the same line with mass numbers separated by a space:
+```fortran
+!ie, for Zinc 64 and Zinc 66: 
+Zn64
+Zn66
+
+! OR
+Zn 64 66
+```
 {{< /details >}}
 
 {{< details title="Partial Solution" closed="true" >}}
@@ -348,7 +356,7 @@ add_isos(
 {{< /details >}}
 
 
-With the isotopes added, we may now move to add specific reactions. Again, the consideration of reactions should depend on the physics in question. As previously mentioned, we only need to include the four $\beta$/$\beta^-$ reactions and oxygen-16 burning, as described in the table. Add these reactions to `ONe.net`
+With the isotopes added, we may now move to add specific reactions. Again, the consideration of reactions should depend on the physics in question. As previously mentioned, we only need to include the four $\beta$/$\beta^-$ reactions and oxygen-16 burning, as described in the table. Add these reactions to `ONe.net`.
 
 | 📋 TASK 8 |
 |:--------|
@@ -358,18 +366,20 @@ With the isotopes added, we may now move to add specific reactions. Again, the c
 > Use the MESA documentation to find the `reaction_handle` (ie. reaction name) format for the standard 1-to-1 weak reactions.
 > For oxygen burning, the `reaction_handle` can be found in `$MESA_DIR/data/rates_data/reactions.list`.
 
-{{< details title="Hint: What is the format of the standard 1-to-1 weak reactions " closed="true" >}}
+{{< details title="Hint: What is the format of the standard 1-to-1 weak reactions?" closed="true" >}}
 The following information can be found [here](https://docs.mesastar.org/en/latest/net/nets.html#description-of-net-format) under `reaction_handle`.
 
-$\beta$ reactions (positron emission or electron capture) between reactant x and product y follow the naming `r_x_wk_y`
+$\beta$ reactions (positron emission or electron capture) between reactant x and product y follow the naming `r_x_wk_y`.
 
-$\beta^-$ reactons (electron emission or positron capture) between reactant x and product y follow the naming `r_wk-minus_y`
+$\beta^-$ reactons (electron emission or positron capture) between reactant x and product y follow the naming `r_wk-minus_y`.
 
 Note, x and y are the abbreviated isotope names (ie. Uranium-238 would be `u238`)
 {{< /details >}}
 
 {{< details title="Hint: Where is the oxygen burning rate in `reactions.list`?" closed="true" >}}
 It is the first entry describing 2 Oxygen-16's turning into Helium-4 and Silicon-28. The correct line can be found by searching the file for `2 o16`. The `reaction_handle` is then in the first column.
+
+Note, this `r1616` rate combines the *rates* of the $^{31}_{15}P$ and $^{28}_{14}Si$ product channels of oxygen burning, while only keeping one endpoint: $^{28}_{14}Si$ .
 {{< /details >}}
 
 {{< details title="Hint: Required reactions for Ne20, F20, O20" closed="true" >}}
@@ -383,7 +393,7 @@ It is the first entry describing 2 Oxygen-16's turning into Helium-4 and Silicon
  - `r1616`
 {{< /details >}}
 
-{{< details title="Hint: What is the format to add a reaction" closed="true" >}}
+{{< details title="Hint: What is the format to add a reaction?" closed="true" >}}
 To add an a set of reactions, use 
 ```fortran
 add_reactions(
@@ -422,7 +432,7 @@ The provided `history_columns.list` and `profile_columns.list` have both already
 - `log_center_Rho`
 - `log_center_P`
 
-The following profile column outputs have been added as well information about our net:
+The following profile column outputs have been added to provide information about our net:
 - `add_eps_nuc_rates` : Nuclear energy minus neutrino losses for each reaction in network
 - `add_eps_neu_rates` : Neutrino losses for each reaction in network
 - `add_log_abundances` : Log of abundances for each isotope in network
@@ -433,9 +443,9 @@ The following profile column outputs have been added as well information about o
 
 ### Step 6: Inlist Pgstar
 
-Within the white dwarf interior, there should be some preference for electron capture ($\beta$) over electron emission ($\beta^-$), as the availability of "free" electron levels fills up with increasing density. Therefore, the rate of Ne-20 -> F-20 ($\lambda_{^{20}Ne->^{20}F}$) should be higher than the rate of F-20 -> Ne-20 ($\lambda_{^{20}F->^{20}Ne}$) at high densities.
+Within the white dwarf interior, there should be some preference for electron capture ($\beta$) over electron emission ($\beta^-$) as the "free" electron levels fill up with increasing density. Therefore, the rate of Ne-20 -> F-20 ($\lambda_{^{20}Ne->^{20}F}$) should be higher than the rate of F-20 -> Ne-20 ($\lambda_{^{20}F->^{20}Ne}$) at high densities.
 
-The provided `inlist_pgstar` has been mostly preformatted to show exactly this given some values to be created in `run_star_extras.f90`. Set `profile_panels1_yaxis_name(1)` to `lambda_ne20_f20` and `profile_panels1_other_yaxis_name(1)` to `lambda_f20_ne20`.
+The provided `inlist_pgstar` has been mostly pre-formatted to show exactly this, given some values to be created in `run_star_extras.f90`. Set `profile_panels1_yaxis_name(1)` to `lambda_ne20_f20` and `profile_panels1_other_yaxis_name(1)` to `lambda_f20_ne20`.
 
 | 📋 TASK 9 |
 |:--------|
@@ -457,7 +467,7 @@ profile_panels1_other_ymax(1) = 5d0
 
 
 > [!NOTE]
-> With these inclusions, the provided `inlist_pgstar` will be expecting two new profile columns: `lambda_ne20_f20`, `lambda_f20_ne20`
+> With these inclusions, the provided `inlist_pgstar` will now be expecting two new profile columns: `lambda_ne20_f20`, `lambda_f20_ne20`
 
 > [!WARNING]
 > Don't forget to save your changes!
@@ -471,18 +481,21 @@ Thankfully, most of the work has already been done for this lambda computation u
 
 | 📋 TASK 10 |
 |:--------|
-| In `run_star_extras`, **Bulk import** the new submodules (`rates_lib`, `eos_lib`, and `eos_def`) and **Selectively import** `Coulomb_Info` from `rates_def`  |
+| In `run_star_extras`, **bulk import** the new submodules (`rates_lib`, `eos_lib`, and `eos_def`) and **selectively import** `Coulomb_Info` from `rates_def`.  |
+
+> [!NOTE]
+> If you are unfamiliar with Fortran, see Georgia Tech's [Aerospace Engineering Resource page for Fortran90](https://aeresources.gatech.edu/Fortran/Webpage/) which compiles information on Frotran types/modules/loops/etc at an undergraduate level
 
 > [!NOTE]
 > These module names are the base name of the file which contains the necessary function. For instance, the `eval_weak_reaction_info` subroutine is defined in the file `$MESA_DIR/rates/public/rates_lib.f90`, hence the necessary module is `rates_lib`.
 
-{{< details title="What is the format for bulk imports?" closed="true" >}}
+{{< details title="Hint: What is the format for bulk imports?" closed="true" >}}
 ```fortran
 use module
 ```
 {{< /details >}}
 
-{{< details title="What is the format for selctive imports?" closed="true" >}}
+{{< details title="Hint: What is the format for selctive imports?" closed="true" >}}
 ```fortran
 use module, only: some_module_entity
 ```
@@ -504,7 +517,7 @@ With the needed functions in scope, we now need to set the number of new profile
 |:--------|
 | In `run_star_extras`, **set** number of extra profile columns to 2. |
 
-{{< details title="What function sets the number of extra profile columns?" closed="true" >}}
+{{< details title="Hint: What function sets the number of extra profile columns?" closed="true" >}}
 Look for the variable `how_many_extra_profile_columns` within the function of the same name
 {{< /details >}}
 
@@ -522,9 +535,9 @@ integer function how_many_extra_profile_columns(id)
 ```
 {{< /details >}}
 
-Now, we can add the new data to these profile columns in `data_for_extra_profile_columns`. 
+Now, we can add new data to these profile columns in `data_for_extra_profile_columns`. 
 
-Starting at the top of the subroutine, the set of necessary pointers, arrays, doubles, and integers are defined for use following the standard boilerplate seen in other fortran subroutines. Next, the names of the new profile columns need to be set to match the values expected in `inlist_pgstar` and the names of the product/reactant species for each of the reactions identified explicitly. 
+Starting at the top of the subroutine, the set of necessary pointers, arrays, doubles, and integers are defined for use following the standard boilerplate seen in other MESA subroutines. Next, the names of the new profile columns need to be set to match the values expected in `inlist_pgstar` and the names of the product/reactant species for each of the reactions need to be identified explicitly. 
 
 | 📋 TASK 12 |
 |:--------|
@@ -561,12 +574,14 @@ weak_rhs(2) = 'ne20' !!!!!
 Using these values, the script then will allocate the necessary arrays and gather the relevant id for each reaction. Next, for each zone within the model, the script solves for lambda (click the aside below for more information when you have time after the lab). Within this loop, save the lambda value into the vals array for each reaction.
 
 {{< details title="Aside: How is this loop getting lambda?" closed="true" >}}
-TODO
+
+In a fairly broad description, the code is looping through every zone of the star starting at the outermost portion (k = 1). At each step, we first make a call to explicitly evaluate the equation of state at that zone. This includes local values of things like temperature, pressure, and electron chemical potential along with their derivatives. Next, a relevant `Coulomb_Info` structure is set to hold the necessary set of local values used in the calculation of couloumb corrections and populated. Finally, the capture rates for each reaction are evaluated. This evaluation populates values at a set of pointers for our use including lambda, Q (total thermal energy), and Qneu (thermal energy going to neutrinos).  Most of these pointers are being ignored in this particular lab.
+
 {{< /details >}}
 
 | 📋 TASK 13 |
 |:--------|
-| In `run_star_extras`, **Set** the value of `vals` to lambda for each reaction within a `do` loop|
+| In `run_star_extras`, **fill** `vals` with the value of lambda for each reaction within a `do` loop|
 
 > [!NOTE]
 > This new `do` loop should be created *within* the loop over zones. 
@@ -574,7 +589,7 @@ TODO
 > [!NOTE]
 > The value of lambda is stored in `lambda(i)` for reaction i. 
 
-{{< details title="What is the format of a do loop?" closed="true" >}}
+{{< details title="Hint: What is the format of a do loop?" closed="true" >}}
 ```fortran
 do i = minumum, maximum 
    x = y
@@ -582,12 +597,14 @@ end do
 ```
 {{< /details >}}
 
-{{< details title="What should the range of the loop be?" closed="true" >}}
-`i` should range from 1 to the number of reactions, nr
+{{< details title="Hint: What should the range of the loop be?" closed="true" >}}
+`i` should range from 1 to the number of reactions, `nr`
 {{< /details >}}
 
-{{< details title="How does `vals` expect information?" closed="true" >}}
-`vals` has form (zone_i, val_i). Therefore, over each loop on zone k, we should expect to save a value for lambda(i) at vals(k,i) where i is the reaction index ranging from 1 to the number of reactions.
+{{< details title="Hint: How does `vals` expect information?" closed="true" >}}
+`vals` has form (zone_i, val_i). 
+
+Therefore, over each loop on zone `k`, we should expect to save a value for `lambda(i)` at `vals(k,i)` where `i` is the reaction index ranging from 1 to the number of reactions (`nr`).
 {{< /details >}}
 
 {{< details title="Partial Solution" closed="true" >}}
@@ -623,16 +640,16 @@ With all the inlists complete, we can finally answer the age old question: **Wil
 > [!NOTE]
 > If you want to look at the final pgplot longer, try adding `pause_before_terminate = .true.` into the `&star_jobs` section of `inlist_common`. 
 
-{{< details title="What you should see" closed="true" >}}
+{{< details title="Answer: What you should see" closed="true" >}}
 Note: This gif stacks both the pgstar plots, but they will be separate during the run!
 
 ![landscape](/wednesday/Lab1_CombinedPGstar.gif)
 {{< /details >}}
 
-{{< details title="Does the lambda balance make sense?" closed="true" >}}
+{{< details title="Answer: Does the lambda balance make sense?" closed="true" >}}
 Yes! Broadly, we should expect $\lambda_{^{20}Ne->^{20}F}$ to be greater than $\lambda_{^{20}F->^{20}Ne}$ at high densities due to the effects of pauli blocking. At lower densities, the opposite should be true as $^{20}F$ spontaneously decays wihout enough energy to do electron capture on $^{20}Ne$.
 
-Further, the crossing point of the two curves generally agrees with the work of Pinedo+14 both by eye and when looking at the values in the associated profile columns. The profile columns provide a crossing point at log($\rho$) ~ 9.86 and log(T)~8.9. With a simple interpolation on the two panels of figure 4 from Pinedo+14, we can suspect that with log(T)~8.9, this matches the crossing point. (Note: Ye = 0.5 for our ONe white dwarf)
+Further, the crossing point of the two curves generally agrees with the work of Pinedo+14 when looking at the values in the associated profile columns (or by eye). The profile columns provide a crossing point at log($\rho$) ~ 9.86 and log(T)~8.9. With a simple interpolation on the two panels of figure 4 from Pinedo+14, we can suspect that with log(T)~8.9, this matches the crossing point. (Note: Ye = 0.5 for our ONe white dwarf)
 
 Final lambda plot:
 ![landscape](/wednesday/Lab1_FinalLambda.png)
@@ -640,12 +657,12 @@ Final lambda plot:
 
 | 📋 TASK 15 |
 |:--------|
-| **Review** the central density of the model at ignition by looking either at the pgstar plot or in `profile.data`. Using this value and Figure 8 from Holas+26[^2] (below), assuming that ignition is perfectly centered, does your model explode or implode? Does the assumption of wave speed or radius of ignition change the result? Can you identify the radius if the ignition from the resulting profile? |
+| **Review** the central density of the model at ignition by looking at the pgstar plot or in `profile.data`. Using this value and Figure 8 from Holas+26[^2] (below), assuming that ignition is perfectly centered, does your model explode or implode? What if you use the radius of ignition given from the profile? Does the assumption of wave speed or radius of ignition change the result? |
 ![landscape](/wednesday/Holas+26_Fig8.png)
 *Figure 8, from Holas+26: Outcomes of 3D hydrodynamic simulations by ignition location and central density at ignition. The dashed and dotted lines indicate the transition from explosion to collapse for the TW92 and S20 flame speeds, respectively.* [^2]
 
-{{< details title="Does it blow up?" closed="true" >}}
-Yes! The central density at ignition should be ~ $10^{9.924}$ cgs. This is firmly within the purely explosive regime below ~ $10^{9.97}$ cgs for any radius or flame speed. Looking to the profile columns, the peak temperature does not occur in the center, but at a radius of ~ 65 km, making the required densities much greater. Despite choices of flame speed and the degree to which the ignition location is off-center, these 3D simulations suggest the model would have exploded. 
+{{< details title="Answer: Does it blow up?" closed="true" >}}
+Yes! The central density at ignition should be ~ $10^{9.924}$ cgs. This is firmly within the purely explosive regime below ~ $10^{9.97}$ cgs for any radius or flame speed. Looking to the profile columns, the peak temperature does not occur in the center, but at a radius of ~ 65 km, making the required densities for collapse much greater. Despite choices of flame speed and the degree to which the ignition location is off-center, these 3D simulations suggest that our model would have exploded. 
 
 
 
