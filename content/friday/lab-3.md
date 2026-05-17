@@ -4,12 +4,12 @@ title: Lab 3 - The Hertzsprung Progression
 linkTitle: Lab 3
 ---
 
-In this lab you will take one of your saved Cepheid models from Lab 1, use a nonlinear pulsation setup to kick it into motion, and inspect the resulting waveform. Your goal is to identify where the bump appears in the cycle and combine your result with the rest of the class to reconstruct the Hertzsprung progression.
+In this lab you will take one of your saved Cepheid models from Lab 1, use a non-linear pulsation setup to kick it into motion, and inspect the resulting waveform. Your goal is to identify where the bump appears in the cycle and combine your result with the rest of the class to reconstruct the Hertzsprung progression.
 
-This is the nonlinear pulsation lab for Friday. That means the details are a little more technical than in the previous labs, but your job is still very concrete:
+This is the non-linear pulsation lab for Friday. That means the details are a little more technical than in the previous labs, but your job is still very concrete:
 
 1. start from a good Cepheid model
-2. run the nonlinear setup
+2. run the non-linear setup
 3. inspect the light-curve shape
 4. decide where the bump appears
 
@@ -25,11 +25,11 @@ $$
 P_2/P_0 \approx 0.5.
 $$
 
-As the stellar structure changes across the instability strip, the bump shifts from the descending branch, through the middle of the cycle, and onto the rising branch. In this lab, you will see that progression directly in nonlinear MESA models.
+As the stellar structure changes across the instability strip, the bump shifts from the descending branch, through the middle of the cycle, and onto the rising branch. In this lab, you will see that progression directly in non-linear MESA models.
 
 ## Setting up the work directory
 
-Download `lab3_work_dir.zip` from this [Google Drive](https://drive.google.com/file/d/11S0DjI8fPOw3Szli0Zpn-k8VdDDfP7YQ/view?usp=drive_link), unzip it into some empty directory and `cd` into that directory. You'll see that it already contains the inlists you will need. However, we need to provide TDC with a starting model to make an envelope model from to track the pulsations, just as we did with RSP in lab 2. To that end, copy the `.mod` files you created in lab 1
+Download `lab3_work_dir.zip` from this [Google Drive](https://drive.google.com/file/d/11S0DjI8fPOw3Szli0Zpn-k8VdDDfP7YQ/view?usp=drive_link), unzip it into some empty directory, and `cd` into that directory. You'll see that it already contains the inlists you will need. However, we need to provide TDC with a starting model to make an envelope model from and track the pulsations, just as we did with RSP in Lab 2. To that end, copy the `.mod` files you created in Lab 1:
 
 ```bash
 cp -r /path/to/your/lab1/mod_dir/ .
@@ -38,24 +38,18 @@ cp -r /path/to/your/lab1/mod_dir/ .
 > [!IMPORTANT]
 > Keep your Lab 1 and Lab 3 runs in separate working directories.
 
-Alternatively, you can download the models from the [Lab 1 mod file solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link), which are zipped by mass.
+Alternatively, you can download the models from the [Lab 1 mod file solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link), which are grouped by mass.
 
 > [!IMPORTANT]
 > Lab 3 uses a saved `.mod` file from Lab 1. It does **not** use a `photos/` restart file from Lab 1.
-
-<!-- It is also helpful if you still have the following information from lab 1 written down somewhere:
-
-- your initial mass
-- the name of the saved `.mod` file you want to carry forward
-- the matching `log L` and `log T_eff`
-- any period or growth-rate information you identified from the GYRE output -->
 
 
 ## Main Goal
 
 By the end of this lab, your group should be able to answer:
 
-- What is the period of your nonlinear Cepheid model?
+- What is the pulsation period of your non-linear Cepheid model?
+- Does your Cepheid model develop a bump?
 - Where is the bump in the waveform?
 - How does that compare with the rest of the class sample?
 
@@ -69,15 +63,22 @@ The filenames are written in the form
 modelNumber_currentMass_effectiveTemperature_luminosity.mod
 ```
 
+**Question:** What would make an interesting model to simulate in further detail using TDC?
+
+{{< details title="Click here to open the hint" closed="true" >}}
+
 Choose a model that:
 
 - is in the Cepheid part of the blue loop
 - preferably showed positive fundamental-mode growth in Lab 1 or Lab 2
-- has a period in the bump-Cepheid regime identified by the TA
 - is part of the shared class sample, so different groups cover different periods
 
+If you completed Lab 2, an especially good choice is a model with a relatively large fundamental-mode growth rate. If you also estimated that `P_2/P_0` is close to `0.5`, that makes the model even more interesting for this lab.
+
+{{< /details >}}
+
 > [!TIP]
-> If you completed Lab 2, the best starting point is usually a model that already looked promising in the linear analysis.
+> If you completed Lab 2, the best starting point is usually a model that showed a relatively large growth rate in the linear analysis.
 
 > [!NOTE]
 > These `.mod` files come from the second part of Lab 1, after you restarted the evolution with `./re` and let the star pass through the Cepheid phase while GYRE was running during the evolution.
@@ -104,13 +105,13 @@ For your first run:
 
 ## Task 3: Choose and set an initial kick
 
-It can take a very long time for a MESA TDC model to start pulsating "naturally". Therefore, we enforce a given radial velocity on the envelope to get the pulsating going, known as an 'initial kick'. The closer this kick is to the final pulsational radial velocity, the faster a bump in the light curve will develop.
+It can take a very long time for a MESA TDC model to start pulsating "naturally". Therefore, we enforce a given radial velocity on the envelope to get the pulsation going, known as an "initial kick". The closer this kick is to the final pulsational radial velocity, the faster a bump in the light curve will develop.
 
 From the figure below, read off a reasonable initial kick for your chosen model.
 
 ![kicks](initial_kicks.png)
 
-Now add this value into your *inlist_pulses*. **Question:** Can you find which variable stores the initial kick?
+Now add this value into your `inlist_pulses`. **Question:** Can you find which variable stores the initial kick?
 
 {{< details title="Hint: where to look" closed="true" >}}
 
@@ -132,7 +133,7 @@ Find and update this line in the `&controls` of *inlist_pulses*:
 {{< /details >}}
 
 > [!CAUTION]
-> In real scientific applications, it is safest to give the Cepheid a small initial kick and give the model a long time to converge to its final value. In this lab however, it is ok to risk using a large kick to save time.
+> In real scientific applications, it is safest to give the Cepheid a small initial kick and give the model a long time to converge to its final value. In this lab, however, it is okay to risk using a larger kick to save time.
 
 ## Task 4: Compile and Run the Model
 
@@ -146,45 +147,29 @@ First compile the work directory:
 > [!TIP]
 > Make sure you are running inside your extracted Lab 3 work directory before calling `./clean`, `./mk` or `./rn`.
 
-If the compilation succeeds, start the nonlinear run:
+If the compilation succeeds, start the non-linear run:
 
 ```bash
 ./rn
 ```
 
 > [!WARNING]
-> These inlists are set up so this TDC run continues **indefinitely**! As such, it is up to you to decide when to end the run using ctrl+C (Linux) or cmd+C (Mac).
+> These inlists are set up so this TDC run continues **indefinitely**. It is up to you to decide when to end the run using `Ctrl+C` in the terminal on both Linux and macOS.
 > Be warned, this will likely take at least 10 minutes. In the meantime, read through the tasks below. If you reach the end of these tasks and your waveform has not stabilised, take a look at the _If You Are Still Waiting on a Run_ section.
 
 
 ## Task 5: Watch the Diagnostics
 
+The PGSTAR panels are by far the most important diagnostics for this lab. For most students, they already summarise nearly everything that matters for deciding whether the pulsation is developing well and whether a bump is visible.
 
-The main outputs from the run are written to:
+If you want to know where the supporting output is written, the run also saves files in:
 
-- `LOGS_pulsation/`
 - `png_pulsation/`
+- `LOGS_pulsation/`
 - `photos/`
-- `final.mod`
 
-The quickest things to watch are:
-
-- the PGSTAR panels, if you are using graphics
-- the terminal output
-- `LOGS_pulsation/history.data`
-
-Useful quantities already written by the setup include:
-
-- `period`
-- `growth`
-- `delta_R`
-- `delta_logL`
-- `delta_Mag`
-- `KE_growth`
-- `KE_growth_avg`
-- `num_periods`
-
-You do **not** need to understand every quantity in detail to complete the lab. Focus on whether the pulsation becomes coherent and whether the waveform becomes interpretable.
+> [!TIP]
+> Compare your PGSTAR animation with the other students at your table. This is often the fastest way to see how different models behave.
 
 ## Task 6: Decide Whether the Run Is Good Enough
 
@@ -220,9 +205,9 @@ Signs that you should stop and rethink:
 - the waveform looks obviously pathological rather than pulsational
 
 > [!IMPORTANT]
-> You do not need a perfect production-quality nonlinear model. You only need a waveform that is good enough to classify the bump.
+> You do not need a perfect production-quality non-linear model. You only need a waveform that is good enough to classify the bump.
 
-## Task 7: Restart the Run If Needed
+{{< details title="What if I accidentally ended my run too early?" closed="true" >}}
 
 If the run stops but has already written restart photos, you can continue from the most recent one:
 
@@ -238,20 +223,22 @@ To restart from a specific photo file:
 
 This is useful if the model is progressing normally but simply needs more cycles before the bump becomes easy to classify.
 
-> [!NOTE]
-> Just as in Lab 1, these `photos/` files are for continuing your own run on your own machine.
+Just as in Lab 1, these `photos/` files are for continuing your own run on your own machine.
 
-## Task 8: Inspect the Waveform
+{{< /details >}}
+
+## Task 7: Inspect the Waveform
 
 Now look at the waveform and decide where the bump appears in the cycle.
 
-Use whichever of these is easiest for your group:
+Start with the PGSTAR plot. For almost everyone, this will be the easiest and clearest place to identify the bump.
 
-1. PGSTAR while the run is happening
-2. the saved plots in `png_pulsation/`
-3. the time series in `LOGS_pulsation/history.data`
+If you want to double-check what you are seeing, you can also look at:
 
-If possible, inspect more than one diagnostic. The bump is often easiest to see in a light-like curve, but the radius and surface-velocity curves can help you decide whether a feature is real.
+- the saved plots in `png_pulsation/`
+- the time series in `LOGS_pulsation/history.data`
+
+If possible, inspect more than one diagnostic. The bump is often easiest to see in a light curve in luminosity or `delta_Mag`, but the radius and surface-velocity curves can help you decide whether a feature is real.
 
 Use the following simple classification:
 
@@ -263,7 +250,7 @@ Use the following simple classification:
 > [!TIP]
 > Do not spend too long debating a borderline case. If the bump is ambiguous, record that uncertainty and move on.
 
-## Task 9: Record Your Result
+## Task 8: Record Your Result
 
 Add one row for your successful model to the shared class table.
 
@@ -279,63 +266,50 @@ At minimum, record:
 
 Once the class table starts to fill up, sort the entries by period and look for the bump progression across the sample.
 
-## Task 10: If You Have Extra Time
+## Questions for Discussion
+
+As the class table fills in, discuss these questions at your table:
+
+- how does bump location change with period?
+- where does the bump move from the descending branch to the rising branch?
+- does the class sample support the idea that the morphology is tied to the `P_2/P_0 \approx 0.5` resonance?
+- what does the TDC waveform show that the linear analysis in Lab 2 could not show on its own?
+
+## If You Are Still Waiting on a Run
+
+These TDC runs can take a long time to converge, often more than `10 minutes`. If your model is still running and you have some idle time, use that time to do one or more of the following:
+
+- review your Lab 2 notes and make sure your expected period is written down
+- look at the shared class table and decide which period range is still undersampled
+- inspect the output files you already have and make a preliminary guess about the bump
+- compare what you are seeing in PGSTAR with what appears in `history.data`
+
+## Task 9: If You Have Extra Time
 
 If your group finishes the core lab early, here are the most useful next steps, in recommended order:
 
-1. run a second model at a different period
-2. improve the first run by restarting it and letting the waveform settle further
-3. compare your nonlinear result directly with the linear information you already gathered in Lab 2
-4. look more carefully at how the bump appears in luminosity, radius, and velocity together
+1. compare your TDC result directly with the linear information you already gathered in Lab 2
+2. look more carefully at how the bump appears in luminosity, radius, and velocity together
+3. compare your PGSTAR animation with the other students at your table
+4. make a movie of your PGSTAR output
 
 You do not need to complete all of these. Pick the next one that feels most useful.
 
-### Option A: Run a Second Model
+### Option A: Compare Back to Lab 2
 
-The best use of extra time is usually to run a second model with a different period. This gives you a direct comparison inside your own group.
-
-When choosing the second model, try to pick one that is:
-
-- nearby in period to your first model, if you want to study the transition carefully
-- clearly separated in period from your first model, if you want a stronger contrast
-
-After the second run, compare:
-
-- the period
-- the bump location
-- how obvious the bump is
-- whether the waveform shape changes smoothly or dramatically
-
-### Option B: Let the First Run Settle Further
-
-If your first model looks promising but not yet clean, restart it and let it continue for more cycles:
-
-```bash
-./re
-```
-
-This can be especially helpful if:
-
-- the bump is present but weak
-- the amplitude is still clearly evolving
-- the waveform is almost, but not quite, repeating cleanly
-
-> [!TIP]
-> A cleaner single run is often more scientifically useful than a rushed second run.
-
-### Option C: Compare Back to Lab 2
-
-If you completed Lab 2, compare your nonlinear result with the linear information you already had for the same model.
+If you completed Lab 2, compare your non-linear result with the linear information you already had for the same model.
 
 Ask yourself:
 
-- did a model with positive linear growth turn into a useful nonlinear pulsator?
-- is the nonlinear period similar to the period you expected from the linear analysis?
+- did a model with positive linear growth turn into a useful non-linear pulsator?
+- is the non-linear period similar to the period you expected from the linear analysis?
 - did the model you thought would be interesting actually produce a clear bump?
 
 This is a nice way to connect the Friday labs together.
 
-### Option D: Compare Different Diagnostics
+If you also estimated where `P_2/P_0` is closest to `0.5`, compare that expectation with the waveform shape you actually see in the TDC run.
+
+### Option B: Compare Different Diagnostics
 
 If you have a clearly pulsating model, compare the bump location in:
 
@@ -345,10 +319,17 @@ If you have a clearly pulsating model, compare the bump location in:
 
 You may find that the bump is easier to identify in one diagnostic than another. Record that in your notes if it helps explain your classification.
 
-<!-- Mathijs to Andy: If you alter the options in here per my comments, you may also want to move this little task someplace higher. I'll leave that up to your sound judgement! -->
-### Option E: Making a movie
+### Option C: Compare with Other Students at Your Table
 
-Isn't that animated PGSTAR window neat?! Unfortunately, it vanishes once you end the run. Luckily, a bunch of `.png` files are outputted by MESA, which can be used to recreate the animated PGSTAR plots. You could either flick through them in an image viewer or combine them into a proper movie. MESA comes packaged with some tools to make such movies. To do so, run the following in your terminal
+If several people at your table have useful runs, compare them directly:
+
+- do the bumps appear in different parts of the cycle?
+- do the PGSTAR animations suggest a smooth progression across period?
+- which models develop the clearest bump?
+
+### Option D: Making a movie
+
+Isn't that animated PGSTAR window neat? Unfortunately, it vanishes once you end the run. Luckily, a bunch of `.png` files are output by MESA, which can be used to recreate the animated PGSTAR plots. You could either flick through them in an image viewer or combine them into a proper movie. MESA comes packaged with some tools to make such movies. To do so, run the following in your terminal:
 
 ```bash
 images_to_movie "png_pulsation/*.png" my_Cepheid_movie.mp4
@@ -374,9 +355,9 @@ Check that:
 Try these in order:
 
 - verify that you chose a genuine Cepheid candidate from Lab 1
-- if you completed Lab 2, switch to a model that showed positive fundamental-mode growth there
+- switch to a model that has a larger fundamental-mode growth rate in the Lab 2 spreadsheet
 - restart with `./re` and let it continue longer
-- switch to a TA-recommended fallback model rather than spending the whole lab debugging one difficult case
+- switch to a fallback model rather than spending the whole lab debugging one difficult case
 
 {{< /details >}}
 
@@ -384,7 +365,7 @@ Try these in order:
 
 Compare more than one diagnostic:
 
-- light-like behavior from luminosity or `delta_Mag`
+- light curve in luminosity or `delta_Mag`
 - radius variations
 - surface velocity
 
@@ -396,16 +377,13 @@ If the same feature appears consistently in more than one place, it is more like
 
 If your group finishes early, try one of these:
 
-- run a second model at a different period and see whether the bump moves
-- continue the first model longer and decide whether the bump classification becomes more secure
-- compare two nearby models and decide whether the bump progression changes smoothly or abruptly
 - use your Lab 2 linear results to estimate where `P_2/P_0` is closest to `0.5`, then see whether that corresponds to the most interesting waveform shape
 - compare the bump location in luminosity, radius, and velocity and decide which diagnostic is most useful
 - if you find an unstable radial overtone case, record it as a comparison case, but keep your main focus on the fundamental-mode Hertzsprung progression
 
 ### Bonus coding task: time-average the light curve over one cycle
 
-If you would like a more coding-focused extension, modify `run_star_extras` so that it measures a cycle-averaged quantity from the nonlinear light curve and compares that average with the corresponding static value from the original model.
+If you would like a more coding-focused extension, modify `run_star_extras` so that it measures a cycle-averaged quantity from the non-linear light curve and compares that average with the corresponding static value from the original model.
 
 One possible version of this task is:
 
@@ -455,10 +433,10 @@ The simplest first version is to time-average luminosity over one completed puls
 
 Pick the corresponding static quantity from the original model. For example:
 
-- cycle-averaged luminosity compared with the model luminosity before the nonlinear pulsation becomes large
+- cycle-averaged luminosity compared with the model luminosity before the non-linear pulsation becomes large
 - cycle-averaged magnitude compared with the magnitude implied by the static luminosity
 
-You do not need to design a perfect scientific definition here. The point is to compare a static value with the value implied by the nonlinear cycle.
+You do not need to design a perfect scientific definition here. The point is to compare a static value with the value implied by the non-linear cycle.
 
 #### Step 4: Accumulate the average over one cycle
 
@@ -480,6 +458,43 @@ over one pulsation cycle.
 > [!TIP]
 > If you want a simpler first attempt, you can average over the samples within one cycle without time weighting. Just be clear in your notes that this is an approximation.
 
+{{< details title="Hint for Step 4: where could you store the running sums?" closed="true" >}}
+
+One natural place is `src/run_star_extras_TDC_pulsation_defs.inc`, where the Lab 3 setup already stores period-related quantities such as `period`, `delta_logL`, and `delta_Mag`.
+
+You could add a few new variables there, for example:
+
+- a running weighted sum
+- a running total time
+- the most recent cycle-averaged value
+- the difference between the cycle average and the static value
+
+Then update those variables during the evolution in the same part of the code where the period-related diagnostics are already being assembled.
+
+{{< /details >}}
+
+{{< details title="Partial solution for Step 4: example accumulator variables" closed="true" >}}
+
+One possible pattern is to add a few variables to `src/run_star_extras_TDC_pulsation_defs.inc`, for example:
+
+```fortran
+      real(dp) :: cycle_sum_L_dt, cycle_sum_dt
+      real(dp) :: cycle_avg_L, cycle_avg_L_minus_static
+      real(dp) :: static_L
+```
+
+Here the idea is:
+
+- `cycle_sum_L_dt` stores the running weighted sum `sum(L * dt)`
+- `cycle_sum_dt` stores the running sum `sum(dt)`
+- `cycle_avg_L` stores the final cycle-averaged luminosity
+- `cycle_avg_L_minus_static` stores the comparison with the static model value
+- `static_L` stores the reference luminosity from the starting model
+
+You do not have to use exactly these variable names, but keeping the names explicit will make your code much easier to debug.
+
+{{< /details >}}
+
 #### Step 5: Reset the accumulators at the start of a new cycle
 
 The existing pulsation code already keeps track of completed cycles and period-level information. Use that logic to decide when one cycle has ended and the next has begun.
@@ -489,6 +504,53 @@ At the end of each completed cycle:
 - compute the average
 - save the result somewhere
 - reset the running sums for the next cycle
+
+{{< details title="Hint for Step 5: where is the existing cycle logic?" closed="true" >}}
+
+Look in `src/run_star_extras_TDC_pulsation.inc`, especially in the code that already updates:
+
+- `num_periods`
+- `period`
+- `delta_R`
+- `delta_logL`
+- `delta_Mag`
+
+That is the part of the setup that already knows when one pulsation cycle has been completed.
+
+{{< /details >}}
+
+{{< details title="Partial solution for Step 5: example update and reset logic" closed="true" >}}
+
+At each timestep, you could accumulate your weighted sums with something like:
+
+```fortran
+         cycle_sum_L_dt = cycle_sum_L_dt + s% L(1) * s% dt
+         cycle_sum_dt   = cycle_sum_dt   + s% dt
+```
+
+Then, when the existing period logic determines that one full cycle has been completed, you could compute and store the average:
+
+```fortran
+         if (cycle_sum_dt > 0d0) then
+            cycle_avg_L = cycle_sum_L_dt/cycle_sum_dt
+            cycle_avg_L_minus_static = cycle_avg_L - static_L
+         end if
+```
+
+After saving the result for that completed cycle, reset the accumulators:
+
+```fortran
+         cycle_sum_L_dt = 0d0
+         cycle_sum_dt   = 0d0
+```
+
+This is only a sketch, but it shows the basic structure:
+
+1. accumulate during the cycle
+2. compute the average at cycle end
+3. reset for the next cycle
+
+{{< /details >}}
 
 #### Step 6: Expose the new quantity in the history output
 
@@ -506,9 +568,55 @@ You can either:
 - replace one of the less important bonus outputs for your experiment, or
 - increase the number of extra history columns and append your new quantity
 
+{{< details title="Hint for Step 6: which routines control the extra history output?" closed="true" >}}
+
+The relevant routines are:
+
+- `TDC_pulsation_how_many_extra_history_columns`
+- `TDC_pulsation_data_for_extra_history_columns`
+
+These are in `src/run_star_extras_TDC_pulsation.inc`.
+
+If you add new output columns, remember to update both:
+
+- the number of extra columns
+- the names and values written into those columns
+
+{{< /details >}}
+
+{{< details title="Partial solution for Step 6: example history-column changes" closed="true" >}}
+
+Suppose you want to add two new history columns:
+
+- the cycle-averaged luminosity
+- the difference between that value and the static luminosity
+
+Then one possible change is:
+
+```fortran
+      TDC_pulsation_how_many_extra_history_columns = 14
+```
+
+instead of `12`.
+
+Then append the new columns in `TDC_pulsation_data_for_extra_history_columns`, for example:
+
+```fortran
+         names(i) = 'cycle_avg_L'; vals(i) = cycle_avg_L; i=i+1
+         names(i) = 'cycle_avg_L_minus_static'; vals(i) = cycle_avg_L_minus_static; i=i+1
+```
+
+Make sure that:
+
+- the number of columns matches the number of values you write
+- the names are short enough to be readable in `history.data`
+- the quantities are in units you understand when you interpret them later
+
+{{< /details >}}
+
 #### Step 7: Recompile and rerun
 
-After editing the Fortran source:
+If you want to start and kick a new TDC model after editing the Fortran source:
 
 ```bash
 ./clean
@@ -516,7 +624,7 @@ After editing the Fortran source:
 ./rn
 ```
 
-or, if you want to continue from a previously saved nonlinear run after recompiling:
+If you want to continue from a previously saved TDC run after recompiling:
 
 ```bash
 ./clean
@@ -524,11 +632,11 @@ or, if you want to continue from a previously saved nonlinear run after recompil
 ./re
 ```
 
-#### Step 8: Compare the nonlinear average with the static value
+#### Step 8: Compare the non-linear average with the static value
 
 Once your new quantity appears in the output, compare:
 
-- the cycle-averaged value from the nonlinear run
+- the cycle-averaged value obtained with TDC
 - the corresponding static value from the original model
 
 You can do this for one cycle or for several successive cycles if the run is still evolving.
@@ -542,34 +650,8 @@ Write down a short conclusion:
 - does the offset shrink or grow as the pulsation settles?
 - does averaging luminosity directly give a different answer than averaging a magnitude-like quantity?
 
-Questions to think about:
-
-- does the cycle-averaged value match the static value closely?
-- if not, is the difference large enough to matter observationally?
-- does the answer depend on whether you average luminosity directly or average a magnitude-like quantity?
-
 > [!TIP]
-> Keep this as a bonus task. The goal is not to build a perfect analysis pipeline, just to explore whether the nonlinear cycle average differs in an interesting way from the static model value.
-
-## Questions for Discussion
-
-As the class table fills in, discuss these questions at your table:
-
-- how does bump location change with period?
-- where does the bump move from the descending branch to the rising branch?
-- does the class sample support the idea that the morphology is tied to the `P_2/P_0 \approx 0.5` resonance?
-- what does the nonlinear waveform show that the linear analysis in Lab 2 could not show on its own?
-
-## If You Are Still Waiting on a Run
-
-Nonlinear runs do not always line up perfectly with classroom timing. If your model is still running and you have some idle time, use that time to do one or more of the following:
-
-- review your Lab 2 notes and make sure your expected period is written down
-- look at the shared class table and decide which period range is still undersampled
-- inspect the output files you already have and make a preliminary guess about the bump
-- compare what you are seeing in PGSTAR with what appears in `history.data`
-
-That way, even waiting time stays scientifically useful.
+> Keep this as a bonus task. The goal is not to build a perfect analysis pipeline, just to explore whether the non-linear cycle average differs in an interesting way from the static model value.
 
 ## Suggested Reading
 
