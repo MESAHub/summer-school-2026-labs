@@ -29,7 +29,7 @@ As the stellar structure changes across the instability strip, the bump shifts f
 
 ## Setting up the work directory
 
-Download `lab3_work_dir.zip` from this [Google Drive](https://drive.google.com/file/d/11S0DjI8fPOw3Szli0Zpn-k8VdDDfP7YQ/view?usp=drive_link), unzip it into some empty directory, and `cd` into that directory. You'll see that it already contains the inlists you will need. However, we need to provide TDC with a starting model to make an envelope model from and track the pulsations, just as we did with RSP in Lab 2. To that end, copy the `.mod` files you created in Lab 1:
+Download `lab3_work_dir.zip` from this [Google Drive](https://drive.google.com/file/d/11S0DjI8fPOw3Szli0Zpn-k8VdDDfP7YQ/view?usp=sharing), unzip it into some empty directory, and `cd` into the resulting `lab3_work_dir/` directory. You'll see that it already contains the inlists you will need. However, we need to provide TDC with a starting model to make an envelope model from and track the pulsations, just as we did with RSP in Lab 2. To that end, copy the `.mod` files you created in Lab 1:
 
 ```bash
 cp -r /path/to/your/lab1/mod_dir/ .
@@ -344,9 +344,9 @@ images_to_movie "png_pulsation/*.png" my_Cepheid_movie.mp4
 
 Check that:
 
-- the file really exists inside `TDC_Cepheid/mod_dir/`
+- the file really exists inside `lab3_work_dir/mod_dir/`
 - `load_model_filename` matches the filename exactly
-- you are running from inside `TDC_Cepheid/`
+- you are running from inside `lab3_work_dir/`
 
 {{< /details >}}
 
@@ -384,6 +384,8 @@ If your group finishes early, try one of these:
 ### Bonus coding task: time-average the light curve over one cycle
 
 If you would like a more coding-focused extension, modify `run_star_extras` so that it measures a cycle-averaged quantity from the non-linear light curve and compares that average with the corresponding static value from the original model.
+
+You can find a complete set of [Lab 3 bonus solutions](https://drive.google.com/file/d/1N8wHaZqfFUV3_ASH4ZhjQyx0V6Y3oplH/view?usp=share_link) with these source changes already made.
 
 One possible version of this task is:
 
@@ -615,6 +617,8 @@ Make sure that:
 {{< /details >}}
 
 #### Step 7: Recompile and rerun
+
+Because this bonus task edits source include files, rerun both `./clean` and `./mk` before continuing. A plain rebuild can miss changes in included source files.
 
 If you want to start and kick a new TDC model after editing the Fortran source:
 
