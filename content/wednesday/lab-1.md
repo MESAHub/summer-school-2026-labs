@@ -24,7 +24,7 @@ More specifically, the files for Lab 1 can be found [HERE](https://drive.google.
 Lastly, it will be helpful to consult the [MESA documentation](https://docs.mesastar.org/en/latest/) throughout this lab.
 
 
-## How to destroy a White Dwarf in 10(ish) easy steps!
+## How to destroy a White Dwarf in 7(ish) easy steps!
 
 Note throughout this lab expected tasks are outlayed specifically with: 
 | 📋 TASK 0 |
@@ -80,7 +80,7 @@ At this stage, we are now ready to dive into some inlists!
 
 ### Step 1: Inlist
 
-`inlist` serves as a direction point for the run, guiding the order and precedence of variables in various other inlist files. Given this, take a peak at `inlist`. What is the order that other inlists will be read? 
+`inlist` serves as a direction point for the run, guiding the order and precedence of variables in various other inlist files. Given this, take a peak at `inlist`. What is the hierarchy of the provided inlists?
 
 > [!NOTE]
 > There is no task for this step! 
@@ -88,12 +88,21 @@ At this stage, we are now ready to dive into some inlists!
 
 ### Step 2: Inlist Common
 
-`inlist_common` holds the set of defaults that we want to be common between various accretion runs. The primary point of this is to make changes to runs easier and more modular. Instead of having to sort through walls of variables for each change, the core functionality can be stored in... common.
+`inlist_common` holds the set of "defaults" that we want to be common between various accretion runs. The primary point of this is to make changes to more modular. Instead of having to sort through walls of variables for each change, the core functionality can be stored in... common.
 
-Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances and help the model converge at later times.
+Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances and help the model converge at later times. The associated citation links for within the drop down are [^6] [^7] [^4] [^5]
 
-{{< details title="Aside on miscellanous variable choices in `inlist_common`" closed="true" >}}
-The work that will be done throughout this lab requires careful consideration of input physics for real science cases. !!! TODO !!!
+{{< details title="Aside on miscellanous variable choices in `inlist_common` (Click after completing lab)" closed="true" >}}
+
+The work that will be done throughout this lab requires careful consideration of input physics for real science cases. Much of this has been smoothed over for the sake of brevity, as many of the necessary inputs would also scale up runtimes, but some important eos and coulomb correction details have been retained.
+
+IN `&star_job`, we are using couloumb corrections from Potekhin+09 <sup id="fnref:6"><a href="#fn:6" class="footnote-ref">6</a></sup>. for ions and Itoh+02<sup id="fnref:7"><a href="#fn:7" class="footnote-ref">7</a></sup> for electrons. These provide modifications to the ion and electron chemical potentials due to couloumb coupling and screening, respectively. In the ONe white dwarf regime of the these corrections become essential pieces on the rate and balance of URCA production. 
+
+In `&eos`, the inlist is effectively forcing the use of the proper equation of state, Skye, throughout the core of the white dwarf, while dropping fidelity in the non-degenerate outer shell. The other eos options (PC, FreeEOS, and OPAL/SCVH) are explicitly deactivated, while dropping the mass fraction needed to consider an isotope in the Skye EOS. The means that in the portions of the star where Skye is not appropriate, MESA jumps down the order of precedence for EOS components directly to HELM, reducing runtimes. Note, the backstop eos, HELM, cannot be deactivated and (again) will still be the dominant eos in the outermost layers of non-degenerate accreted material (~5 km or ~0.4%). The explicit details of the Skye EOS and HELM EOS can be found in Jermyn+21 <sup id="fnref:4"><a href="#fn:4" class="footnote-ref">4</a></sup> . and Timmes&Swesty00 <sup id="fnref:5"><a href="#fn:5" class="footnote-ref">5</a></sup>. 
+
+In `&controls`, the inlist first **turns off** convective mixing entirely. This is purely a simplification to focus on where our URCA reactions take place, rather than dealing with the entire picture of convective URCA. Next, various smoothing options are set to 0. As for timesteps, the timestep size is doubled from the default and the tolerance for energy conservation made wider. The inlist also uses a larger mesh with cell sizes that preference refinement by q rather than temperature. For the solver, the use of eps_grav is motivated by the degenerate regime, where our entropy matter more than energy. The inlist also loosens many residual limits by **quite** a bit to ensure that the solver does not quit early or get caught trying to particularly resolve behavior too fine for the lesson in this lab. 
+
+If you have extra time after the lab, feel free to take away some of the smoothing elements and explore which ones most effect the runtime on your device! More information on any particular option can also be found in the [MESA documentation](https://docs.mesastar.org/en/latest/)!
 
 {{< /details >}}
 
@@ -662,10 +671,17 @@ Yes, there is a relationship to temperature! At sufficiently high temperature, t
 ## BONUS: Magnetization Station
 
 Magnetic fields can alter the interior structure of white dwarfs, driving higher masses, while increasing instability. Modify the magnetic field of the star in 5 regimes. Track the different final masses at ignition.
-
+TODO
 
 
 ## References
 [^1]: Suzuki, Toshio, Hiroshi Toki, and Ken’ichi Nomoto. "Electron-capture and β-decay rates for sd-shell nuclei in stellar environments relevant to high-density O–Ne–Mg cores." The Astrophysical Journal 817, no. 2 (2016): 163. https://iopscience.iop.org/article/10.3847/0004-637X/817/2/163.
 [^2]: Holas, Alexander, Samuel W. Jones, Friedrich K. Röpke, Rüdiger Pakmor, Christina Fakiola, Giovanni Leidi, Raphael Hirschi, and Ken J. Shen. "Drawing the line between explosion and collapse in electron-capture supernovae." (2026). https://www.aanda.org/articles/aa/pdf/2026/03/aa57910-25.pdf.
 [^3]: Martínez-Pinedo, G., Y. H. Lam, K. Langanke, R. G. T. Zegers, and C. Sullivan. "Astrophysical weak-interaction rates for selected A= 20 and A= 24 nuclei." Physical Review C 89, no. 4 (2014): 045806. https://journals.aps.org/prc/pdf/10.1103/PhysRevC.89.045806
+[^4]: Jermyn, Adam S., Josiah Schwab, Evan Bauer, F. X. Timmes, and Alexander Y. Potekhin. "Skye: A differentiable equation of state." The Astrophysical Journal 913, no. 1 (2021): 72. https://iopscience.iop.org/article/10.3847/1538-4357/abf48e/meta
+[^5]: Timmes, Frank X., and F. Douglas Swesty. "The accuracy, consistency, and speed of an electron-positron equation of state based on table interpolation of the Helmholtz free energy." The Astrophysical Journal Supplement Series 126, no. 2 (2000): 501-516. https://iopscience.iop.org/article/10.1086/313304/meta
+[^6]: Potekhin, Alexander Y., Gilles Chabrier, and Forrest J. Rogers. "Equation of state of classical Coulomb plasma mixtures." Physical Review E—Statistical, Nonlinear, and Soft Matter Physics 79, no. 1 (2009): 016411. https://journals.aps.org/pre/abstract/10.1103/PhysRevE.79.016411
+[^7]: Itoh, Naoki, Nami Tomizawa, Masaya Tamamura, Shinya Wanajo, and Satoshi Nozawa. "Screening corrections to the electron capture rates in dense stars by the relativistically degenerate electron liquid." The Astrophysical Journal 579, no. 1 (2002): 380-385. https://iopscience.iop.org/article/10.1086/342726/meta
+
+
+
