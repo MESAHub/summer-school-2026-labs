@@ -8,7 +8,7 @@ linkTitle: Lab 2
 
 In lab 1, we evolved a star through the instability strip and used GYRE (on-the-fly within MESA) to calculate the expected periods and growth rates of the fundamental radial mode $(l = 0, n = 0)$. In the next lab, we'll use MESA to further evolve one model and see the pulsations develop. However, we want to choose a model where the pulsations will actually be stable. We could use the output of GYRE to determine this, but GYRE's non-adiabatic calculations use some approximations that aren't necessarily valid for Cepheid stars.
 
-Specifically, GYRE uses the frozen-convection approximation, which assumes that the oscillations do not perturb the convective flux. While this approximation is reasonable for smaller amplitude pulsations, the large amplitude of the pulsations in Cepheids do perturb the convective flux.
+Specifically, GYRE uses the frozen-convection approximation, which assumes that the oscillations do not perturb the convective flux. While this approximation is reasonable for smaller amplitude pulsations, the large amplitude of the pulsations in Cepheids *do* perturb the convective flux.
 
 To account for this, we’ll now use a different pulsation tool included in MESA: the Radial Stellar Pulsations (RSP) code. Specifically, we'll use RSP's linear non-adiabatic  functionality (RSP-LNA). We will also be constructing a graph that shows the period-luminosity relationship that makes Cepheid stars so important for measuring astronomical distances.
 
@@ -27,11 +27,11 @@ To account for this, we’ll now use a different pulsation tool included in MESA
 
 For this lab we’ll be using the models that you saved from Lab 1. If your run did not complete, use the [Lab 1 GYRE file solutions](https://drive.google.com/drive/folders/1woaPSSlIvNQADA5Eg-SGO0N11gXHa-S2?usp=share_link) and the `history.data` file in the subdirectory for your initial mass. It also be good to grab the saved MESA model from your track, found in the [Lab 1 mod file solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link), which are zipped by mass. 
 
-### Add GYRE values to shared spreadsheet for several models
+### Add GYRE values of one model to shared spreadsheet
 
 Recall, that in lab 1 we saved the GYRE results for the fundamental radial mode and the first and second overtones in the history file. We'll now use that information to look for models where we expect pulsations in the fundamental mode to be excited. These are the modes with positive growth rates.
 
-**Task** Once you have found a model with a positive growth rate: please add the luminosity, GYRE F_period, and GYRE F_growth to [this spreadsheet](https://docs.google.com/spreadsheets/d/1dVK0vpzgsAy0S7OG-qMyJlmwItwbp1JeB8B-xScV8WI/edit?usp=drive_link). Please also add your name or initials in the first column so you know which contains your data. As more people add their models, we should see a clear relationship between the period and luminosity values.
+**Task** Once you have found a model with a positive growth rate: please add the luminosity, GYRE F_period, and GYRE F_growth to [this spreadsheet](https://docs.google.com/spreadsheets/d/1dVK0vpzgsAy0S7OG-qMyJlmwItwbp1JeB8B-xScV8WI/edit?usp=drive_link). Please also add your name or initials in the first column so you know which row contains your data. As more people add their models, we should see a clear relationship between the period and luminosity values.
 
 ### Set up RSP work directory
 
@@ -67,16 +67,16 @@ The only other RSP control we will change is `RSP_max_num_periods` which we will
 **Task: Setting RSP Controls** Using the model you chose from Lab 1, set the following controls in `inlist_rsp_Cepheid` to the correct value for the models you examined in the previous step:
 
 ```fortran
+    !!! Set parameters to build RSP envelope
     RSP_mass =
     RSP_Teff =
     RSP_L =
+
+    !!! Update from Lab 1 photosphere_X and photosphere_Z
     RSP_X =
     RSP_Z =
-    RSP_alfa =
 
-    !!! Tell RSP to only run LNA
-
-    
+    RSP_alfa =    
 ```
 
 > [!TIP]
@@ -206,7 +206,7 @@ To fill in our diagrams a little bit more, repeat this process (changing the inl
 > [!NOTE]
 > Take a look at your original `history.data` file from lab 1. Do you need to change the values of `RSP_X` and `RSP_Z` when running a new model?
 
-You should aim to run 2-3 models. For lab 3, when we'll evolve the pulsations, it's best to start with a model that has a positive growth rate from RPS-LNA. If your first model had a positive growth rate for the fundamental mode, then make a note of the model number. If the fundamental growth rate was negative, try choosing a model in the middle of the instability strip for your next run.
+You should aim to run 2-3 models. For lab 3, when we'll evolve the pulsations, it's best to start with a model that has a positive growth rate from RPS-LNA. If your first model had a positive growth rate for the fundamental mode, then note down that model number. If the fundamental growth rate was negative, try choosing a model in the middle of the instability strip for your next run (even if the GYRE growth rate was negative).
 
 >[!TIP]
 > You can use the png output saved from lab 1 to easily check which models are in the instability strip.
