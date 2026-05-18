@@ -1,0 +1,54 @@
+
+&star_job
+
+      show_log_description_at_start = .false.
+      create_RSP_model = .true.
+      set_initial_model_number = .true.
+      initial_model_number = 0 ! Update to the Lab 1 model number for single-model runs.
+      
+/ ! end of star_job namelist
+
+&eos
+/ ! end of eos namelist
+
+&kap 
+   Zbase = 0.006d0 ! Keep same Zbase as lab 1
+   use_Type2_opacities = .false.
+/ ! end of kap namelist
+
+&colors
+   use_colors = .true. 
+/ ! end of colors namelist
+
+&controls
+! Set parameters to build RSP envelope 
+    ! Change these parameters 
+    RSP_mass = 4.4158
+    RSP_Teff = 5153
+    RSP_L = 2572
+
+    ! Update from Lab 1 photosphere_X and photosphere_Z
+    RSP_X = 0.7365d0
+    RSP_Z = 0.006d0
+
+    RSP_alfa = 1.77 
+    ! Set to zero to perform only LNA, otherwise RSP will do non-linear evolution 
+    RSP_max_num_periods = 0 
+
+
+! solver
+   use_gold2_tolerances = .true.
+
+! output controls
+
+      photo_interval = 1000
+      profile_interval = 4000
+      history_interval = 10
+      terminal_interval = 100
+
+/ ! end of controls namelist
+
+
+
+&pgstar
+/ ! end of pgstar namelist

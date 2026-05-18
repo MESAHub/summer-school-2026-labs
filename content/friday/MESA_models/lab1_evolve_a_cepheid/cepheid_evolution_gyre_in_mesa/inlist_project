@@ -1,0 +1,156 @@
+
+&star_job
+   ! options to save a model at the end of the evolution
+   save_model_when_terminate = .true.
+   save_model_filename = 'he_dep.mod'
+   required_termination_code_string = ''
+
+   ! we don't create a pre-MS model
+   ! instead, we relax a ZAMS model to the desired Z = 0.006
+   ! when we relax from pre-MS model, default z_frac = 3, gs98.
+   create_pre_main_sequence_model = .false. ! load from ZAMS and relax Z
+   relax_initial_Z = .true.
+   new_Z = 6d-3
+   relax_initial_Y = .true.
+   new_Y = 0.2575d0
+
+   ! enable the use of the pgstar window
+   pgstar_flag = .true.
+
+/ !end of star_job namelist
+
+&kap
+
+   ! choose the opacity tables
+   kap_file_prefix = 'gs98'    ! 'gs98' 'a09'  'OP_a09' 'OP_gs98'
+   kap_CO_prefix   = 'gs98_co' ! 'gs98_co' 'a09_co'
+   use_Type2_opacities = .true.
+   Zbase = 0.006d0
+   kap_lowT_prefix = 'lowT_fa05_gs98'
+
+/ !end of kap namelist
+
+&eos
+/ !end of eos namelist
+
+&colors
+   use_colors = .false.
+   instrument = 'data/colors_data/filters/Generic/Johnson'
+   stellar_atm = 'data/colors_data/stellar_models/Kurucz2003all/'
+   vega_sed = 'data/colors_data/stellar_models/vega_flam.csv'
+   distance = 3.0857d19     ! 10 pc; output magnitudes are absolute
+   mag_system = 'Vega'
+   make_csv = .false.
+   colors_results_directory = 'SED'
+   sed_per_model = .false.
+/ ! end of colors namelist
+
+&controls
+
+   ! set the initial mass here
+   initial_mass = 4.5d0
+
+   ! ====== TODO: add a stopping condition here! ======
+   ! we want the second part of the run to stop when
+   ! the mass fraction of he4 drops below 1d-4
+   xa_central_lower_limit_species(1) = 'he4'
+   xa_central_lower_limit(1) = 1d-4
+
+   ! GYRE output controls
+   x_integer_ctrl(1) = 1         ! output GYRE info at this step interval
+
+   x_integer_ctrl(2) = 3         ! max number of modes to output per call
+
+   x_integer_ctrl(3) = 0         ! mode l (e.g. 0 for p modes, 1 for g modes)
+                                    ! should match gyre.in mode l
+
+   x_ctrl(1) = 0d0               ! save .mod files when Teff is greater than this
+
+! convection controls
+    steps_before_use_TDC = 0
+    MLT_option = 'TDC'
+    include_mlt_corr_to_TDC = .false.
+    mixing_length_alpha = 1.77d0
+    recalc_mix_info_after_evolve = .true.
+
+! Predictive mixing is a convective boundary mixing scheme. It adjusts
+! the core boundary during burning to avoid artificial composition jumps
+! and helps produce reliable blue loops.
+    predictive_mix(1) = .true.
+    predictive_zone_type(1) = 'any'
+    predictive_zone_loc(1) = 'core'
+    predictive_bdy_loc(1) = 'any'
+    predictive_superad_thresh(1) = 0.005d0
+    predictive_avoid_reversal(1) = 'he4'
+
+! wind model section: ! for M < 10
+   cool_wind_full_on_T    = 9.99d9
+   hot_wind_full_on_T     = 1d10
+   cool_wind_RGB_scheme   = 'Reimers'
+   cool_wind_AGB_scheme   = 'Blocker'
+   RGB_to_AGB_wind_switch = 1d-4
+   Reimers_scaling_factor = 0.5d0
+   Blocker_scaling_factor = 0.5d0
+
+! overshoot controls
+
+   overshoot_scheme(1) = 'exponential'
+   overshoot_zone_type(1) = 'burn_H'
+   overshoot_zone_loc(1) = 'core'
+   overshoot_bdy_loc(1) = 'any'
+   overshoot_f(1) = 0.02
+   overshoot_f0(1) = 0.002
+
+   overshoot_scheme(2) = 'exponential'
+   overshoot_zone_type(2) = 'nonburn'
+   overshoot_zone_loc(2) = 'any'
+   overshoot_bdy_loc(2) = 'bottom'
+   overshoot_f(2) = 0.06
+   overshoot_f0(2) = 0.002
+
+! solver controls
+   make_gradr_sticky_in_solver_iters = .true.
+
+!timestep and mesh
+
+ time_delta_coeff = 1.5d0
+ mesh_delta_coeff = 1d0
+
+
+! output
+   log_directory = 'LOGS_evolution'
+
+   photo_digits = 8
+   photo_interval = 100
+
+   profile_interval = 20
+
+   history_interval = 10
+   terminal_interval = 10
+   max_num_profile_models = 1000000 ! 100 ! RECOMMENDED 10000
+
+/ ! end of controls namelist
+
+&pgstar
+
+ read_extra_pgstar_inlist(1) = .true.
+ extra_pgstar_inlist_name(1)= 'inlist_pgstar'
+
+ Grid1_file_dir = 'png_evolution'
+ History_Track1_file_flag = .false.
+ History_Track2_file_flag = .false.
+
+ pgstar_interval = 10
+
+ History_Panels1_xaxis_name = 'model_number'
+ History_Panels1_max_width = -1
+
+ Profile_Panels3_xaxis_name = 'mass'
+ Profile_Panels3_xaxis_reversed = .false.
+
+ TRho_Profile_xmin = -12.0
+ TRho_Profile_xmax = 5d0
+ TRho_Profile_ymin = 2.5
+ TRho_Profile_ymax = 9.5d0
+
+/ ! end of pgstar namelist
