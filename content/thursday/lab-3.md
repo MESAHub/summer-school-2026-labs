@@ -57,12 +57,12 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
     </a>
   </td>
 </tr>
-<caption id="table-binary"><strong>Table 1:</strong> CASE A binary at the end of minilab1.</caption>
+<caption><strong>Table 1:</strong> CASE A binary at the end of minilab1.</caption>
 </table>
 </div>
 
 <div style="display: flex; justify-content: center;">
-<table id="table-binary" style="margin:auto; text-align:center;">
+<table id="table-caseB" style="margin:auto; text-align:center;">
   <tr>
     <th></th>
     <th>Primary (Stripped star)</th>
@@ -88,17 +88,17 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
   <tr>
   <td>Final model</td>
   <td>
-    <a href="/files/final1_caseB.mod" download>
+    <a href="../lab3/final1_caseB.mod" download>
       <code>final1_caseB.mod</code>
     </a>
   </td>
   <td>
-    <a href="/files/final2_caseB.mod" download>
+    <a href="../lab3/final2_caseB.mod" download>
       <code>final2_caseB.mod</code>
     </a>
   </td>
 </tr>
-<caption id="table-caseB"><strong>Table 2:</strong> CASE B binary at the end of minilab1.</caption>
+<caption><strong>Table 2:</strong> CASE B binary at the end of minilab1.</caption>
 </table>
 </div>
 
