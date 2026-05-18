@@ -11,7 +11,7 @@ The MESA colors module allows us to generate synthetic photometry while running 
 
 One major age dating technique for stellar populations is through the use of isochrones. Isochrones are single-aged, chemically homogenous populations that show a snapshot of stellar evolution. They're made by evolving stars with the same chemical composition but different initial masses, and then finding what point in evolution each star is at at a particular age. Larger stars burn hotter and brighter, leaving the main sequence much quicker than a lower mass star. For example, at 10 Gyr we can see a 0.8 $M_{\odot}$ still on the main sequence, while a 5 $M_{\odot}$ star will be long past the Red Giant Branch. Because of this, we can build isochrones and use them to determine the age of stellar populations. One caveat to this is that they use the assumption that all the stars are at relatively the same distance and formed from the same materials at relatively the same time. _The best stellar populations to use isochrones when age dating stars is in clusters because we can make these assumptions._
 
-This figure shows a series of isochrones at different ages between 0.03 Gyr to 10 Gyr, made using MIST. As the population gets older, the shape of the isochrone changes too!
+This figure shows a series of isochrones at different ages between 0.03 Gyr to 10 Gyr, made using MESA Isochrones and Stellar Tracks ([MIST](https://mist.science/). As the population gets older, the shape of the isochrone changes too!
 
 <img width="450" height="600" alt="isochrones" src="https://github.com/user-attachments/assets/b115dfa9-6604-4531-9b04-d7dfb6481184" />
 
@@ -185,10 +185,10 @@ The section atmospheric boundary conditions has everything we'll need to start. 
 Lets first use a **T($\tau$)** relationship. This defines how the atmospheric pressure structure is obtained by integrating the hydrostatic equilibrium equation,
 
 $$
-\frac{dP}{d\tau} = \frac{g}{\kappa}.
+\frac{dP}{d\tau} = \frac{g}{\kappa(T, \rho)}.
 $$
 
-Here, we assume that gravity, _g_, is spatially constant. There are 4 options for the **T($\tau$)** relationship: `Eddington`, `solar_Hopf`, `Krishna_Swamy`, and `Trampedach_solar`. Start by using the Eddington relationship.
+To obtain $\kappa$(T, $\rho$), we are able to use the T($\tau$) relation and $\rho$ (which is related to P and T through the equation of state). Here, we assume that gravity, _g_, is spatially constant. There are 4 options for the **T($\tau$)** relationship: `Eddington`, `solar_Hopf`, `Krishna_Swamy`, and `Trampedach_solar`. Start by using the Eddington relationship.
 
 
   {{< details title="Solution" closed="true" >}}
@@ -263,7 +263,7 @@ For this lab, we are only going to use an HR diagram and a plot showing 2MASS ma
 
 #### Boundary Conditions
 
-For this lab, we want to explore the different atmospheric boundary conditions and the mixing length parameter, $\alpha_{MLT}$. Start with just changing the boundary conditions.
+For this lab, we want to explore the different atmospheric boundary conditions and the mixing length parameter, $\alpha_{\rm MLT}$. Start with just changing the boundary conditions.
 
 In `&controls` above, we chose the Eddington T_tau relationship. Before we start running MESA, let's change one more parameter in `&controls` - because we want to compare how different parameters change evolution, we need to change the output file name so they don't overwrite each other. Make sure you give your new history file a descriptive name, for example if you are running a 1 $M_{\odot}$ star using the T_tau Eddington relationship, a good name would be: 
 
@@ -287,11 +287,11 @@ There are many different combinations you can try! First, try changing `atm_T_ta
 
 Once you've explored how the atmospheric boundary conditions change evolution, set `atm_T_tau_relation` back to `Eddington`.
 
-#### Mixing length parameter, $\alpha_{MLT}$
+#### Mixing length parameter, $\alpha_{\rm MLT}$
 
-As we know, MESA is a 1 dimensional stellar evolution code which means it has to be creative when modeling 3D processes. In order to model energy transport in stars, MESA utilizes mixing length theory (MLT), which is the standard 1D parametarization of convection. One of the key parts of MLT is the mixing length parameter, $\alpha_{MLT}$. This is a unitless value that represents the convective efficiency of a region (i.e. what fraction of energy transport is being moved by convection rather than radiation). By changing $\alpha_{MLT}$, we can drastically change a star's main sequence lifetime, opacity, and more!
+As we know, MESA is a 1 dimensional stellar evolution code which means it has to be creative when modeling 3D processes. In order to model energy transport through convection in stars, MESA utilizes mixing length theory (MLT), which is the standard 1D parametarization of convection. A key parameter in MLT is the dimensionless mixing length parameter, $\alpha_{\rm MLT}$ = $\frac{\ell}{H_P}$, which sets the characteristic distance convective elements travel relative to the local pressure scale height. Larger values generally correspond to more efficient convection. Varying $\alpha_{\rm MLT}$ can change a star’s radius, effective temperature, surface structure, and evolutionary track, and can modestly affect stellar lifetimes indirectly through changes in the stellar structure.
 
-Look through the controls default parameters again and find the mixing length parameter, or $\alpha_{MLT}$. What value have we been using? 
+Look through the controls default parameters again and find the mixing length parameter, or $\alpha_{\rm MLT}$. What value have we been using? 
 
 {{< details title="Hint" closed="true" >}}
 Check under the tab "mixing parameters" for the controls defaults
@@ -307,7 +307,7 @@ The solar mixing length parameter for the Eddington T($\tau$) atmospheric bounda
 star_history_name = '1p0Msun_alphaMLT1p80_history.data'
 ```
 
-Each star has a different mixing length parameter, so you can't always use the solar value. For example, $\alpha$ Centauri A and B have mixing lengths that are 0.932 $\alpha_{MLT,\odot}$ and 1.095 $\alpha_{MLT,\odot}$, respectively ([Joyce & Chaboyer 2018b](https://ui.adsabs.harvard.edu/abs/2018ApJ...864...99J/abstract)). Try changing the value of `mixing_length_alpha` and running a model for both cases!
+Each star has a different mixing length parameter, so you can't always use the solar value. For example, $\alpha$ Centauri A and B have mixing lengths that are 0.932 $\alpha_{\rm MLT,\odot}$ and 1.095 $\alpha_{\rm MLT,\odot}$, respectively ([Joyce & Chaboyer 2018b](https://ui.adsabs.harvard.edu/abs/2018ApJ...864...99J/abstract)). Try changing the value of `mixing_length_alpha` and running a model for both cases!
 
 
 
@@ -318,12 +318,12 @@ Choose at least 2 more objects from the following table and run a model for each
 
 | Object  | Type | Mixing Length  | Source |
 | :---- | :-- |:---- |:-- |
-| M92 | Metal poor globular cluster | 0.90 $\alpha_{MLT,\odot}$ | [Joyce & Chaboyer 2018a](https://ui.adsabs.harvard.edu/abs/2018ApJ...856...10J/abstract) |
-| HD 140283 | Subgiant | 0.88 $\alpha_{MLT,\odot}$ | [Joyce & Chaboyer 2018a](https://ui.adsabs.harvard.edu/abs/2018ApJ...856...10J/abstract) |
-| HIP 54639 | Main sequence | 0.28 $\alpha_{MLT,\odot}$ |[Joyce & Chaboyer 2018a](https://ui.adsabs.harvard.edu/abs/2018ApJ...856...10J/abstract)  |
-| HIP 106924| Main sequence | 0.52 $\alpha_{MLT,\odot}$ | [Joyce & Chaboyer 2018a](https://ui.adsabs.harvard.edu/abs/2018ApJ...856...10J/abstract)  |
-| KIC 1430163 | Star | 1.2 $\alpha_{MLT,\odot}$ | [Viani et al. 2018](https://iopscience.iop.org/article/10.3847/1538-4357/aab7eb/pdf) |
-| KIC 1435467 | Star | 1.15 $\alpha_{MLT,\odot}$ | [Viani et al. 2018](https://iopscience.iop.org/article/10.3847/1538-4357/aab7eb/pdf) |
+| M92 | Metal poor globular cluster | 0.90 $\alpha_{\rm MLT,\odot}$ | [Joyce & Chaboyer 2018a](https://ui.adsabs.harvard.edu/abs/2018ApJ...856...10J/abstract) |
+| HD 140283 | Subgiant | 0.88 $\alpha_{\rm MLT,\odot}$ | [Joyce & Chaboyer 2018a](https://ui.adsabs.harvard.edu/abs/2018ApJ...856...10J/abstract) |
+| HIP 54639 | Main sequence | 0.28 $\alpha_{\rm MLT,\odot}$ |[Joyce & Chaboyer 2018a](https://ui.adsabs.harvard.edu/abs/2018ApJ...856...10J/abstract)  |
+| HIP 106924| Main sequence | 0.52 $\alpha_{\rm MLT,\odot}$ | [Joyce & Chaboyer 2018a](https://ui.adsabs.harvard.edu/abs/2018ApJ...856...10J/abstract)  |
+| KIC 1430163 | Star | 1.2 $\alpha_{\rm MLT,\odot}$ | [Viani et al. 2018](https://iopscience.iop.org/article/10.3847/1538-4357/aab7eb/pdf) |
+| KIC 1435467 | Star | 1.15 $\alpha_{\rm MLT,\odot}$ | [Viani et al. 2018](https://iopscience.iop.org/article/10.3847/1538-4357/aab7eb/pdf) |
 
 
 ### Step 4 - Visualizing the changes outside of MESA
