@@ -36,7 +36,7 @@ $$
 $$
 The three plots below show the Brunt-Väisälä frequency as a function of stellar radius for three different evolutionary stages: zero-age main sequence, intermediate-age main sequence, and terminal-age main sequence. Notice in particular the blue curves, which show the contribution to the Brunt-Väisälä profiles due to the chemical composition gradient. 
 
-![Brunts](brunts.png)
+![Brunts](img/brunts.png)
 
 At the ZAMS (left panel), the chemical composition gradient is near zero, creating a smooth Brunt-Väisälä profile. As a result, 
 the asymptotic approximation works well and the period spacing remains nearly constant.
@@ -186,7 +186,7 @@ Increasing the resolution of a model can be a bit more computationally expensive
 
 The primary factor that will effect the runtime is the `OMP_NUM_THREADS` parameter you have set in your environment variables. **Use the timing plot below to choose a value of `mesh_delta_coeff` that should complete in under five minutes on your machine**. Essentially, if you have `OMP_NUM_THREADS > 2`, any value will work; feel free to pick any value (less than 1!) and compare with others at your table later in the lab.
 
-![Timing test](timing.png)
+![Timing test](img/timing.png)
 
 ## Task 5: Output, Output, Read All About It!
 Next, we will configure the output settings so `MESA` writes profiles that can be used by `GYRE`. By default, `MESA` does not write pulsation-profile data. **Explore the "controls for output" section of the controls reference page and identify the flag that enables pulsation-profile output for `GYRE`**. Check the following hint if you get stuck or want to check your answer
