@@ -20,7 +20,7 @@ During this second part of the run, you will also save some models (called `.mod
 
 **Task 1.1**: Download and unzip the initial working directory.
 
-We have already prepared an input directory to get you started with this lab: you can find it [here](https://drive.google.com/file/d/1UxLMBFTgl3q63SNrQwWSEsRIFm6O1v87/view?usp=drive_link).
+We have already prepared an input directory to get you started with this lab: you can find it [here](https://drive.google.com/file/d/1eTUg3pamkPR4LSIFT6Pb4iz1T8wwUg-h/view?usp=drive_link).
 
 Download the work directory, move it to your location of choice and unpack it.
 
@@ -271,7 +271,7 @@ However, if you know you want to start from the most recent photo, you can simpl
 > Another thing to know, restarts can cause your history file to jump around as restarts only append to the existing `history.data` file. That is, if you run a track to model number 500 then restart from model number 300, the original time steps will remain in the history file, which may confuse your later analysis of the history. Another consequence of this is that you cannot change the history column outputs between restarts without causing an error.
 
 > [!CAUTION]
-> The method that we have used today (running a model to a stopping condition, then changing `run_star_extras` and starting again) is fine for exploration runs or debugging things. However, it isn't the most reproducible method, since it's easy to forget what you changed or accidentally restart your run and overwrite the previous results. Since we're not really changing the physics of our models this isn't a problem but if you're doing science runs it's better to set everything up before going. For changes to the inlists, you can accomplish this by using multiple inlists (for an example see the `1M_pre_ms_to_wd` case in the test suite). If you need to change functionally in the `run_star_extras`, `if` statements and the `x_logical_ctrl` variables will be useful.
+> The method that we have used today (running a model to a stopping condition, then changing `run_star_extras` and starting again) is fine for exploration runs or debugging things. However, it isn't the most reproducible method. It's easy to forget what you changed or accidentally restart your run and overwrite the previous results. In this run, we're not really changing the physics of our models and so this isn't necessarily a problem. However, when you're doing science runs it's better to set everything up to run with minimal intervention. For changes to the inlists, you can accomplish this by using multiple inlists (for an example see the `1M_pre_ms_to_wd` case in the test suite). If you need to change functionally in the `run_star_extras`, `if` statements and the `x_logical_ctrl` variables will be useful.
 
 With all that out of the way go ahead and restart your run from the most recently saved photo.
 
@@ -501,7 +501,7 @@ call get_modes(mode_l, process_mode_cepheid, ipar, rpar)
 
 As noted in the comments:
 
-```fortran
+```none
 ! The subroutine calls GYRE to find the modes.
 ! After each mode is found, it calls the subroutine process_mode_cepheid defined below
 ! Integer parameters are passed with ipar and real parameters are passed with rpar
@@ -561,7 +561,7 @@ There is a text summary plus 5 science panels:
 3. **Combined panel**: In this panel you can see 3 figures stacked on top of each other. From top to bottom, they show the chemical abundances in the interior of the star, the energy generation, and the internal mixing processes, all as a function of the mass coordinate. Where are the convective zones? Can you see any changes while the model is evolving?
 <!-- Mathijs: Perhaps it's more interesting to ask the student to look at the convective zones? -->
 
-4. **opacity**: In this plot you can see the value of opacity throughout the interior of the star. Note that the x-axis is a function of the logarithm of the optical depth. How is opacity changing in the star during the evolution? Can you link it to the energy transport mechanism?
+4. **opacity**: In this plot you can see the value of opacity throughout the interior of the star. Note that the x-axis is a function of the logarithm of the optical depth. How is opacity changing in the star during the evolution? Can you link it to the energy transport mechanism? What happens to your opacity profile as your model enters the instability strip? 
 <!-- Mathijs: Nice that you look for connections between different panels -->
 
 5. **radius and luminosity**: Finally in this panel you can see how radius, effective temperature and luminosity evolve. How does the effective temperature compare to the surface temperature in panel 2?
