@@ -77,9 +77,6 @@ If you completed Lab 2, an especially good choice is a model with a relatively l
 
 {{< /details >}}
 
-> [!TIP]
-> If you completed Lab 2, the best starting point is usually a model that showed a relatively large growth rate in the linear analysis.
-
 > [!NOTE]
 > These `.mod` files come from the second part of Lab 1, after you restarted the evolution with `./re` and let the star pass through the Cepheid phase while GYRE was running during the evolution.
 
@@ -304,8 +301,6 @@ Ask yourself:
 - did a model with positive linear growth turn into a useful non-linear pulsator?
 - is the non-linear period similar to the period you expected from the linear analysis?
 - did the model you thought would be interesting actually produce a clear bump?
-
-This is a nice way to connect the Friday labs together.
 
 If you also estimated where `P_2/P_0` is closest to `0.5`, compare that expectation with the waveform shape you actually see in the TDC run.
 
