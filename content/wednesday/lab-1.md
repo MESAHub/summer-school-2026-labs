@@ -90,7 +90,7 @@ At this stage, we are now ready to dive into some inlists!
 
 `inlist_common` holds the set of "defaults" that we want to be common between various accretion runs. The primary point of this is to make changes to more modular. Instead of having to sort through walls of variables for each change, the core functionality can be stored in... common.
 
-Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances and help the model converge at later times. Check the aside below **after** the lab for more details on particular choices in this file [^6] [^7] [^4] [^5]
+Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances and help the model converge at later times. Check the aside below **after** the lab for more details on particular choices in this file. [^6] [^7] [^4] [^5]
 
 {{< details title="Aside on miscellanous variable choices in `inlist_common`" closed="true" >}}
 
@@ -106,7 +106,7 @@ If you have extra time after the lab, feel free to take away some of the smoothi
 
 {{< /details >}}
 
-Starting with the top of the file, reset the initial age, reset the initial model number, turn on pgstar, and save our final model as `ONE_1d-6`. 
+Throughout these labs, we will be loading in precomputed white dwarf models as starting points to avoid dealing with earlier stages of evolution. To improve the relevant accounting of our simulated accretion stages, it can be helpful to reset the initial age and initial model number of these models once read, making our runs look like fresh runs. Starting with the top of the file, reset the initial age, reset the initial model number, turn on pgstar, and save our final model as `ONE_1d-6`. 
 
 | 📋 TASK 2 |
 |:--------|
@@ -172,7 +172,7 @@ The parameter that should be added is:
 
 With the common variables set, now we can focus on the fun part: throwing material on the surface. We will control which reaction network is used and the material accreted within `inlist_accrete`. Unlike our previous inlist, this file has been provided mostly empty. 
 
-Starting in `&star_jobs`, load in the downloaded model (`1.1Msun_ONe.mod`), change the initial network to a file we will later create called `ONe.net`, and set the weak rates to those of Suzuki+2016[^1]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the URCA process. 
+Starting in `&star_jobs`, load in the downloaded model (`1.1Msun_ONe.mod`), change the initial network to a file we will later create called `ONe.net`, and set the weak rates to those of Suzuki+2016[^1]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the URCA process. Without these rates, the weak reaction rates A=17 through A=28 isotopes would be interpolated with earlier weaklib tables that will not sufficiently resolve the cooling/heating features at the core of this lab. 
 
 
 | 📋 TASK 4 |
@@ -217,6 +217,9 @@ In `&controls`, set the accretion rate to 10<sup>-6</sup> M<sub>&#9737;</sub> / 
 
 > [!NOTE]
 > You will need to both explicitly stop MESA from accreting the same composition as the surface and flag that the new accretion composition will be given as mass fractions.
+
+> [!NOTE]
+> The isotope names are **case sensitive** and should be provided in lowercase!
 
 {{< details title="Hint: What variables need to be changed?" closed="true" >}}
 The parameters that should be added are:
@@ -286,15 +289,17 @@ As you may have guessed from our prior flags to change the initial net, MESA all
 > The reaction networks included in MESA can be found at `$MESA_DIR/data/net_data/nets/`
 
 
-In pursuit of our central question, "implode or explode", the critical physics is whether our ONe white dwarf enters thermal runaway, producing an thermonuclear electron capture supernova (tECSNe), or collapses under its own gravity as a collapsing ECSNe (cECSNe).  This balance requires a nuclear network that accounts for the critical electron-capture chain Neon-20 -> Fluorine-20 -> Oxygen-20 and the burning of Oxygen-16 to Silicon-28. An overview of each of these reactions is below:
+In pursuit of our central question, "implode or explode", the critical physics is whether our ONe white dwarf enters thermal runaway, producing an thermonuclear electron capture supernova (tECSNe), or collapses under its own gravity as a collapsing ECSNe (cECSNe).  This balance requires a nuclear network that accounts for the critical electron-capture (EC) chain Neon-20 -> Fluorine-20 -> Oxygen-20 and the burning of Oxygen-16 to Silicon-28. An overview of each of these reactions is below:
 | Reaction                     | Equation                                                         |
 |------------------------------|------------------------------------------------------------------|
-| $\beta$ : Ne-20 -> F-20      | $$\ce{^{20}_{10}Ne + e- -> ^{20}_{9}F + \nu_e}$$                 |
+| $EC$ : Ne-20 -> F-20      | $$\ce{^{20}_{10}Ne + e- -> ^{20}_{9}F + \nu_e}$$                 |
 | $\beta^-$ : F-20  -> Ne-20   | $$\ce{^{20}_{9}F -> ^{20}_{10}Ne + e- + \bar{\nu}_e}$$           |
-| $\beta$ : F-20  -> O-20      | $$\ce{^{20}_{9}F + e- -> ^{20}_{8}O + \nu_e}$$                   |
+| $EC$ : F-20  -> O-20      | $$\ce{^{20}_{9}F + e- -> ^{20}_{8}O + \nu_e}$$                   |
 | $\beta^-$ : O-20  -> F-20    | $$\ce{ ^{20}_{8}O -> ^{20}_{9}F + e- + \bar{\nu}_e}$$            |
 | O-16 Burning                 | $$\ce{^{16}_{8}O + ^{16}_{8}O -> ^{28}_{14}Si + ^4_2\text{He}}$$ |
 
+> [!NOTE]
+> In MESA, "weak" denotes the weak reactions that lower nuclear charge, while "weak_minus" denotes the weak reactions that raise the nuclear charge. The rates we use will include the contributions of electron capture and positron emission or electron emission and positron capture as appropriate. The above table only uses EC and $\beta^-$ as a label for simplicity, as these contributions should be dominant in our degenerate regime. 
 
 To implement this physics into our ONe white dwarf, start by creating the new `ONe.net` file in the working directory and adding the necessary isotopes.
 
@@ -330,11 +335,11 @@ add_isos(
 Isotopes of the same element can either be written separately on new lines, or written on the same line with mass numbers separated by a space:
 ```fortran
 !ie, for Zinc 64 and Zinc 66: 
-Zn64
-Zn66
+zn64
+zn66
 
 ! OR
-Zn 64 66
+zn 64 66
 ```
 {{< /details >}}
 
@@ -356,7 +361,7 @@ add_isos(
 {{< /details >}}
 
 
-With the isotopes added, we may now move to add specific reactions. Again, the consideration of reactions should depend on the physics in question. As previously mentioned, we only need to include the four $\beta$/$\beta^-$ reactions and oxygen-16 burning, as described in the table. Add these reactions to `ONe.net`.
+With the isotopes added, we may now move to add specific reactions. Again, the consideration of reactions should depend on the physics in question. As previously mentioned, we only need to include the four $EC$/$\beta^-$ reactions and oxygen-16 burning, as described in the table. Add these reactions to `ONe.net`.
 
 | 📋 TASK 8 |
 |:--------|
@@ -369,9 +374,9 @@ With the isotopes added, we may now move to add specific reactions. Again, the c
 {{< details title="Hint: What is the format of the standard 1-to-1 weak reactions?" closed="true" >}}
 The following information can be found [here](https://docs.mesastar.org/en/latest/net/nets.html#description-of-net-format) under `reaction_handle`.
 
-$\beta$ reactions (positron emission or electron capture) between reactant x and product y follow the naming `r_x_wk_y`.
+1-to-1 Z-decreasing reactions (positron emission or electron capture) between reactant x and product y follow the naming `r_x_wk_y`.
 
-$\beta^-$ reactons (electron emission or positron capture) between reactant x and product y follow the naming `r_wk-minus_y`.
+1-to-1 Z-increasing reactons (electron emission or positron capture) between reactant x and product y follow the naming `r_wk-minus_y`.
 
 Note, x and y are the abbreviated isotope names (ie. Uranium-238 would be `u238`)
 {{< /details >}}
@@ -443,7 +448,7 @@ The following profile column outputs have been added to provide information abou
 
 ### Step 6: Inlist Pgstar
 
-Within the white dwarf interior, there should be some preference for electron capture ($\beta$) over electron emission ($\beta^-$) as the "free" electron levels fill up with increasing density. Therefore, the rate of Ne-20 -> F-20 ($\lambda_{^{20}Ne->^{20}F}$) should be higher than the rate of F-20 -> Ne-20 ($\lambda_{^{20}F->^{20}Ne}$) at high densities.
+Within the white dwarf interior, there should be some preference for electron capture (EC) over electron emission ($\beta^-$) as the "free" electron levels fill up with increasing density. Therefore, the rate of Ne-20 -> F-20 ($\lambda_{^{20}Ne->^{20}F}$) should be higher than the rate of F-20 -> Ne-20 ($\lambda_{^{20}F->^{20}Ne}$) at high densities.
 
 The provided `inlist_pgstar` has been mostly pre-formatted to show exactly this, given some values to be created in `run_star_extras.f90`. Set `profile_panels1_yaxis_name(1)` to `lambda_ne20_f20` and `profile_panels1_other_yaxis_name(1)` to `lambda_f20_ne20`.
 
@@ -481,7 +486,7 @@ Thankfully, most of the work has already been done for this lambda computation u
 
 | 📋 TASK 10 |
 |:--------|
-| In `run_star_extras`, **bulk import** the new submodules (`rates_lib`, `eos_lib`, and `eos_def`) and **selectively import** `Coulomb_Info` from `rates_def`.  |
+| In `src/run_star_extras.f90`, **bulk import** the new submodules (`rates_lib`, `eos_lib`, and `eos_def`) and **selectively import** `Coulomb_Info` from `rates_def`.  |
 
 > [!NOTE]
 > If you are unfamiliar with Fortran, see Georgia Tech's [Aerospace Engineering Resource page for Fortran90](https://aeresources.gatech.edu/Fortran/Webpage/) which compiles information on Frotran types/modules/loops/etc at an undergraduate level
@@ -515,7 +520,7 @@ With the needed functions in scope, we now need to set the number of new profile
 
 | 📋 TASK 11 |
 |:--------|
-| In `run_star_extras`, **set** number of extra profile columns to 2. |
+| In `src/run_star_extras.f90`, **set** number of extra profile columns to 2. |
 
 {{< details title="Hint: What function sets the number of extra profile columns?" closed="true" >}}
 Look for the variable `how_many_extra_profile_columns` within the function of the same name
@@ -541,10 +546,10 @@ Starting at the top of the subroutine, the set of necessary pointers, arrays, do
 
 | 📋 TASK 12 |
 |:--------|
-| In `run_star_extras`, **set** the new profile names to `lambda_ne20_f20` and `lambda_f20_ne20`. Then, **set** `weak_lhs` and `weak_rhs` to the reactant (left-hand side) species name and product (right-hand side) species name for each reaction. |
+| In `src/run_star_extras.f90`, **set** the new profile names to `lambda_ne20_f20` and `lambda_f20_ne20`. Then, **set** `weak_lhs` and `weak_rhs` to the reactant (left-hand side) species name and product (right-hand side) species name for each reaction. |
 
 > [!NOTE]
-> The species name is the abbreviated isotopic name (ie. Helium-4 is h4).
+> The species name is the abbreviated isotopic name (ie. Helium-4 is he4).
 
 {{< details title="Example" closed="true" >}}
 If we wanted to look at lambda_c14_n14, then we would set
@@ -581,7 +586,7 @@ In a fairly broad description, the code is looping through every zone of the sta
 
 | 📋 TASK 13 |
 |:--------|
-| In `run_star_extras`, **fill** `vals` with the value of lambda for each reaction within a `do` loop|
+| In `src/run_star_extras.f90`, **fill** `vals` with the value of lambda for each reaction within a `do` loop|
 
 > [!NOTE]
 > This new `do` loop should be created *within* the loop over zones. 
