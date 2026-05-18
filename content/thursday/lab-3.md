@@ -17,8 +17,8 @@ toc: true
 ## Introduction
 
 In this last minilab3 we will pick up on the system you evolved in minilab1 and follow its further evolution into a double black hole binary. Remember that at the end of your minilab1 you had two systems: 
-- One system underwent mass transfer during the Main Sequence (Case A mass transfer), with final properties listed in the below [Table 1](/thursday/lab-3/#table-binary).
-- The other underwent mass transfer after the Main Sequence (Case B mass transfer), with final properties as in [Table 2](/thursday/lab-3/#table-caseB).
+- One system underwent mass transfer during the Main Sequence (Case A mass transfer), with final properties listed in the below [Table 1](#table-binary).
+- The other underwent mass transfer after the Main Sequence (Case B mass transfer), with final properties as in [Table 2](#table-caseB).
 
 <div style="display: flex; justify-content: center; margin-bottom: 2rem; margin-top: 2rem;">
 <table id="table-binary" style="margin:auto; text-align:center;">
@@ -47,12 +47,12 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
   <tr>
   <td>Final model</td>
   <td>
-    <a href="/thursday/lab3/final1_caseA.mod" download>
+    <a href="../lab3/final1_caseA.mod" download>
       <code>final1_caseA.mod</code>
     </a>
   </td>
   <td>
-    <a href="/thursday/lab3/final2_caseA.mod" download>
+    <a href="../lab3/final2_caseA.mod" download>
       <code>final2_caseA.mod</code>
     </a>
   </td>
@@ -109,8 +109,8 @@ Both these systems have a rapidly rotating (spun-up) secondary that has accreted
 > In this minilab3, we will understand **how both types of binaries need to evolve in order to form gravitational wave sources** such as merging binary black holes.
 > 
 > **SPOILER**: both systems will evolve with a further stage of mass transfer, which may be 
-> - <u>STABLE</u>: relatively long-lived (on the thermal or even nuclear timescale of the donor) and self regulated, with a quiet detachment afterwards. We will study this in [Section 1](/thursday/lab-3/#1-stable-mass-transfer).
-> - <u>UNSTABLE</u>: or "Common envelope", a fast (~dynamical timescale) stage in which the envelope of the donor engulfs the binary. We will study this in [Section 2](/thursday/lab-3/#2-common-envelope-evolution).
+> - <u>STABLE</u>: relatively long-lived (on the thermal or even nuclear timescale of the donor) and self regulated, with a quiet detachment afterwards. We will study this in [Section 1](#1-stable-mass-transfer).
+> - <u>UNSTABLE</u>: or "Common envelope", a fast (~dynamical timescale) stage in which the envelope of the donor engulfs the binary. We will study this in [Section 2](#2-common-envelope-evolution).
 
 
 ## 1. Stable mass transfer
@@ -407,7 +407,7 @@ Playing with `pgstar` can be very entertaining, but for this lab we will use a p
 {{< /details>}}
 
 #### Get `final1_caseA.mod` and `final2_caseA.mod`
-Grab the final models `final1_caseA.mod` and `final2_caseA.mod` from your minilab1 (or download them from [Table 1](/thursday/lab-3/#table-binary)) and copy them into your work folder.
+Grab the final models `final1_caseA.mod` and `final2_caseA.mod` from your minilab1 (or download them from [Table 1](#table-binary)) and copy them into your work folder.
 
 <!-- #### Get `history_columns.list` and `binary_history_columns.list`
 Grab the <a href="/files/binary_history_columns.list" download>`history_columns.list`</a> and <a href="/files/binary_history_columns.list" download>`history_columns.list`</a> and copy them into your work folder. -->
@@ -570,7 +570,7 @@ In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\
 > ```fortran
 > limit_retention_by_mdot_edd = .true.
 > ```
-> will make such that the accretion rate onto the BH is Eddington-limited (we talked about it in [here](/thursday/lab-3/#1-stable-mass-transfer)). This is a standard assumption when treating BH accretors, which is observationally motivated by beautiful systems like the galactic microquasar [SS433](https://en.wikipedia.org/wiki/SS_433), where powerful relativistic jets are thought to drive material away from the central binary. However, keep in mind that this is not exact science and **there are other possible ways to treat (and limit) accretion onto BHs**: we will explore one further down in the lab.
+> will make such that the accretion rate onto the BH is Eddington-limited (we talked about it in [here](#1-stable-mass-transfer)). This is a standard assumption when treating BH accretors, which is observationally motivated by beautiful systems like the galactic microquasar [SS433](https://en.wikipedia.org/wiki/SS_433), where powerful relativistic jets are thought to drive material away from the central binary. However, keep in mind that this is not exact science and **there are other possible ways to treat (and limit) accretion onto BHs**: we will explore one further down in the lab.
 
 <div style="
   margin:1rem 0;
@@ -741,7 +741,7 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
     <p style="margin: 0;">
       Run your star + BH model with <code>./rn | tee output.txt</code>.<br>
       In case you need them, here are the complete inlists for this run:
-      <a href="/thursday/lab3/stable_MT_SOL.zip" download>
+      <a href="../lab3/stable_MT_SOL.zip" download>
         <code>stable_MT_SOL.zip</code>
       </a>
     </p>
@@ -751,17 +751,17 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
 
 Your `pgstar` window should look like something like this (this is the very last model of your run, model 749):
 
-<!-- ![pgstar_stable_caseA_new](/thursday/lab3/pgstar_stable_caseA_new.png) -->
+<!-- ![pgstar_stable_caseA_new](../lab3/pgstar_stable_caseA_new.png) -->
 <a id="fig-caseA"></a>
-[![Case A figure](/thursday/lab3/pgstar_stable_caseA_new.png)](/thursday/lab3/pgstar_stable_caseA_new.png)
+[![Case A figure](../lab3/pgstar_stable_caseA_new.png)](../lab3/pgstar_stable_caseA_new.png)
 
 **Figure 1.** Stable mass transfer, Case A evolution for a star + BH binary (click to zoom in!).
 
-- Make sure that the **Kippenhahn diagram** shows nice convective zones (filled in light blue) and the Helium core (the solid green line). If it is the case, you did well in putting `mixing_regions 10` in `history_columns.list` (as indicated in this [section](/thursday/lab-3/#modify-history_columnslist)) ☺️ Otherwise, no problem. Do it now, as we will look into the Kippenhahn diagram for a later run. You can also download the correct file <a href="/thursday/lab3/history_columns.list" download> <code>here</code></a>.
-- Check that the **info about the `tdelay(Gyr)`** column is appearing in the Text Summary, as you can see in here. If not, you may have done something wrong with the implementation... You can try again, but if you're short on time, just look at the [Figure 1](/thursday/lab-3/#fig-caseA) (click to zoom in!) to answer to the Analysis of the run questions here below.
+- Make sure that the **Kippenhahn diagram** shows nice convective zones (filled in light blue) and the Helium core (the solid green line). If it is the case, you did well in putting `mixing_regions 10` in `history_columns.list` (as indicated in this [section](#modify-history_columnslist)) ☺️ Otherwise, no problem. Do it now, as we will look into the Kippenhahn diagram for a later run. You can also download the correct file <a href="../lab3/history_columns.list" download> <code>here</code></a>.
+- Check that the **info about the `tdelay(Gyr)`** column is appearing in the Text Summary, as you can see in here. If not, you may have done something wrong with the implementation... You can try again, but if you're short on time, just look at the [Figure 1](#fig-caseA) (click to zoom in!) to answer to the Analysis of the run questions here below.
 
 ### Analysis of the run: Case A mass transfer!
-Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 1](/thursday/lab-3/#fig-caseA) (click to zoom in!). Try to think about it and answer together with your table.
+Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 1](#fig-caseA) (click to zoom in!). Try to think about it and answer together with your table.
 
 1. Which type of mass transfer do you observe in this star + BH run?  
    {{< details title="Solution" closed="true" >}}
@@ -771,7 +771,7 @@ Here are some discussion points for you to understand what happened physically t
 
 2. How much mass did the donor star lose?
    {{< details title="Solution" closed="true" >}}
-The donor star started from a mass of $39.8\:M_{\odot}$ (see [Table 1](/thursday/lab-3/#table-binary)), and is now $23.95\:M_{\odot}$. You can read this value in the Text Summary (`star_mass`), or look at the Kippenhahn diagram. So it lost $15.85\:M_{\odot}$, which corresponds to 40% of its initial mass!
+The donor star started from a mass of $39.8\:M_{\odot}$ (see [Table 1](#table-binary)), and is now $23.95\:M_{\odot}$. You can read this value in the Text Summary (`star_mass`), or look at the Kippenhahn diagram. So it lost $15.85\:M_{\odot}$, which corresponds to 40% of its initial mass!
 {{< /details >}}
 3. Is the donor star stripped to its core?
       {{< details title="Solution" closed="true" >}}
@@ -779,7 +779,7 @@ Almost! Look at the Text Summary (`he_core_mass`) and / or the Kippenhahn diagra
 {{< /details >}}
 4. How much mass did the BH accrete? Do you understand why?
       {{< details title="Solution" closed="true" >}}
-The BH accretor started from a mass of $16.8\:M_{\odot}$ (see [Table 1](/thursday/lab-3/#table-binary)), and is now $16.98\:M_{\odot}$ (see `star_2_mass` value). Therefore it only accreted $0.18\:M_{\odot}$, so it increased its mass by only 1.1%. The Eddington-limited accretion made such that the mass transfer becomes almost completely non-conservative (i.e., all the material is expelled from the binary).
+The BH accretor started from a mass of $16.8\:M_{\odot}$ (see [Table 1](#table-binary)), and is now $16.98\:M_{\odot}$ (see `star_2_mass` value). Therefore it only accreted $0.18\:M_{\odot}$, so it increased its mass by only 1.1%. The Eddington-limited accretion made such that the mass transfer becomes almost completely non-conservative (i.e., all the material is expelled from the binary).
 {{< /details >}}
 5. How did the orbit evolve during mass transfer? And what is the final period?
   {{< details title="Solution" closed="true" >}}
@@ -798,12 +798,12 @@ The donor will collapse into a BH of mass $23.95\:M_{\odot}$, and the companion 
 ### Orbital tightening from L2 mass loss
 So far, we have considered an **Eddington-limited** mass-transfer scenario, in which matter that cannot be accreted by the black hole is expelled from the vicinity of the accretor itself. This is the so-called **isotropic re-emission mode**. In this picture, the expelled material removes the **specific angular momentum of the accretor** from the binary system.
 
-However, this is not the only possible way for matter to leave the binary. 3D hydrodynamical simulations [^lu2022] show that when the mass-transfer rate becomes sufficiently high (roughly $\dot{M} \gtrsim 10^{-4}\ M_\odot\,\mathrm{yr}^{-1}$), some of the transferred material can instead be lifted all the way to the **second Lagrangian point**, $L_2$. This is the Lagrangian point located on the far side of the less massive object in the binary (see [Figure 2](/thursday/lab-3/#fig-L2)).
+However, this is not the only possible way for matter to leave the binary. 3D hydrodynamical simulations [^lu2022] show that when the mass-transfer rate becomes sufficiently high (roughly $\dot{M} \gtrsim 10^{-4}\ M_\odot\,\mathrm{yr}^{-1}$), some of the transferred material can instead be lifted all the way to the **second Lagrangian point**, $L_2$. This is the Lagrangian point located on the far side of the less massive object in the binary (see [Figure 2](#fig-L2)).
 
 Because the $L_2$ point is located farther away from the center of mass than the accretor itself, material escaping through $L_2$ carries away **much more angular momentum** than in the isotropic re-emission case.
 
 <a id="fig-L2"></a>
-[![L2 outflow](/thursday/lab3/L2_outflow.jpeg)](/thursday/lab3/L2_outflow.jpeg)
+[![L2 outflow](../lab3/L2_outflow.jpeg)](../lab3/L2_outflow.jpeg)
 **Figure 2.** Schematics[^lu2022] of $L_2$ outflow in a binary, where the $\Phi$s indicate different levels of gravitational equipotential; $L_1$ is the first Lagrangian point (through which material can flow). 
 
 <a id="eq-Jdot_iso"></a>
@@ -834,16 +834,16 @@ These efficiency factors determine how conservative the mass transfer is:
 - $\upsilon + \beta = 0$  → fully conservative mass transfer (everything is retained in the system).
 - $\epsilon\equiv\upsilon+\beta$  → this is the same $\epsilon$ that you saw in minilab1 (where $\epsilon=1$ is for conservative mass transfer, and $\epsilon=0$ is fully non-conservative), but this time it is modified to our purpose of having only two types of mass leakage: the isotropic re-emission mode, and $L_2$ overflow.
 
-$L_2$ mass outflow has been associated observationally with **circumbinary outflows** (see the CBO in [Figure 2](/thursday/lab-3/#fig-L2)) in nearby ($\lesssim 10$ Megaparsecs!) **[ultraluminous X-ray sources](https://en.wikipedia.org/wiki/Ultraluminous_X-ray_source)**. These outflows are thought to absorb and reprocess radiation from the central accreting source, naturally producing the infrared excess observed in the ultraluminous X-ray sources[^lu2022]. An even closer (in our Galaxy!) candidate for this type of mass loss is again [SS433](https://en.wikipedia.org/wiki/SS_433), for which spectroscopic observations have been interpreted as evidence for material escaping through the $L_2$ region and forming a circumbinary structure[^bowler2010]. While **there is no direct smoking gun system where we directly see gas leaving from $L_2$**, we infer it through their required angular-momentum loss, the presence of circumbinary structures, and consistency with extreme mass-transfer regimes.
+$L_2$ mass outflow has been associated observationally with **circumbinary outflows** (see the CBO in [Figure 2](#fig-L2)) in nearby ($\lesssim 10$ Megaparsecs!) **[ultraluminous X-ray sources](https://en.wikipedia.org/wiki/Ultraluminous_X-ray_source)**. These outflows are thought to absorb and reprocess radiation from the central accreting source, naturally producing the infrared excess observed in the ultraluminous X-ray sources[^lu2022]. An even closer (in our Galaxy!) candidate for this type of mass loss is again [SS433](https://en.wikipedia.org/wiki/SS_433), for which spectroscopic observations have been interpreted as evidence for material escaping through the $L_2$ region and forming a circumbinary structure[^bowler2010]. While **there is no direct smoking gun system where we directly see gas leaving from $L_2$**, we infer it through their required angular-momentum loss, the presence of circumbinary structures, and consistency with extreme mass-transfer regimes.
 
 > [!IMPORTANT]
 >In the context of gravitational wave sources, $L_2$ mass outflow is expected to efficiently tighten star + BH binaries that are residing in quite wide orbits, so that after the detachment, the binary will be already close enough to start chirping at the formation of the second BH! **In this part of the minilab3, we will demonstrate that, in presence of $L_2$ mass outflow, a wide binary, like the Case B system you produced in minilab1, can form a gravitational wave source after stable mass transfer.**
 >
-> You can start from the same setup as you developed so far (also downloadable <a href="/thursday/lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
+> You can start from the same setup as you developed so far (also downloadable <a href="../lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
 > ```bash
 > cp -r stable_MT stable_MT_L2
 >```
-> Remind yourself of the properties of your Case B system in [Table 2](/thursday/lab-3/#table-caseB), and download the `final1_caseB.mod` and `final2_caseB.mod`. You see that the masses are mostly the same, but you will have to change the period, and load the right model 😎
+> Remind yourself of the properties of your Case B system in [Table 2](#table-caseB), and download the `final1_caseB.mod` and `final2_caseB.mod`. You see that the masses are mostly the same, but you will have to change the period, and load the right model 😎
 > {{< details title="Solution for `inlist_project`" closed="true" >}}
 >```fortran
 >&binary_controls
@@ -1534,7 +1534,7 @@ History_Panels1_other_yaxis_name(2) = 'lg_mdot_L2'
     <p style="margin: 0;">
       Run your star + BH model with L2 outflow.<br>
       In case you need them, here are the complete inlists for this run:
-      <a href="/thursday/lab3/stable_MT_L2_SOL.zip" download>
+      <a href="../lab3/stable_MT_L2_SOL.zip" download>
         <code>stable_MT_L2_SOL.zip</code>
       </a>
     </p>
@@ -1544,17 +1544,17 @@ History_Panels1_other_yaxis_name(2) = 'lg_mdot_L2'
 
 Your `pgstar` window should look like something like this (this is the very last model of your run, model 712):
 
-<!-- ![pgstar_stable_caseB](/thursday/lab3/pgstar_stable_caseB_new.png) -->
+<!-- ![pgstar_stable_caseB](../lab3/pgstar_stable_caseB_new.png) -->
 <a id="fig-caseB"></a>
-[![Case B figure](/thursday/lab3/pgstar_stable_caseB_new.png)](/thursday/lab3/pgstar_stable_caseB_new.png)
+[![Case B figure](../lab3/pgstar_stable_caseB_new.png)](../lab3/pgstar_stable_caseB_new.png)
 
 **Figure 3.** Stable mass transfer, Case B evolution for a star + BH binary (click to zoom in!).
 
-- Make sure the mass loss rate from $L_2$ is appearing in your mass transfer rate plot. If it looks like the [Figure 3](/thursday/lab-3/#fig-caseB), you must have done everything right 🍻🍻
+- Make sure the mass loss rate from $L_2$ is appearing in your mass transfer rate plot. If it looks like the [Figure 3](#fig-caseB), you must have done everything right 🍻🍻
 
 
 ### Analysis of the run: Case B mass transfer!
-Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 3](/thursday/lab-3/#fig-caseB) (click to zoom in!). Try to think about it and answer together with your table.
+Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 3](#fig-caseB) (click to zoom in!). Try to think about it and answer together with your table.
 
 1. Which type of mass transfer do you observe in this star + BH run?  
    {{< details title="Solution" closed="true" >}}
@@ -1563,11 +1563,11 @@ Here are some discussion points for you to understand what happened physically t
 {{< /details >}}
 2. How much mass did the donor star lose? How is it compared to the previous run that was assuming Eddington-limited accretion?
    {{< details title="Solution" closed="true" >}}
-The donor star started from a mass of $40.8\:M_{\odot}$ (see [Table 1](/thursday/lab-3/#table-caseB)), and is now $24.77\:M_{\odot}$. You can read this value in the Text Summary (`star_mass`), or look at the Kippenhahn diagram. So it lost $16.03\:M_{\odot}$, which corresponds to 40% of its initial mass! More or less, like in the Case A system.
+The donor star started from a mass of $40.8\:M_{\odot}$ (see [Table 1](#table-caseB)), and is now $24.77\:M_{\odot}$. You can read this value in the Text Summary (`star_mass`), or look at the Kippenhahn diagram. So it lost $16.03\:M_{\odot}$, which corresponds to 40% of its initial mass! More or less, like in the Case A system.
 {{< /details >}}
 3. How much mass did the BH accrete? Any difference with the previous run?
       {{< details title="Solution" closed="true" >}}
-The BH accretor started from a mass of $17.14\:M_{\odot}$ (see [Table 1](/thursday/lab-3/#table-caseB)), and is now... $17.14\:M_{\odot}$ (see `star_2_mass` value)! It accreted absolutely nothing, as we wanted. Our setup is constructed such that $\upsilon+\beta=1$, i.e. 100% of the mass that the donor transfers is expelled from the binary.
+The BH accretor started from a mass of $17.14\:M_{\odot}$ (see [Table 1](#table-caseB)), and is now... $17.14\:M_{\odot}$ (see `star_2_mass` value)! It accreted absolutely nothing, as we wanted. Our setup is constructed such that $\upsilon+\beta=1$, i.e. 100% of the mass that the donor transfers is expelled from the binary.
 {{< /details >}}
 4. How much did the orbit shrink? Compare with the previous run.
       {{< details title="Solution" closed="true" >}}
@@ -1627,11 +1627,11 @@ Here:<a id="eq-ebind"></a>
 > [!IMPORTANT]
 > In the context of gravitational wave sources, CE has been classically invoked as a way to form double BHs binaries, due to its efficient tightening of the orbit of star + BH systems prior to the evolution into BH + BH binaries. Pretty much as the stable mass transfer channels that we have seen above 😁 **The aim of this exercise is to explore how CE evolution can form gravitational wave sources and compare its outcome to the stable mass transfer channel**.
 >
-> You can start from the same setup as you developed for the Case A mass transfer (also downloadable <a href="/thursday/lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
+> You can start from the same setup as you developed for the Case A mass transfer (also downloadable <a href="../lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
 > ```bash
 > cp -r stable_MT CE
 >```
-> Remind yourself of the properties of your Case A system in [Table 1](/thursday/lab-3/#table-binary). In particular, look at the mass ratio: $\sim 0.4$. This is a very mild mass ratio, and in fact the mass transfer between star + BH was stable! Let's **change the BH mass to $5\:M_{\odot}$: this gives us a very extreme mass ratio ($\sim 0.1$) that will favor CE evolution instead** 😎
+> Remind yourself of the properties of your Case A system in [Table 1](#table-binary). In particular, look at the mass ratio: $\sim 0.4$. This is a very mild mass ratio, and in fact the mass transfer between star + BH was stable! Let's **change the BH mass to $5\:M_{\odot}$: this gives us a very extreme mass ratio ($\sim 0.1$) that will favor CE evolution instead** 😎
 > {{< details title="Solution for `inlist_project`" closed="true" >}}
 >```fortran
 >&binary_controls
@@ -1995,7 +1995,7 @@ History_Panels1_other_yaxis_name(2) = 'log10(Mdot_KH)'
 
 If you have time, try to implement:
 1. ⭐️**BONUS**⭐️ $P_{\mathrm{post-CE}}$ in days (<a href="#eq-PpostCE">Eq. (6)</a>) as an extra history column `P_postCE(days)`, and show its value in the Text Summary window of `pgstar` → you will have to transport the `Ebind` information from `run_star_extras.f90` to `run_binary_extras.f90` with `s% xtra`!
-2. ⭐️**BONUS**⭐️ $t_{\mathrm{delay,\:post-CE}}$ in Gyrs as an extra history column `tdelay_postCE(Gyr)`, and show its value in the Text Summary window of `pgstar`→ there's nothing difficult in this task, it is basically the same calculation as you did in [here](/thursday/lab-3/#computing-the-time-delay) for <a href="#eq-tdelay">Eq. (1)</a>. But this time, we want to use the masses and separation post-CE!
+2. ⭐️**BONUS**⭐️ $t_{\mathrm{delay,\:post-CE}}$ in Gyrs as an extra history column `tdelay_postCE(Gyr)`, and show its value in the Text Summary window of `pgstar`→ there's nothing difficult in this task, it is basically the same calculation as you did in [here](#computing-the-time-delay) for <a href="#eq-tdelay">Eq. (1)</a>. But this time, we want to use the masses and separation post-CE!
    
 >[!CAUTION]
 >🚨🚨 No problem if you don't have time to try, but still copy the full solution from here into your `run_binary_extras.f90`:
@@ -2100,7 +2100,7 @@ Well done, we're at our third and last run of the day!
     <p style="margin: 0;">
       Run your common envelope model with <code>./rn | tee output.txt</code>.<br>
       In case you need them, here are the complete inlists for this run:
-      <a href="/thursday/lab3/CE_SOL.zip" download>
+      <a href="../lab3/CE_SOL.zip" download>
         <code>CE_SOL.zip</code>
       </a>
     </p>
@@ -2111,15 +2111,15 @@ Well done, we're at our third and last run of the day!
 Your `pgstar` window should look like something like this (this is the very last model, right when CE starts according to our implemented criterion of <a href="#eq-MKH">Eq. (4)</a>, model number 560):
 
 <a id="fig-CEcaseA"></a>
-[![CE case A figure](/thursday/lab3/pgstar_CE_caseA_new.png)](/thursday/lab3/pgstar_CE_caseA_new.png)
+[![CE case A figure](../lab3/pgstar_CE_caseA_new.png)](../lab3/pgstar_CE_caseA_new.png)
 
 **Figure 4.** Common envelope evolution at its onset for a star + BH binary (click to zoom in!).
 
 - Make sure that **the Kelvin-Helmholtz rate `log10(Mdot_KH)`** is appearing in the plot of `lg_mtransfer_rate`. You can see that the threshold stays around $10^{-2}\:M_{\odot}\:\mathrm{yr}^{-1}$, which gets easily surpassed by our mass transfer episode after a few models. 
-- Make sure also the new **Text Summary information on $t_{\mathrm{delay\: post-CE}}$ and $P_{\mathrm{post-CE}}$** from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the "Analysis of the run" section and simply look at [Figure 4](/thursday/lab-3/#fig-CEcaseA) (click to zoom in!) to answer to the conceptual questions.
+- Make sure also the new **Text Summary information on $t_{\mathrm{delay\: post-CE}}$ and $P_{\mathrm{post-CE}}$** from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the "Analysis of the run" section and simply look at [Figure 4](#fig-CEcaseA) (click to zoom in!) to answer to the conceptual questions.
 
 ### Analysis of the run: runaway mass transfer!
-Here are some discussion points; you will only need to look at [Figure 4](/thursday/lab-3/#fig-CEcaseA) (click to zoom in!). Try to think about it and answer together with your table.
+Here are some discussion points; you will only need to look at [Figure 4](#fig-CEcaseA) (click to zoom in!). Try to think about it and answer together with your table.
 
 1. How is the mass transfer rate evolving, and how can you see that you are at CE onset?
    {{< details title="Solution" closed="true" >}}
