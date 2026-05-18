@@ -11,7 +11,7 @@ The MESA colors module allows us to generate synthetic photometry while running 
 
 One major age dating technique for stellar populations is through the use of isochrones. Isochrones are single-aged, chemically homogenous populations that show a snapshot of stellar evolution. They're made by evolving stars with the same chemical composition but different initial masses, and then finding what point in evolution each star is at at a particular age. Larger stars burn hotter and brighter, leaving the main sequence much quicker than a lower mass star. For example, at 10 Gyr we can see a 0.8 $M_{\odot}$ still on the main sequence, while a 5 $M_{\odot}$ star will be long past the Red Giant Branch. Because of this, we can build isochrones and use them to determine the age of stellar populations. One caveat to this is that they use the assumption that all the stars are at relatively the same distance and formed from the same materials at relatively the same time. _The best stellar populations to use isochrones when age dating stars is in clusters because we can make these assumptions._
 
-This figure shows a series of isochrones at different ages between 0.03 Gyr to 10 Gyr, made using MESA Isochrones and Stellar Tracks ([MIST](https://mist.science/). As the population gets older, the shape of the isochrone changes too!
+This figure shows a series of isochrones at different ages between 0.03 Gyr to 10 Gyr, made using MESA Isochrones and Stellar Tracks ([MIST](https://mist.science/)). As the population gets older, the shape of the isochrone changes too!
 
 <img width="450" height="600" alt="isochrones" src="https://github.com/user-attachments/assets/b115dfa9-6604-4531-9b04-d7dfb6481184" />
 
