@@ -751,17 +751,17 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
 
 Your `pgstar` window should look like something like this (this is the very last model of your run, model 749):
 
-<!-- ![pgstar_stable_caseA_new](../lab3/pgstar_stable_caseA_new.png) -->
+<!-- ![pgstar_stable_caseA_new](/thursday/lab3/pgstar_stable_caseA_new.png) -->
 <a id="fig-caseA"></a>
-[![Case A figure](../lab3/pgstar_stable_caseA_new.png)](../lab3/pgstar_stable_caseA_new.png)
+[![Case A figure](/thursday/lab3/pgstar_stable_caseA_new.png)](/thursday/lab3/pgstar_stable_caseA_new.png)
 
 **Figure 1.** Stable mass transfer, Case A evolution for a star + BH binary (click to zoom in!).
 
-- Make sure that the **Kippenhahn diagram** shows nice convective zones (filled in light blue) and the Helium core (the solid green line). If it is the case, you did well in putting `mixing_regions 10` in `history_columns.list` (as indicated in this [section](#modify-history_columnslist)) ☺️ Otherwise, no problem. Do it now, as we will look into the Kippenhahn diagram for a later run. You can also download the correct file <a href="../lab3/history_columns.list" download> <code>here</code></a>.
-- Check that the **info about the `tdelay(Gyr)`** column is appearing in the Text Summary, as you can see in here. If not, you may have done something wrong with the implementation... You can try again, but if you're short on time, just look at the [Figure 1](#fig-caseA) (click to zoom in!) to answer to the Analysis of the run questions here below.
+- Make sure that the **Kippenhahn diagram** shows nice convective zones (filled in light blue) and the Helium core (the solid green line). If it is the case, you did well in putting `mixing_regions 10` in `history_columns.list` (as indicated in this <a href="#modify-history_columnslist">section</a>) ☺️ Otherwise, no problem. Do it now, as we will look into the Kippenhahn diagram for a later run. You can also download the correct file <a href="../lab3/history_columns.list" download> <code>here</code></a>.
+- Check that the **info about the `tdelay(Gyr)`** column is appearing in the Text Summary, as you can see in here. If not, you may have done something wrong with the implementation... You can try again, but if you're short on time, just look at <a href="#fig-caseA">Figure 1</a> (click to zoom in!) to answer to the Analysis of the run questions here below.
 
 ### Analysis of the run: Case A mass transfer!
-Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 1](#fig-caseA) (click to zoom in!). Try to think about it and answer together with your table.
+Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at <a href="#fig-caseA">Figure 1</a> (click to zoom in!). Try to think about it and answer together with your table.
 
 1. Which type of mass transfer do you observe in this star + BH run?  
    {{< details title="Solution" closed="true" >}}
@@ -798,12 +798,12 @@ The donor will collapse into a BH of mass $23.95\:M_{\odot}$, and the companion 
 ### Orbital tightening from L2 mass loss
 So far, we have considered an **Eddington-limited** mass-transfer scenario, in which matter that cannot be accreted by the black hole is expelled from the vicinity of the accretor itself. This is the so-called **isotropic re-emission mode**. In this picture, the expelled material removes the **specific angular momentum of the accretor** from the binary system.
 
-However, this is not the only possible way for matter to leave the binary. 3D hydrodynamical simulations [^lu2022] show that when the mass-transfer rate becomes sufficiently high (roughly $\dot{M} \gtrsim 10^{-4}\ M_\odot\,\mathrm{yr}^{-1}$), some of the transferred material can instead be lifted all the way to the **second Lagrangian point**, $L_2$. This is the Lagrangian point located on the far side of the less massive object in the binary (see [Figure 2](#fig-L2)).
+However, this is not the only possible way for matter to leave the binary. 3D hydrodynamical simulations [^lu2022] show that when the mass-transfer rate becomes sufficiently high (roughly $\dot{M} \gtrsim 10^{-4}\ M_\odot\,\mathrm{yr}^{-1}$), some of the transferred material can instead be lifted all the way to the **second Lagrangian point**, $L_2$. This is the Lagrangian point located on the far side of the less massive object in the binary (see <a href="#fig-L2">Figure 2</a>).
 
 Because the $L_2$ point is located farther away from the center of mass than the accretor itself, material escaping through $L_2$ carries away **much more angular momentum** than in the isotropic re-emission case.
 
 <a id="fig-L2"></a>
-[![L2 outflow](../lab3/L2_outflow.jpeg)](../lab3/L2_outflow.jpeg)
+[![L2 outflow](/thursday/lab3/L2_outflow.jpeg)](/thursday/lab3/L2_outflow.jpeg)
 **Figure 2.** Schematics[^lu2022] of $L_2$ outflow in a binary, where the $\Phi$s indicate different levels of gravitational equipotential; $L_1$ is the first Lagrangian point (through which material can flow). 
 
 <a id="eq-Jdot_iso"></a>
@@ -834,7 +834,7 @@ These efficiency factors determine how conservative the mass transfer is:
 - $\upsilon + \beta = 0$  → fully conservative mass transfer (everything is retained in the system).
 - $\epsilon\equiv\upsilon+\beta$  → this is the same $\epsilon$ that you saw in minilab1 (where $\epsilon=1$ is for conservative mass transfer, and $\epsilon=0$ is fully non-conservative), but this time it is modified to our purpose of having only two types of mass leakage: the isotropic re-emission mode, and $L_2$ overflow.
 
-$L_2$ mass outflow has been associated observationally with **circumbinary outflows** (see the CBO in [Figure 2](#fig-L2)) in nearby ($\lesssim 10$ Megaparsecs!) **[ultraluminous X-ray sources](https://en.wikipedia.org/wiki/Ultraluminous_X-ray_source)**. These outflows are thought to absorb and reprocess radiation from the central accreting source, naturally producing the infrared excess observed in the ultraluminous X-ray sources[^lu2022]. An even closer (in our Galaxy!) candidate for this type of mass loss is again [SS433](https://en.wikipedia.org/wiki/SS_433), for which spectroscopic observations have been interpreted as evidence for material escaping through the $L_2$ region and forming a circumbinary structure[^bowler2010]. While **there is no direct smoking gun system where we directly see gas leaving from $L_2$**, we infer it through their required angular-momentum loss, the presence of circumbinary structures, and consistency with extreme mass-transfer regimes.
+$L_2$ mass outflow has been associated observationally with **circumbinary outflows** (see the CBO in <a href="#fig-L2">Figure 2</a>) in nearby ($\lesssim 10$ Megaparsecs!) **[ultraluminous X-ray sources](https://en.wikipedia.org/wiki/Ultraluminous_X-ray_source)**. These outflows are thought to absorb and reprocess radiation from the central accreting source, naturally producing the infrared excess observed in the ultraluminous X-ray sources[^lu2022]. An even closer (in our Galaxy!) candidate for this type of mass loss is again [SS433](https://en.wikipedia.org/wiki/SS_433), for which spectroscopic observations have been interpreted as evidence for material escaping through the $L_2$ region and forming a circumbinary structure[^bowler2010]. While **there is no direct smoking gun system where we directly see gas leaving from $L_2$**, we infer it through their required angular-momentum loss, the presence of circumbinary structures, and consistency with extreme mass-transfer regimes.
 
 > [!IMPORTANT]
 >In the context of gravitational wave sources, $L_2$ mass outflow is expected to efficiently tighten star + BH binaries that are residing in quite wide orbits, so that after the detachment, the binary will be already close enough to start chirping at the formation of the second BH! **In this part of the minilab3, we will demonstrate that, in presence of $L_2$ mass outflow, a wide binary, like the Case B system you produced in minilab1, can form a gravitational wave source after stable mass transfer.**
@@ -1544,17 +1544,17 @@ History_Panels1_other_yaxis_name(2) = 'lg_mdot_L2'
 
 Your `pgstar` window should look like something like this (this is the very last model of your run, model 712):
 
-<!-- ![pgstar_stable_caseB](../lab3/pgstar_stable_caseB_new.png) -->
+<!-- ![pgstar_stable_caseB](/thursday/lab3/pgstar_stable_caseB_new.png) -->
 <a id="fig-caseB"></a>
-[![Case B figure](../lab3/pgstar_stable_caseB_new.png)](../lab3/pgstar_stable_caseB_new.png)
+[![Case B figure](/thursday/lab3/pgstar_stable_caseB_new.png)](/thursday/lab3/pgstar_stable_caseB_new.png)
 
 **Figure 3.** Stable mass transfer, Case B evolution for a star + BH binary (click to zoom in!).
 
-- Make sure the mass loss rate from $L_2$ is appearing in your mass transfer rate plot. If it looks like the [Figure 3](#fig-caseB), you must have done everything right 🍻🍻
+- Make sure the mass loss rate from $L_2$ is appearing in your mass transfer rate plot. If it looks like <a href="#fig-caseB">Figure 3</a>, you must have done everything right 🍻🍻
 
 
 ### Analysis of the run: Case B mass transfer!
-Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 3](#fig-caseB) (click to zoom in!). Try to think about it and answer together with your table.
+Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at <a href="#fig-caseB">Figure 3</a> (click to zoom in!). Try to think about it and answer together with your table.
 
 1. Which type of mass transfer do you observe in this star + BH run?  
    {{< details title="Solution" closed="true" >}}
@@ -2111,15 +2111,15 @@ Well done, we're at our third and last run of the day!
 Your `pgstar` window should look like something like this (this is the very last model, right when CE starts according to our implemented criterion of <a href="#eq-MKH">Eq. (4)</a>, model number 560):
 
 <a id="fig-CEcaseA"></a>
-[![CE case A figure](../lab3/pgstar_CE_caseA_new.png)](../lab3/pgstar_CE_caseA_new.png)
+[![CE case A figure](/thursday/lab3/pgstar_CE_caseA_new.png)](/thursday/lab3/pgstar_CE_caseA_new.png)
 
 **Figure 4.** Common envelope evolution at its onset for a star + BH binary (click to zoom in!).
 
 - Make sure that **the Kelvin-Helmholtz rate `log10(Mdot_KH)`** is appearing in the plot of `lg_mtransfer_rate`. You can see that the threshold stays around $10^{-2}\:M_{\odot}\:\mathrm{yr}^{-1}$, which gets easily surpassed by our mass transfer episode after a few models. 
-- Make sure also the new **Text Summary information on $t_{\mathrm{delay\: post-CE}}$ and $P_{\mathrm{post-CE}}$** from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the "Analysis of the run" section and simply look at [Figure 4](#fig-CEcaseA) (click to zoom in!) to answer to the conceptual questions.
+- Make sure also the new **Text Summary information on $t_{\mathrm{delay\: post-CE}}$ and $P_{\mathrm{post-CE}}$** from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the "Analysis of the run" section and simply look at <a href="#fig-CEcaseA">Figure 4</a> (click to zoom in!) to answer to the conceptual questions.
 
 ### Analysis of the run: runaway mass transfer!
-Here are some discussion points; you will only need to look at [Figure 4](#fig-CEcaseA) (click to zoom in!). Try to think about it and answer together with your table.
+Here are some discussion points; you will only need to look at <a href="#fig-CEcaseA">Figure 4</a> (click to zoom in!). Try to think about it and answer together with your table.
 
 1. How is the mass transfer rate evolving, and how can you see that you are at CE onset?
    {{< details title="Solution" closed="true" >}}
