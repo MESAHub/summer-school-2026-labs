@@ -276,7 +276,7 @@ If you use these solutions files directly, you still need to pass the correct pa
 
 If you have completed your batch RSP-LNA runs, try to also add the GYRE period and growth rate values to the spreadsheet. **Hint**: Remember, this information is saved in the output of lab 1 and so you don't need to rerun any models.
 
-## Even more automation
+<!--## Even more automation To add after testing
 
 When we did these runs to generate the data for the plots in the lecture slides, we made a few changes to automate a few more things. For those interested, we provide and describe this directory below.
 
@@ -284,7 +284,7 @@ When we did these runs to generate the data for the plots in the lecture slides,
 
 **Eb: add a discussion of your approach to fully automating this work here.**
 
-{{< /details >}}
+{{< /details >}}-->
 
 ## Suggested Further Reading
 
