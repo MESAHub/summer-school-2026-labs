@@ -9,7 +9,7 @@ disableKinds: "rss"
 ## Introduction
 
 In Lab 1 you built a minimal nuclear network for an accreting ONe white dwarf and watched the core march toward oxygen ignition.
-But there is important physics we left out: **the URCA process**.
+But there is important physics we left out: **the Urca process**.
 
 In sufficiently degenerate matter, certain nuclei can undergo cyclic electron captures and beta decays at a specific **threshold density** — a so-called *Urca shell*.
 Each cycle emits two neutrinos that carry energy directly out of the star, providing a potentially significant cooling (or heating) mechanism that depends sensitively on the accretion rate.
@@ -270,6 +270,9 @@ add_reactions(
 
 ### Step 5: Update the Inlists for the A=25 Run
 
+> [!NOTE]
+> The `1.1Msun_ONeMg2Na.mod` starting model is already included in your working directory.
+
 | 📋 TASK 6 |
 |:--------|
 | Update `inlist_accrete` to use `ONeNaMg25.net`, load the `1.1Msun_ONeMg2Na.mod` starting model, set the LOGS directory to `LOGS_ONeNaMg25_1d-6`, and update the accretion composition to include ²⁴Mg (5%) and ²⁵Mg (1%). |
@@ -522,6 +525,8 @@ This balance is sensitive to $\dot{M}$ and the Urca pair threshold densities —
 
 ## Solution / End Point
 
-The full solution for Lab 2 (which also serves as the starting point for Lab 3) can be downloaded [HERE](https://drive.google.com/file/d/1fkBKUwb70Wf44Lxis7w530GLdj-JmPi_/view?usp=sharing).
+The end-of-Part-2 solution for Lab 2 (which also serves as a starting point for Lab 3) can be downloaded [HERE](https://drive.google.com/file/d/FIXLINK_LAB2_END/view?usp=sharing).
+
+If you also completed the bonus section, the full bonus solution can be downloaded [HERE](https://drive.google.com/file/d/FIXLINK_LAB2_BONUS_END/view?usp=sharing).
 
 [^1]: Suzuki et al. 2016, ApJ 817, 163 — sd-shell electron capture and β-decay rates at stellar densities.

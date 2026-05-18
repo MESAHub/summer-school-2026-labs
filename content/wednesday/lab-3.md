@@ -1125,7 +1125,42 @@ end function L1616_timestep_limit
 |:--------|
 | Now take a look at ``$MESA_DIR/star/private/timestep.f90`` and try to understand how it limits the timestep based on changes in quantities. Go to line 1007 and look at the ``check_lgL`` integer function, particularly lines 1110 to 1131. Implement these in your ``L1616_timestep_limit`` function.  |
 
+<!-- Partial solution  -->
+{{< details title="Partial solution" closed="true" >}}
 
+We will define a
+
+Your function should look like
+```fortran
+integer function L1616_timestep_limit( &
+    id, skip_hard_limit, dt, dt_limit_ratio)
+    use const_def, only: dp
+    use star_def
+    use chem_def, only : ioo
+    integer, intent(in) :: id
+    logical, intent(in) :: skip_hard_limit
+    real(dp), intent(in) :: dt
+    real(dp), intent(inout) :: dt_limit_ratio
+    real(dp) :: log_L1616, log_L1616_start, dlog_L1616 ! new
+    type (star_info), pointer :: s
+    integer :: ierr
+    ierr = 0
+    call star_ptr(id, s, ierr)
+    if (ierr /= 0) return
+
+    L1616_timestep_limit = keep_going
+
+    log_L1616 = safe_log10(s% luminosity_by_category(ioo,1)/lsun)
+    if (log_L1616 <= s% x_ctrl(1)) return
+
+    ! new
+    log_L1616_start = safe_log10(s% luminosity_by_category_start(ioo,1)/lsun)
+    dlog_L1616 = abs(log_L1616_start - log_L1616)
+
+end function L1616_timestep_limit
+```
+
+{{< /details >}}
 
 
 {{< /tab >}}
