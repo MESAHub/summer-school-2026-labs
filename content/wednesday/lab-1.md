@@ -9,11 +9,14 @@ disableKinds: "rss"
 
 ## Introduction
 
-- (Briefly) What is the URCA Process and why is it important
-- How this relates to the choice of nuclear reaction network
-- Intro to lab -- From a starting White Dwarf composition, will build a nuclear net, then use varying accretion rates to map initial density at oxygen flame
+Urca processes describe sets of reactions whereby isobars cyclically experience electron capture and $\beta$ decay, both releasing neutrinos.[^GamowSchoenberg41] Due to the varying dependencies of these reaction rates on temperature and density, the locations whereby these reactions dominate can be described by distinct shells. Within these shells, $\beta$ decay produces local heating, while electron capture can either heat or cool the surrounding medium (dependent on density).[^MartinezPinedo14] The net effect can lead to more efficient cooling that decreases thermal support to the point of collapse ("bankrupting" the star, hence the eponymous Casino de Urca in Rio de Jainero![^Haensel95]). 
 
-TODO
+In the temperatures and densities characteristic of an accreting oxygen-neon (ONe) white dwarf, it is expected that these urca processes are critical to accurately modeling the expected end state of the star (implosion versus explosion).[^Hola26] To account for these processes, it is essential to carefully consider the nuclear network used throughout our models. 
+
+In this lab, we will model the accretion stage of an ONe white dwarf, beginning from a precomputed starting point and evolving to oxygen ignition. To accomplish this, we will build a custom nuclear network and measure the rate balance between electron capture/$\beta^-$ rates. In the end, we will map the density at oxygen ignition to answer the question: Will this star explode or implode?
+
+For more discussion on accretion-induced collapse in accreting white dwarfs, see also Schwab&Rocha19[^Schwab19], Schwab+15[^Schwab15], and Piersanti+22[^Piersanti22].
+
 
 ### Helpful Links
 
@@ -90,15 +93,15 @@ At this stage, we are now ready to dive into some inlists!
 
 `inlist_common` holds the set of "defaults" that we want to be common between various accretion runs. The primary point of this is to make changes to more modular. Instead of having to sort through walls of variables for each change, the core functionality can be stored in... common.
 
-Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances and help the model converge at later times. Check the aside below **after** the lab for more details on particular choices in this file. [^6] [^7] [^4] [^5]
+Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances and help the model converge at later times. Check the aside below **after** the lab for more details on particular choices in this file. [^Potekhin09] [^Itoh02] [^Jermyn21] [^Timmes00]
 
 {{< details title="Aside on miscellanous variable choices in `inlist_common`" closed="true" >}}
 
 The work that will be done throughout this lab requires careful consideration of input physics for real science cases. Much of this has been smoothed over for the sake of brevity, as many of the necessary inputs would also scale up runtimes, but some important eos and coulomb correction details have been retained.
 
-IN `&star_job`, we are using couloumb corrections from Potekhin+09 <sup id="fnref:6"><a href="#fn:6" class="footnote-ref">6</a></sup>. for ions and Itoh+02<sup id="fnref:7"><a href="#fn:7" class="footnote-ref">7</a></sup> for electrons. These provide modifications to the ion and electron chemical potentials due to couloumb coupling and screening, respectively. In the ONe white dwarf regime of the these corrections become essential pieces on the rate and balance of URCA production. 
+IN `&star_job`, we are using couloumb corrections from Potekhin+09 <sup id="fnref:Potekhin09"><a href="#fn:8" class="footnote-ref">8</a></sup>. for ions and Itoh+02<sup id="fnref:Itoh02"><a href="#fn:9" class="footnote-ref">9</a></sup> for electrons. These provide modifications to the ion and electron chemical potentials due to couloumb coupling and screening, respectively. In the ONe white dwarf regime of the these corrections become essential pieces on the rate and balance of URCA production. 
 
-In `&eos`, the inlist is effectively forcing the use of the proper equation of state, Skye, throughout the core of the white dwarf, while dropping fidelity in the non-degenerate outer shell. The other eos options (PC, FreeEOS, and OPAL/SCVH) are explicitly deactivated, while dropping the mass fraction needed to consider an isotope in the Skye EOS. The means that in the portions of the star where Skye is not appropriate, MESA jumps down the order of precedence for EOS components directly to HELM, reducing runtimes. Note, the backstop eos, HELM, cannot be deactivated and (again) will still be the dominant eos in the outermost layers of non-degenerate accreted material (~5 km or ~0.4%). The explicit details of the Skye EOS and HELM EOS can be found in Jermyn+21 <sup id="fnref:4"><a href="#fn:4" class="footnote-ref">4</a></sup> . and Timmes&Swesty00 <sup id="fnref:5"><a href="#fn:5" class="footnote-ref">5</a></sup>. 
+In `&eos`, the inlist is effectively forcing the use of the proper equation of state, Skye, throughout the core of the white dwarf, while dropping fidelity in the non-degenerate outer shell. The other eos options (PC, FreeEOS, and OPAL/SCVH) are explicitly deactivated, while dropping the mass fraction needed to consider an isotope in the Skye EOS. The means that in the portions of the star where Skye is not appropriate, MESA jumps down the order of precedence for EOS components directly to HELM, reducing runtimes. Note, the backstop eos, HELM, cannot be deactivated and (again) will still be the dominant eos in the outermost layers of non-degenerate accreted material (~5 km or ~0.4%). The explicit details of the Skye EOS and HELM EOS can be found in Jermyn+21 <sup id="fnref:Jermyn21"><a href="#fn:10" class="footnote-ref">10</a></sup> . and Timmes&Swesty00 <sup id="fnref:Timmes00"><a href="#fn:11" class="footnote-ref">11</a></sup>. 
 
 In `&controls`, the inlist first **turns off** convective mixing entirely. This is purely a simplification to focus on where our URCA reactions take place, rather than dealing with the entire picture of convective URCA. Next, various smoothing options are set to 0. As for timesteps, the timestep size is doubled from the default and the tolerance for energy conservation made wider. The inlist also uses a larger mesh with cell sizes that preference refinement by q rather than temperature. For the solver, the use of eps_grav is motivated by the degenerate regime, where our entropy matter more than energy. The inlist also loosens many residual limits by **quite** a bit to ensure that the solver does not quit early or get caught trying to particularly resolve behavior too fine for the lesson in this lab. 
 
@@ -172,7 +175,7 @@ The parameter that should be added is:
 
 With the common variables set, now we can focus on the fun part: throwing material on the surface. We will control which reaction network is used and the material accreted within `inlist_accrete`. Unlike our previous inlist, this file has been provided mostly empty. 
 
-Starting in `&star_jobs`, load in the downloaded model (`1.1Msun_ONe.mod`), change the initial network to a file we will later create called `ONe.net`, and set the weak rates to those of Suzuki+2016[^1]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the URCA process. Without these rates, the weak reaction rates A=17 through A=28 isotopes would be interpolated with earlier weaklib tables that will not sufficiently resolve the cooling/heating features at the core of this lab. 
+Starting in `&star_jobs`, load in the downloaded model (`1.1Msun_ONe.mod`), change the initial network to a file we will later create called `ONe.net`, and set the weak rates to those of Suzuki+2016[^Suzuki16]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the URCA process. Without these rates, the weak reaction rates A=17 through A=28 isotopes would be interpolated with earlier weaklib tables that will not sufficiently resolve the cooling/heating features at the core of this lab. 
 
 
 | 📋 TASK 4 |
@@ -634,9 +637,9 @@ With all the inlists complete, we can finally answer the age old question: **Wil
 
 | 📋 TASK 14 |
 |:--------|
-| **Run** the model! Observe the behavior and evolution of the star up to oxygen ignition. Does the balance of lambda values make sense? Does the crossing point agree with Figure 4 from Pinedo+14[^3] (below)? |
+| **Run** the model! Observe the behavior and evolution of the star up to oxygen ignition. Does the balance of lambda values make sense? Does the crossing point agree with Figure 4 from Pinedo+14[^MartinezPinedo14] (below)? |
 ![landscape](/wednesday/Pinedo+14_Fig4.png)
-*Figure 4, from Pinedo+18: Electon capture and beta decay rates on $\ce{^{20}Ne<->^{20}F}$ with and without screening. Top panel log(T[K]) = 8.6. Bottom panel log(T[K]) = 9.0* [^3]
+*Figure 4, from Pinedo+14: Electon capture and beta decay rates on $\ce{^{20}Ne<->^{20}F}$ with and without screening. Top panel log(T[K]) = 8.6. Bottom panel log(T[K]) = 9.0* [^MartinezPinedo14]
 
 
 > [!IMPORTANT]
@@ -662,9 +665,9 @@ Final lambda plot:
 
 | 📋 TASK 15 |
 |:--------|
-| **Review** the central density of the model at ignition by looking at the pgstar plot or in `profile.data`. Using this value and Figure 8 from Holas+26[^2] (below), assuming that ignition is perfectly centered, does your model explode or implode? What if you use the radius of ignition given from the profile? Does the assumption of wave speed or radius of ignition change the result? |
+| **Review** the central density of the model at ignition by looking at the pgstar plot or in `profile.data`. Using this value and Figure 8 from Holas+26[^Holas26] (below), assuming that ignition is perfectly centered, does your model explode or implode? What if you use the radius of ignition given from the profile? Does the assumption of wave speed or radius of ignition change the result? |
 ![landscape](/wednesday/Holas+26_Fig8.png)
-*Figure 8, from Holas+26: Outcomes of 3D hydrodynamic simulations by ignition location and central density at ignition. The dashed and dotted lines indicate the transition from explosion to collapse for the TW92 and S20 flame speeds, respectively.* [^2]
+*Figure 8, from Holas+26: Outcomes of 3D hydrodynamic simulations by ignition location and central density at ignition. The dashed and dotted lines indicate the transition from explosion to collapse for the TW92 and S20 flame speeds, respectively.* [^Holas26]
 
 {{< details title="Answer: Does it blow up?" closed="true" >}}
 Yes! The central density at ignition should be ~ $10^{9.924}$ cgs. This is firmly within the purely explosive regime below ~ $10^{9.97}$ cgs for any radius or flame speed. Looking to the profile columns, the peak temperature does not occur in the center, but at a radius of ~ 65 km, making the required densities for collapse much greater. Despite choices of flame speed and the degree to which the ignition location is off-center, these 3D simulations suggest that our model would have exploded. 
@@ -697,13 +700,17 @@ TODO
 
 
 ## References
-[^1]: Suzuki, Toshio, Hiroshi Toki, and Ken’ichi Nomoto. "Electron-capture and β-decay rates for sd-shell nuclei in stellar environments relevant to high-density O–Ne–Mg cores." The Astrophysical Journal 817, no. 2 (2016): 163. https://iopscience.iop.org/article/10.3847/0004-637X/817/2/163.
-[^2]: Holas, Alexander, Samuel W. Jones, Friedrich K. Röpke, Rüdiger Pakmor, Christina Fakiola, Giovanni Leidi, Raphael Hirschi, and Ken J. Shen. "Drawing the line between explosion and collapse in electron-capture supernovae." (2026). https://www.aanda.org/articles/aa/pdf/2026/03/aa57910-25.pdf.
-[^3]: Martínez-Pinedo, G., Y. H. Lam, K. Langanke, R. G. T. Zegers, and C. Sullivan. "Astrophysical weak-interaction rates for selected A= 20 and A= 24 nuclei." Physical Review C 89, no. 4 (2014): 045806. https://journals.aps.org/prc/pdf/10.1103/PhysRevC.89.045806
-[^4]: Jermyn, Adam S., Josiah Schwab, Evan Bauer, F. X. Timmes, and Alexander Y. Potekhin. "Skye: A differentiable equation of state." The Astrophysical Journal 913, no. 1 (2021): 72. https://iopscience.iop.org/article/10.3847/1538-4357/abf48e/meta
-[^5]: Timmes, Frank X., and F. Douglas Swesty. "The accuracy, consistency, and speed of an electron-positron equation of state based on table interpolation of the Helmholtz free energy." The Astrophysical Journal Supplement Series 126, no. 2 (2000): 501-516. https://iopscience.iop.org/article/10.1086/313304/meta
-[^6]: Potekhin, Alexander Y., Gilles Chabrier, and Forrest J. Rogers. "Equation of state of classical Coulomb plasma mixtures." Physical Review E—Statistical, Nonlinear, and Soft Matter Physics 79, no. 1 (2009): 016411. https://journals.aps.org/pre/abstract/10.1103/PhysRevE.79.016411
-[^7]: Itoh, Naoki, Nami Tomizawa, Masaya Tamamura, Shinya Wanajo, and Satoshi Nozawa. "Screening corrections to the electron capture rates in dense stars by the relativistically degenerate electron liquid." The Astrophysical Journal 579, no. 1 (2002): 380-385. https://iopscience.iop.org/article/10.1086/342726/meta
-
+[^Suzuki16]: Suzuki, Toshio, Hiroshi Toki, and Ken’ichi Nomoto. "Electron-capture and β-decay rates for sd-shell nuclei in stellar environments relevant to high-density O–Ne–Mg cores." The Astrophysical Journal 817, no. 2 (2016): 163. https://iopscience.iop.org/article/10.3847/0004-637X/817/2/163.
+[^Hola26]: Holas, Alexander, Samuel W. Jones, Friedrich K. Röpke, Rüdiger Pakmor, Christina Fakiola, Giovanni Leidi, Raphael Hirschi, and Ken J. Shen. "Drawing the line between explosion and collapse in electron-capture supernovae." (2026). https://www.aanda.org/articles/aa/pdf/2026/03/aa57910-25.pdf.
+[^MartinezPinedo14]: Martínez-Pinedo, G., Y. H. Lam, K. Langanke, R. G. T. Zegers, and C. Sullivan. "Astrophysical weak-interaction rates for selected A= 20 and A= 24 nuclei." Physical Review C 89, no. 4 (2014): 045806. https://journals.aps.org/prc/pdf/10.1103/PhysRevC.89.045806
+[^Jermyn21]: Jermyn, Adam S., Josiah Schwab, Evan Bauer, F. X. Timmes, and Alexander Y. Potekhin. "Skye: A differentiable equation of state." The Astrophysical Journal 913, no. 1 (2021): 72. https://iopscience.iop.org/article/10.3847/1538-4357/abf48e/meta
+[^Timmes00]: Timmes, Frank X., and F. Douglas Swesty. "The accuracy, consistency, and speed of an electron-positron equation of state based on table interpolation of the Helmholtz free energy." The Astrophysical Journal Supplement Series 126, no. 2 (2000): 501-516. https://iopscience.iop.org/article/10.1086/313304/meta
+[^Potekhin09]: Potekhin, Alexander Y., Gilles Chabrier, and Forrest J. Rogers. "Equation of state of classical Coulomb plasma mixtures." Physical Review E—Statistical, Nonlinear, and Soft Matter Physics 79, no. 1 (2009): 016411. https://journals.aps.org/pre/abstract/10.1103/PhysRevE.79.016411
+[^Itoh02]: Itoh, Naoki, Nami Tomizawa, Masaya Tamamura, Shinya Wanajo, and Satoshi Nozawa. "Screening corrections to the electron capture rates in dense stars by the relativistically degenerate electron liquid." The Astrophysical Journal 579, no. 1 (2002): 380-385. https://iopscience.iop.org/article/10.1086/342726/meta
+[^Haensel95]: Haensel, Paweł. "Urca processes in dense matter and neutron star cooling." Space Science Reviews 74, no. 3 (1995): 427-436. https://ui.adsabs.harvard.edu/scan/manifest/1995SSRv...74..427H
+[^GamowSchoenberg41]: Gamow, George, and Mario Schoenberg. "Neutrino theory of stellar collapse." Physical Review 59, no. 7 (1941): 539. https://journals.aps.org/pr/abstract/10.1103/PhysRev.59.539
+[^Piersanti22]: Piersanti, Luciano, Eduardo Bravo, Oscar Straniero, Sergio Cristallo, and Inmaculada Domínguez. "Pre-explosive accretion and simmering phases of SNe Ia." The Astrophysical Journal 926, no. 1 (2022): 103. https://iopscience.iop.org/article/10.3847/1538-4357/ac403b/meta
+[^Schwab15]: Schwab, Josiah, Eliot Quataert, and Lars Bildsten. "Thermal runaway during the evolution of ONeMg cores towards accretion-induced collapse." Monthly Notices of the Royal Astronomical Society 453, no. 2 (2015): 1910-1927. https://academic.oup.com/mnras/article/453/2/1910/1153861?guestAccessKey=
+[^Schwab19]: Schwab, Josiah, and Kyle Akira Rocha. "Residual carbon in oxygen–neon white dwarfs and its implications for accretion-induced collapse." The Astrophysical Journal 872, no. 2 (2019): 131. https://iopscience.iop.org/article/10.3847/1538-4357/aaffdc/meta
 
 
