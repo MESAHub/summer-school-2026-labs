@@ -1,4 +1,4 @@
-# Lab 3: Convective Boundary Mixing, Stellar Structure, and g Modes
+# Lab 3 - Beyond the Core: Echoes of Overshoot
 
 ## Task 0. Goal of This Lab
 

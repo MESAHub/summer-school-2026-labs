@@ -1,4 +1,4 @@
-# Lab 1: Finding the Beat
+# Lab 1 - Finding the Beat
 
 ## Learning Goals
 
