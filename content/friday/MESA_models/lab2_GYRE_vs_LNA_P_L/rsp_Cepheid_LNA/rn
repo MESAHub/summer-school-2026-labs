@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+
+date "+DATE: %Y-%m-%d%nTIME: %H:%M:%S"
+
+./star inlist_rsp_Cepheid_header 
+
+date "+DATE: %Y-%m-%d%nTIME: %H:%M:%S"
+
+

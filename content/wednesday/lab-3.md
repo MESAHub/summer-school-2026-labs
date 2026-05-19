@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 3
 author: Tryston Raecke, Josh Wanninger, Sunny Wong, Michael Zingale
 math: true
 disableKinds: "rss"

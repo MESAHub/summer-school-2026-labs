@@ -4,10 +4,13 @@ cascade:
 toc: false
 ---
 
-# FRIDAY TITLE
+# Classical Cepheid Pulsations in MESA-star
 
 {{< cards >}}
- {{< card link="lab-1/" title="Lab 1: TITLE" >}}
- {{< card link="lab-2/" title="Lab 2: TITLE" >}}
- {{< card link="lab-3/" title="Lab 3: TITLE" >}}
+ {{< card link="background/physics_concepts/" title="Physics Concepts" >}}
+ {{< card link="background/outline/" title="Outline" >}}
+ {{< card link="lab-1/" title="Lab 1: Evolving a Cepheid into the Instability Strip" >}}
+ {{< card link="lab-2/" title="Lab 2: Linear Analysis in GYRE vs LNA" >}}
+ {{< card link="lab-3/" title="Lab 3: The Hertzsprung Progression" >}}
+ {{< card link="background/pulse-in-mesa/" title="Pulsations in MESA" >}}
 {{< /cards >}}
