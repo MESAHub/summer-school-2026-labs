@@ -66,7 +66,7 @@ For now, we are only going to edit `inlist_project`; **open the file and briefly
 
 We will configure the inlist one namelist at a time. Starting at the top, we are going to alter the `&star_job` namelist first. For this section, the [star_job reference page](https://docs.mesastar.org/en/26.4.1/reference/star_job.html) will be a helpful resource.
 
-Rather than create a pre-main sequence model every time we run our inlist, we are going to start from a pre-computed zero-age main sequence model named `zams.mod`, which you can download [here](https://drive.google.com/file/d/1LRvneKDNPma17G6-T4otPss9f8AyxP2T/view?usp=drive_link). This model is for a $5 \, \mathrm{M_{\odot}}$ star with solar metallicty at the zero-age main sequence.
+Rather than create a pre-main sequence model every time we run our inlist, we are going to start from a pre-computed zero-age main sequence model named `zams.mod`, which you can download [here](https://drive.google.com/file/d/1qvAns8vu1GNqezlKgJy-mL7hnOh4SEnK/view?usp=drive_link). This model is for a $5 \, \mathrm{M_{\odot}}$ star with solar metallicty at the zero-age main sequence.
 
 We also won't need to save a model at the end of our run. **Remove the three lines related to creating a pre-main sequence model and saving a model at termination**.
 
@@ -700,16 +700,17 @@ We will store the target abundances in the user-defined control array `s% x_ctrl
 
 First, **just below the line `! s% need_to_update_history_now = .true.` in the `extras_finish_step` subroutine, add the following code:**
 ```fortran
-      prev_h1 = s% xtra(1)
-      
-      if ( prev_h1 > s% x_ctrl(1) .and. s% center_h1 <= s% x_ctrl(1) ) then
-         s% need_to_save_profiles_now = .true.
-         s% need_to_update_history_now = .true.
-         write(*, *) 'First checkpoint -- Central hydrogen abundance:' , s% center_h1
-     else if ( prev_h1 > s% x_ctrl(2) .and. s% center_h1 <= s% x_ctrl(2) ) then
-        s% need_to_save_profiles_now = .true.
-        s% need_to_update_history_now = .true.
-        write(*, *) 'Second checkpoint -- Central hydrogen abundance:' , s% center_h1
+          prev_h1 = s% xtra(1)
+          
+        if ( prev_h1 > s% x_ctrl(1) .and. s% center_h1 <= s% x_ctrl(1) ) then
+             s% need_to_save_profiles_now = .true.
+             s% need_to_update_history_now = .true.
+             write(*, *) 'First checkpoint -- Central hydrogen abundance:' , s% center_h1
+        else if ( prev_h1 > s% x_ctrl(2) .and. s% center_h1 <= s% x_ctrl(2) ) then
+            s% need_to_save_profiles_now = .true.
+            s% need_to_update_history_now = .true.
+            write(*, *) 'Second checkpoint -- Central hydrogen abundance:' , s% center_h1
+        end if
 ```
 This code checks whether the model crossed either of our target hydrogen abundances during the most recent timestep. If it did, the profile-save flag is temporarily enabled. However, if you were to try compiling this right now, you would get an error:
 ```terminal
@@ -742,12 +743,12 @@ Now, we are ready to run our model! **Go ahead and run with `./clean; ./mk; ./rn
 
 If the model starts successfully, `pgstar` windows should appear and the evolution should begin. Let the model run in the background while you prepare the `GYRE` input file.
 
-If you get any errors, work with your table to debug, or expand the following hints for a correct inlist and `run_star_extras.f90`.
+If you get any errors, work with your table to debug, or expand the following hints for a correct inlist and `run_star_extras.f90`. You can also grab a clean working directory [here](https://drive.google.com/file/d/1STIWUp5OdVWpfE7tRIzZlmQ3fLIQEQCp/view?usp=drive_link)
 
 ## Task 9: Catching the `GYRE`-ations
 While the model evolves, we will prepare the `GYRE` inlist so the oscillation calculations can be run immediately after the profiles are generated.
 
-Begin with the `GYRE` inlist from Lab 1:
+Begin with the `GYRE` inlist from Lab 1 (if you need the file, you can grab `gyre.in` from [this](https://drive.google.com/file/d/1i-TLjnu5GAePKeL9GoNSE-vJQ4YGlRuf/view?usp=drive_link) Lab 1 solution directory):
 ```fortran
 &constants
 /
@@ -808,11 +809,11 @@ Our primary change will be in the `&scan` namelist. As our star evolves past the
 ```
 Next, we will point `GYRE` to the first saved model, which should have been saved at a central hydrogen abundance of 0.6. Because it is was the first profile generated, it should be named `./LOGS/profile1.FGONG.data`. **Replace the `file` line with this code**:
 ```fortran
-file = './LOGS/profile1.FGONG.data'
+    file = './LOGS/profile1.FGONG.data'
 ```
 Since we will be running `GYRE` multiple times, we will also have to give our output files informative names. Replace the `summary_file` line in the `&ad_output` namelist with this code:
 ```fortran
-summary_file = 'hydrogen0p6_summary.h5'
+    summary_file = 'hydrogen0p6_summary.h5'
 ```
 ## Task 10: `GYRE` and Away
 After the stellar evolution finishes, **run `GYRE` on the first profile**:
@@ -849,3 +850,5 @@ The period-spacing patterns should show the characteristic dips associated with 
 You will also see that the dips are evenly spaced in period (see the print statements in the cell). This spacing is directly related to the morphology of the spike in the Brunt-Väisälä profile. To see an the approximate analytical expression for the spacing between dips in terms of the Brunt-Väisälä morphology, see Section 3.1 of [Miglio et al., 2008](https://ui.adsabs.harvard.edu/abs/2008MNRAS.386.1487M/abstract).
 
 Take some time to talk with your table about these results. In particular, if you used different mesh values, compare your results.
+
+Full solutions for this lab are available [here](https://drive.google.com/file/d/15OAScIUfpMPPsy8PXf54h9n2SQW-d3Nn/view?usp=drive_link)

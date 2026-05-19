@@ -89,7 +89,7 @@ In this tutorial, we will focus on the usage of GYRE, so we have prepared a simp
 
 #### Task: get the working directory
 
-Download the working directory [here](downloads/day2_lab1.zip), unzip it, and move into the folder.
+Download the working directory [here](https://drive.google.com/file/d/1vIep2i8uy73ry3Y3455iiYbZ2Vg3aVRM/view?usp=drive_link), unzip it, and move into the folder.
 
 {{< details title="💡 HINT: Unzip the file and change into the directory" closed="true" >}}
 
@@ -413,7 +413,7 @@ We have prepared a [Google Colab](https://colab.research.google.com/drive/1i3vLN
 ##### Task: plot the period spacing
 Upload your summary file to the Google Colab, and plot the period spacing. What do you expect to see?
 
-If you encounter issues producing the summary file, you can download it [here](downloads/summary_zams.h5).
+If you encounter issues producing the summary file, you can download it [here](https://drive.google.com/file/d/1YA3ZVJdLpy66V9RvRx9BbhHCpYPdBOqs/view?usp=drive_link).
 
 {{<details title="period spacing" closed="true">}}
 ![period spacing](/tuesday/img/period_spacing.png)
@@ -468,7 +468,7 @@ The propagation diagram is basically a “map” showing where different types o
 
 Go to the [Google Colab](https://colab.research.google.com/drive/1i3vLNluWk44EUli_asEY4Pvnkbwme5kS?usp=sharing), upload one of your detail files there, and use the provided plotting function `plot_propagation_diagram` to plot the propagation diagram.
 
-If you encounter issues producing the detail files, we have prepared the ones for [`n_pg=-1`](downloads/detail.l1.n-1.h5), [`n_pg=-25`](downloads/detail.l1.n-25.h5), and [`n_pg=-45`](downloads/detail.l1.n-45.h5), also discuss with others to see what they get.
+If you encounter issues producing the detail files, we have prepared the ones for [`n_pg=-1`](https://drive.google.com/file/d/1HRUboEwwKufIM08mbWCY2U-0PMqnWFz-/view?usp=drive_link), [`n_pg=-25`](https://drive.google.com/file/d/1G-6CtnQtrr5cEY8jqPZL38Ry_aig90rO/view?usp=drive_link), and [`n_pg=-45`](https://drive.google.com/file/d/1tQ_nhhNdqoO-cI3jUEtwkstesO3vSIV1/view?usp=drive_link), also discuss with others to see what they get.
 
 {{<details title="propagation diagram" closed="true">}}
 ![propagation diagram](/tuesday/img/propagation_diagram_zams.png)
@@ -523,4 +523,4 @@ Reference
 - [Townsend, R. H. D., & Teitler, S. A. 2013, *MNRAS*, 435, 3406](https://ui.adsabs.harvard.edu/abs/2013MNRAS.435.3406T/abstract)
 
 ## Solution
-The complete solution is available [here](/tuesday/downloads/day2_lab1_complete.zip).
+The complete solution is available [here](https://drive.google.com/file/d/1i-TLjnu5GAePKeL9GoNSE-vJQ4YGlRuf/view?usp=drive_link).
