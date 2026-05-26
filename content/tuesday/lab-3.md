@@ -1,4 +1,4 @@
-# Lab 3 - Beyond the Core: Echoes of Overshoot
+# Lab 3: Convective Boundary Mixing, Stellar Structure, and g Modes
 
 ## Task 0. Goal of This Lab
 
@@ -9,6 +9,31 @@ In this lab, we will study how different convective boundary mixing prescription
 3. convective penetration.
 
 The main goal is to understand how these mixing prescriptions modify the near-core chemical-gradient region and the Brunt–Väisälä frequency profile. These structural differences may leave measurable signatures in stellar eigenmodes.
+
+All inlist and solution files are available here: [Lab 3 GitHub repository](https://github.com/astroscien/2026MESA-school-day2-lab3)
+
+We use a two-step evolution. Taking the step overshooting case as an example:
+
+1. `inlist_step_ov_ZAMS_solution` evolves the model from the pre-main sequence to the ZAMS and saves the ZAMS model for the next step.
+2. `inlist_step_ov_MS_solution` starts from the saved ZAMS model and evolves the star to a later main-sequence phase. During this step, MESA also outputs `.GYRE` files for the asteroseismic analysis.
+
+Before running the models, remember to replace all placeholder values such as
+
+```fortran
+X.X
+```
+
+with the parameter values assigned in the spreadsheet.
+
+For the current grid, use:
+
+```text
+Step overshooting:
+0.02, 0.14, 0.28
+
+Exponential overshooting:
+0.002, 0.014, 0.028
+```
 
 In the first part of the lab, we will build MESA models using different mixing prescriptions. Next, we will inspect their internal structures at an intermediate main-sequence stage. Finally, we will use GYRE to compute g-mode frequencies, compare them with a reference set of modes, and identify the best-fit model.
 
@@ -39,7 +64,7 @@ Step overshooting assumes that the material is fully mixed out to a fixed distan
 ```fortran
 overshoot_scheme(1) = 'step'
 
-overshoot_f(1) = 0.2d0
+overshoot_f(1) = X.Xd0
 overshoot_f0(1) = 0.005d0
 overshoot_D_min = 1d-2
 ```
@@ -63,7 +88,7 @@ A typical setup is
 ```fortran
 overshoot_scheme(1) = 'exponential' ! options: 'exponential', 'step', 'other'
 
-overshoot_f(1) = 0.02d0
+overshoot_f(1) = X.XXd0
 overshoot_f0(1) = 0.005d0
 overshoot_D_min = 1d-2
 ```
@@ -74,9 +99,11 @@ In the model grid, we will vary `overshoot_f(1)`.
 
 ## Task 4. Convective Penetration
 
-Convective penetration is different from standard MESA overshooting. Material beyond the convective boundary is chemically mixed, but the thermal structure is usually still treated as radiative. In convective penetration, convective motions penetrate into the formally stable region and can modify both the chemical composition and the thermal stratification. In the implementation used here, the penetration extent is computed inside `run_star_extras.f90`.
+Convective penetration is different from standard MESA overshooting. Material beyond the convective boundary is chemically mixed, but the thermal structure is usually still treated as radiative. In convective penetration, convective motions penetrate into the formally stable region and can modify both the chemical composition and the thermal stratification. In the implementation used here, the penetration extent is computed inside `run_star_extras.f90`. The coding part of this implementation is relatively complicated. For this lab, the task is to identify which parts of `run_star_extras.f90` are needed for the custom penetration scheme, understand what each part does, and then use the supplied solution file as the working implementation.
 
-For the convective penetration runs, use
+The solution file is available here: [run_star_extras_solution.f90](https://github.com/astroscien/2026MESA-school-day2-lab3/tree/main)
+
+In the inlists for the convective penetration runs, use
 
 ```fortran
 ! Overshooting
@@ -95,7 +122,13 @@ overshoot_scheme(1) = 'other'
 
 This tells MESA to call the user-supplied overshooting routine from `run_star_extras.f90`. You will be given a clean MESA `run_star_extras.f90` file and a modified version that implements convective penetration.
 
-Your task is to identify which parts of `run_star_extras.f90` are needed for the custom penetration scheme. The key pieces are listed below.
+Before running the models, find the line in `run_star_extras.f90`
+
+```fortran
+real(dp), parameter :: f = X.Xd0
+```
+
+and replace `X.Xd0` with the value specified for your run (0.98, 0.86 or 0.72).
 
 ---
 
@@ -262,7 +295,7 @@ For the penetration-convection runs, remember that the main penetration strength
 ```fortran
 real(dp), parameter :: f = X.Xd0
 ```
-near line 536 to the desired value, for example f = 0.98d0, 0.86d0, or 0.72d0. After changing this value, recompile with:
+near line 536 to the desired value, then recompile with:
 
 ```bash
 ./mk
@@ -527,13 +560,14 @@ fig, (ax_abun, ax_prop) = plt.subplots(
 for label, logdir in runs.items():
     prof = find_profile_at_xc(logdir, TARGET_XC)
 
-    r = prof["radius"].to_numpy()
+    mfrac = prof["mass"].to_numpy() / prof["mass"].max()
 
     # Abundance diagram
     ax_abun.plot(
         r,
         prof["h1"],
-        lw=2.0,
+        lw=1.0,
+        alpha=0.6,
         label=rf"{label}: $X_\mathrm{{H}}$",
         **styles[label],
     )
@@ -541,8 +575,8 @@ for label, logdir in runs.items():
     ax_abun.plot(
         r,
         prof["he4"],
-        lw=1.5,
-        alpha=0.7,
+        lw=1.0,
+        alpha=0.6,
         label=rf"{label}: $Y_\mathrm{{He}}$",
         **styles[label],
     )
@@ -556,18 +590,19 @@ for label, logdir in runs.items():
     S1_cpd = np.maximum(prof["lamb_Sl1"].to_numpy(), small) * 1e-6 * DAY
 
     ax_prop.plot(
-        r,
+        mfrac,
         np.log10(N_cpd),
-        lw=2.0,
+        lw=1.0,
+        alpha=0.6,
         label=rf"{label}: $N/2\pi$",
         **styles[label],
     )
 
     ax_prop.plot(
-        r,
+        mfrac,
         np.log10(S1_cpd),
-        lw=1.5,
-        alpha=0.7,
+        lw=1.0,
+        alpha=0.6,
         label=rf"{label}: $S_{{\ell=1}}/2\pi$",
         **styles[label],
     )
@@ -576,7 +611,7 @@ ax_abun.set_ylabel("Mass fraction")
 ax_abun.set_ylim(-0.03, 1.03)
 ax_abun.legend(frameon=False, fontsize=10, ncol=2)
 
-ax_prop.set_xlabel(r"$r/R_\odot$")
+ax_prop.set_xlabel(r"$m/M_\star$")
 ax_prop.set_ylabel(r"$\log_{10}(\mathrm{frequency}/\mathrm{day}^{-1})$")
 ax_prop.set_ylim(-0.5, 2.2)
 ax_prop.legend(frameon=False, fontsize=10, ncol=2)
@@ -585,9 +620,9 @@ fig.savefig("compare_XcH050_structure.png", dpi=300, bbox_inches="tight")
 
 ### Example Output
 
-The figure below shows an example comparison at approximately `Xc(H) = 0.5`. The upper panel compares the hydrogen and helium abundance profiles, while the lower panel shows the corresponding propagation diagram for the three mixing prescriptions. The complete solution script for Task 8 is provided as `diff_mixing_profiles_for_asteroseismology.py`.
+The figure below shows an example comparison at approximately `Xc(H) = 0.5`. The upper panel compares the hydrogen and helium abundance profiles, while the lower panel shows the corresponding propagation diagram for the three mixing prescriptions. The complete solution script for Task 8 is provided as `diff_mixing_profiles_in_mass.py`.
 
-<img src="https://github.com/astroscien/2026MESA-school-day2-lab3/blob/main/compare_XcH050_structure.png?raw=true" width="750">
+<img src="https://github.com/astroscien/2026MESA-school-day2-lab3/blob/main/compare_XcH050_structure_mass_fraction_f0p86.png?raw=true" width="750">
 
 ---
 

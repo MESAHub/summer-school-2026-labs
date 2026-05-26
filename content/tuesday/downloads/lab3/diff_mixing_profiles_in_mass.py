@@ -13,7 +13,7 @@ plt.rcParams.update({
     "ytick.labelsize": 14,
 })
 
-DAY = 86400.0 # day to sec
+DAY = 86400.0  # day to sec
 TARGET_XC = 0.5
 
 runs = {
@@ -171,22 +171,25 @@ def main():
     for label, logdir in runs.items():
         prof = find_profile_at_xc(logdir, TARGET_XC)
 
-        r = prof["radius"].to_numpy()
+        # MESA profile "mass" is the enclosed mass coordinate, usually in Msun.
+        # Convert it to enclosed mass fraction m/M_star.
+        mfrac = prof["mass"].to_numpy() / prof["mass"].max()
 
         # Abundance diagram
         ax_abun.plot(
-            r,
+            mfrac,
             prof["h1"],
-            lw=2.0,
+            lw=1.0,
+            alpha=0.6,
             label=rf"{label}: $X_\mathrm{{H}}$",
             **styles[label],
         )
 
         ax_abun.plot(
-            r,
+            mfrac,
             prof["he4"],
-            lw=1.5,
-            alpha=0.7,
+            lw=1.0,
+            alpha=0.6,
             label=rf"{label}: $Y_\mathrm{{He}}$",
             **styles[label],
         )
@@ -202,18 +205,19 @@ def main():
         S1_cpd = np.maximum(prof["lamb_Sl1"].to_numpy(), small) * 1e-6 * DAY
 
         ax_prop.plot(
-            r,
+            mfrac,
             np.log10(N_cpd),
-            lw=2.0,
+            lw=1.0,
+            alpha=0.6,
             label=rf"{label}: $N/2\pi$",
             **styles[label],
         )
 
         ax_prop.plot(
-            r,
+            mfrac,
             np.log10(S1_cpd),
-            lw=1.5,
-            alpha=0.7,
+            lw=1.0,
+            alpha=0.6,
             label=rf"{label}: $S_{{\ell=1}}$",
             **styles[label],
         )
@@ -222,12 +226,12 @@ def main():
     ax_abun.set_ylim(-0.03, 1.03)
     ax_abun.legend(frameon=False, fontsize=10, ncol=2)
 
-    ax_prop.set_xlabel(r"$r/R_\odot$")
+    ax_prop.set_xlabel(r"$m/M_\star$")
     ax_prop.set_ylabel(r"$\log_{10}(\mathrm{frequency}/\mathrm{day}^{-1})$")
     ax_prop.set_ylim(-0.5, 2.2)
     ax_prop.legend(frameon=False, fontsize=10, ncol=2)
 
-    fig.savefig("compare_XcH050_structure.png", dpi=300, bbox_inches="tight")
+    fig.savefig("compare_XcH050_structure_mass_fraction.png", dpi=300, bbox_inches="tight")
 
 
 if __name__ == "__main__":
