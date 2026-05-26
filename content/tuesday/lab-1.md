@@ -35,7 +35,7 @@ path_to_mesa/gyre/gyre-8.1.tar.gz
 , where 8.1 tells you the version nubmer. 
 
 On the website, you can change the version by clicking the small box on the right bottom corner.
-![Screenshot of GYRE website](tuesday/img/lab1/GYRE_site.png)
+![Screenshot of GYRE website](img/lab1/GYRE_site.png)
 
 > [!Tip]
 > We will use the version of `GYRE` shipped with MESA for this tutorial (v8.1). However, you may wish to explore the latest release (v9.0) later, which will produce the same results but much faster. See the release notes [here](https://github.com/rhdtownsend/gyre/releases/tag/v9.0).
