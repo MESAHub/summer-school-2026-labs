@@ -6,12 +6,12 @@
   ! begin with a pre-main sequence model
     create_pre_main_sequence_model = .false.
     load_saved_model = .true.
-    load_model_filename = './LOGS_PC/PC_zams.model'
+    load_model_filename = './LOGS_exp_ov/exp_ov_zams.model'
 
 
   ! save a model at the end of the run
     save_model_when_terminate = .true.
-    save_model_filename = './LOGS_PC/PC_TAMS.model'
+    save_model_filename = './LOGS_exp_ov/exp_ov_TAMS.model'
 
 
    ! change_net = .true.
@@ -49,8 +49,8 @@
 
 
 ! Mixing
-    set_min_D_mix = .true.
-    min_D_mix = 1000.0000d0
+    ! set_min_D_mix = .true.
+    ! min_D_mix = 1000.0000d0
 
     use_Ledoux_criterion = .true.
     MLT_option = 'Cox'
@@ -63,12 +63,12 @@
     predictive_bdy_loc(1) = 'top'
 
 ! Overshooting
-    overshoot_scheme(1) = 'other'
+    overshoot_scheme(1) = 'exponential'
     overshoot_zone_type(1) = 'any'
     overshoot_zone_loc(1) = 'core'
     overshoot_bdy_loc(1) = 'top'
 
-    overshoot_f(1) = 0.00
+    overshoot_f(1) = X.X
     overshoot_f0(1) = 0.005d0
     overshoot_D_min = 1d-2
 
@@ -118,11 +118,11 @@
 ! Output
 
     photo_interval = 50000
-    log_directory = './LOGS_PC/'
+    log_directory = './LOGS_exp_ov/'
     terminal_interval = 100
     do_history_file = .true.
     history_interval = 1
-    star_history_name = 'PC_MS.history'
+    star_history_name = 'exp_ov_MS.history'
 
     write_profiles_flag = .true.
     max_num_profile_models = 99999
