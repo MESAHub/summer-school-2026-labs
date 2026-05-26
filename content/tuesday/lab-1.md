@@ -491,7 +491,7 @@ For `n_pg = -1`:
 ![propagation diagram](img/lab1/eigenfunctions_n-1.png)
 
 For `n_pg = -50`:
-![propagation diagram](/img/lab1/eigenfunctions_n-50.png)
+![propagation diagram](/tuesday/img/lab1/eigenfunctions_n-50.png)
 
 $\tilde{\xi}_{r}$ and $\tilde{\xi}_{h}$ are the radial and horizontal displacement perturbations, respectively. 
 
