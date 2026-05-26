@@ -35,7 +35,7 @@ path_to_mesa/gyre/gyre-8.1.tar.gz
 , where 8.1 tells you the version nubmer. 
 
 On the website, you can change the version by clicking the small box on the right bottom corner.
-![Screenshot of GYRE website](img/lab1/GYRE_site.png)
+![Screenshot of GYRE website](tuesday/img/lab1/GYRE_site.png)
 
 > [!Tip]
 > We will use the version of `GYRE` shipped with MESA for this tutorial (v8.1). However, you may wish to explore the latest release (v9.0) later, which will produce the same results but much faster. See the release notes [here](https://github.com/rhdtownsend/gyre/releases/tag/v9.0).
@@ -416,7 +416,7 @@ Upload your summary file to the Google Colab, and plot the period spacing. What 
 If you encounter issues producing the summary file, you can download it [here](https://drive.google.com/file/d/1YA3ZVJdLpy66V9RvRx9BbhHCpYPdBOqs/view?usp=drive_link).
 
 {{<details title="period spacing" closed="true">}}
-![period spacing](img/lab1/period_spacing.png)
+![period spacing](tuesday/img/lab1/period_spacing.png)
 
 The period spacings are almost constant! 
 
@@ -471,12 +471,12 @@ Go to the [Google Colab](https://colab.research.google.com/drive/1i3vLNluWk44EUl
 If you encounter issues producing the detail files, we have prepared the ones for [`n_pg=-1`](https://drive.google.com/file/d/1HRUboEwwKufIM08mbWCY2U-0PMqnWFz-/view?usp=drive_link), [`n_pg=-25`](https://drive.google.com/file/d/1G-6CtnQtrr5cEY8jqPZL38Ry_aig90rO/view?usp=drive_link), and [`n_pg=-45`](https://drive.google.com/file/d/1tQ_nhhNdqoO-cI3jUEtwkstesO3vSIV1/view?usp=drive_link), also discuss with others to see what they get.
 
 {{<details title="propagation diagram" closed="true">}}
-![propagation diagram](img/lab1/propagation_diagram_zams.png)
+![propagation diagram](tuesday/img/lab1/propagation_diagram_zams.png)
 {{</details>}}
 
 By looking at the position of modes on the propagation diagram, one can determine whether a mode can propagate or is evanescent in different regions.
 {{<details title="how modes are placed on the propagation diagram" closed="true">}}
-![propagation diagram](img/lab1/propagation_freqs.png)
+![propagation diagram](tuesday/img/lab1/propagation_freqs.png)
 
 In this case, all the modes lie in regions where propagation is allowed.
 {{</details>}}
@@ -488,10 +488,10 @@ Compare how the eigenfunctions change with radial order.
 
 {{<details title="eigenfunctions" closed="true">}}
 For `n_pg = -1`:
-![propagation diagram](img/lab1/eigenfunctions_n-1.png)
+![propagation diagram](tuesday/img/lab1/eigenfunctions_n-1.png)
 
 For `n_pg = -50`:
-![propagation diagram](img/lab1/eigenfunctions_n-50.png)
+![propagation diagram](tuesday/img/lab1/eigenfunctions_n-50.png)
 
 $\tilde{\xi}_{r}$ and $\tilde{\xi}_{h}$ are the radial and horizontal displacement perturbations, respectively. 
 
