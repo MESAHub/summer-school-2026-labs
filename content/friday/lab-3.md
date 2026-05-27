@@ -191,9 +191,9 @@ You can see an example of healthy, developed pulsation below.
 The five panels labeled with a red number are the most relevant. They show
 
 1. Hertzsprung-Russell diagram. We expect an ellipsoidal path for a purely sinusoidal waveform without a bump. In this example however, you can see a non-ellipsoidal bump around $\log{T_\mathrm{eff}} = 3.7$.
-2. luminosity variation in solar luminosity over time, also called the light curve, in yellow. This example is clearly not purely sinusoidal as the peak is too thin and there's a subtle bump just before the peak. Any bumps are usually relatively easy to identify in this panel.
+2. luminosity variation in solar luminosity over time, also called the light curve, in yellow. This example is clearly not purely sinusoidal as the peak is too thin and there's a subtle bump just before the peak. Any bumps are usually relatively easy to identify in this panel. You can see other examples of these light curves in the figure in the introduction or at [the OGLE catalog](https://ogle.astrouw.edu.pl/atlas/classical_Cepheids.html). 
 3. absolute magnitude variation over time in blue. The shape of this curve should be similar to the panel above.
-4. radial variation and surface radial velocity over time in yellow and blue, respectively. Once again, neither curve is sinusoidal, although the bump is not clearly visible here. 
+4. radial variation and surface radial velocity over time in yellow and blue, respectively. Once again, neither curve is sinusoidal, although the bump is not clearly visible here.
 5. radial velocity profile. The initial kick should be plainly visible here after a few hundred time steps.
 
 
