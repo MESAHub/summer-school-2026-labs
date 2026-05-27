@@ -17,7 +17,7 @@ This is the non-linear pulsation lab for Friday. That means the details are a li
 
 ## Background
 
-Many classical Cepheids show a distinctive "bump" in their waveform. The figure below shows a few examples of folded Cepheid light curves observed by the OGLE study:
+Many classical Cepheids show a distinctive "bump" in their waveform. The figure below shows a few examples of folded Cepheid light curves observed by the OGLE study.
 
 ![OGLE](OGLE_compilation.png)
 
@@ -190,11 +190,11 @@ You can see an example of healthy, developed pulsation below.
 
 The five panels labeled with a red number are the most relevant. They show
 
-1. Hertzsprung-Russell diagram. Initially, we expect an ellipsoidal path until the bump develops.
-2. luminosity variation in solar luminosity over time, also called the light curve
-3. absolute magnitude variation over time
-4. radial variation over time
-5. radial velocity profile. The initial kick should be plainly visible here
+1. Hertzsprung-Russell diagram. We expect an ellipsoidal path for a purely sinusoidal waveform without a bump. In this example however, you can see a non-ellipsoidal bump around $\log{T_\mathrm{eff}} = 3.7$.
+2. luminosity variation in solar luminosity over time, also called the light curve, in yellow. This example is clearly not purely sinusoidal as the peak is too thin and there's a subtle bump just before the peak. Any bumps are usually relatively easy to identify in this panel.
+3. absolute magnitude variation over time in blue. The shape of this curve should be similar to the panel above.
+4. radial variation and surface radial velocity over time in yellow and blue, respectively. Once again, neither curve is sinusoidal, although the bump is not clearly visible here. 
+5. radial velocity profile. The initial kick should be plainly visible here after a few hundred time steps.
 
 
 Signs that you should stop and rethink:
