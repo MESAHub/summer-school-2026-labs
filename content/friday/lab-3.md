@@ -105,9 +105,9 @@ For your first run:
 
 ## Task 3: Choose and set an initial kick
 
-It can take a very long time for a MESA TDC model to start pulsating "naturally". Therefore, we enforce a given radial velocity on the envelope to get the pulsation going, known as an "initial kick". The closer this kick is to the final pulsational radial velocity, the faster a bump in the light curve will develop.
+It can take a very long time for a MESA TDC model to start pulsating "naturally". Therefore, we get the pulsation going by giving the model an initial kick. To that end, the eigenfuction of the fundamental pulsation mode, which expresses how the star is perturbed by the pulsation, is computed using LNA and scaled to a user-provided initial kick velocity at the surface.
 
-From the figure below, read off a reasonable initial kick for your chosen model.
+The closer this kick is to the final pulsational radial velocity, the faster the bump in the light curve will develop. **From the figure below, read off a reasonable initial kick for your chosen model.**
 
 ![kicks](initial_kicks.png)
 
