@@ -292,7 +292,7 @@ If your group finishes the core lab early, here are the most useful next steps, 
 
 You do not need to complete all of these. Pick the next one that feels most useful.
 
-### Option A: Compare Back to Lab 2
+### Option 1: Compare Back to Lab 2
 
 If you completed Lab 2, compare your non-linear result with the linear information you already had for the same model.
 
@@ -304,7 +304,7 @@ Ask yourself:
 
 If you also estimated where `P_2/P_0` is closest to `0.5`, compare that expectation with the waveform shape you actually see in the TDC run.
 
-### Option B: Compare Different Diagnostics
+### Option 2: Compare Different Diagnostics
 
 If you have a clearly pulsating model, compare the bump location in:
 
@@ -314,7 +314,7 @@ If you have a clearly pulsating model, compare the bump location in:
 
 You may find that the bump is easier to identify in one diagnostic than another. Record that in your notes if it helps explain your classification.
 
-### Option C: Compare with Other Students at Your Table
+### Option 3: Compare with Other Students at Your Table
 
 If several people at your table have useful runs, compare them directly:
 
@@ -322,7 +322,7 @@ If several people at your table have useful runs, compare them directly:
 - do the PGSTAR animations suggest a smooth progression across period?
 - which models develop the clearest bump?
 
-### Option D: Making a movie
+### Option 4: Making a movie
 
 Isn't that animated PGSTAR window neat? Unfortunately, it vanishes once you end the run. Luckily, a bunch of `.png` files are output by MESA, which can be used to recreate the animated PGSTAR plots. You could either flick through them in an image viewer or combine them into a proper movie. MESA comes packaged with some tools to make such movies. To do so, run the following in your terminal:
 
