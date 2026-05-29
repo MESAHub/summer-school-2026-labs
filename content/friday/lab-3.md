@@ -154,7 +154,7 @@ If the compilation succeeds, start the non-linear run:
 
 > [!WARNING]
 > These inlists are set up so this TDC run continues almost **indefinitely**. It is up to you to decide when to end the run using `Ctrl+C` in the terminal on both Linux and macOS.
-> Read through the tasks below to learn when the run may be stopped. If you reach the end of these tasks and your waveform has not stabilised (Be warned, this will likely take at least 10 minutes), take a look at the _If You Are Still Waiting on a Run_ section. 
+> Read through the tasks below to learn when the run may be stopped. If you reach the end of these tasks and your waveform has not stabilised (Be warned, this will likely take at least 10 minutes), take a look at the _If You Are Still Waiting on a Run_ section.
 
 
 ## Task 5: Watch the Diagnostics
@@ -191,10 +191,9 @@ You can see an example of healthy, developed pulsation below.
 The five panels labeled with a red number are the most relevant. They show
 
 1. Hertzsprung-Russell diagram. We expect an ellipsoidal path for a purely sinusoidal waveform without a bump. In this example however, you can see a downward kink around $\log{T_\mathrm{eff}} = 3.7$.
-2. luminosity variation in solar luminosity over time, also called the light curve, in yellow. This example is clearly not purely sinusoidal as the peak is too thin and there's a subtle bump just before the peak. Any bumps are usually relatively easy to identify in this panel. You can see other examples of these light curves in the figure in the introduction or at [the OGLE catalog](https://ogle.astrouw.edu.pl/atlas/classical_Cepheids.html).
-3. absolute magnitude variation over time in blue. The shape of this curve should be similar to the panel above.
-4. radial variation and surface radial velocity over time in yellow and blue, respectively. Once again, neither curve is sinusoidal, although the bump is not clearly visible here.
-5. radial velocity profile against optical depth as a proxy of depth from the surface. The initial kick should be plainly visible here after a few hundred time steps.
+2. effective temperature variation over time in blue and luminosity variation in solar luminosity over time, also called the *light curve*, in yellow. This example is clearly not purely sinusoidal as the peak is too thin and there's a subtle bump just before the peak. Any bumps are usually relatively easy to identify in this panel. You can see other examples of these light curves in the figure in the introduction or at [the OGLE catalog](https://ogle.astrouw.edu.pl/atlas/classical_Cepheids.html).
+3. radial variation and surface radial velocity over time in yellow and blue, respectively. Once again, neither curve is sinusoidal, although the bump is not clearly visible here.
+4. radial velocity profile against optical depth as a proxy of depth from the surface. The initial kick should be plainly visible here after a few hundred time steps.
 
 
 Signs that you should stop and rethink:
@@ -225,6 +224,22 @@ This is useful if the model is progressing normally but simply needs more cycles
 Just as in Lab 1, these `photos/` files are for continuing your own run on your own machine.
 
 {{< /details >}}
+
+
+
+{{< details title="Bonus task: modifying the radial velocity profile" closed="true" >}}
+
+If the optical depth as a proxy of distance to the surface in panel 4 confuses you, you can alter the x-axis to your liking (radius, mass, zone number...). To do so, update `Profile_Panels3_xaxis_name` in `inlist_pgstar`. You need to give it the name of a column in your profile output, so check `profile_columns.list` to see all the options.
+
+Depending on what quantity you pick, you may also have to alter the limits of the x-axis using `Profile_Panels1_xmin` and `Profile_Panels1_xmax`. The initial version of the plot , which you can disable by setting
+
+```fortran
+Profile_Panels1_xaxis_reversed = .false.
+```
+
+{{< /details >}}
+
+
 
 ## Task 7: Inspect the Waveform
 
