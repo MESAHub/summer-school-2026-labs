@@ -4,7 +4,7 @@ title: Lab 2 - Linear Analysis in GYRE vs LNA (from RSP)
 linkTitle: Lab 2
 ---
 
-*Lab written by: Lynn Buchele (lead TA), Ebraheem Farag (lecturer), Mathijs Vanrespaille, Sofia Mesini, and Andy Santarelli
+*Lab written by: Lynn Buchele (lead TA), Ebraheem Farag (lecturer), Mathijs Vanrespaille, Sofia Mesini, and Andy Santarelli*
 
 ## Background
 
@@ -35,7 +35,7 @@ Recall, that in lab 1 we saved the GYRE results for the fundamental radial mode 
 
 #### Task: Find a model and add your information to the spreadsheet
 
-Look through your history file from lab 1 to find a model with a positive growth rate (in the fundamental mode): please add the luminosity, GYRE F_period, and GYRE F_growth to [this spreadsheet](https://docs.google.com/spreadsheets/d/1dVK0vpzgsAy0S7OG-qMyJlmwItwbp1JeB8B-xScV8WI/edit?usp=drive_link). Please also add your name or initials in the first column so you know which row contains your data.
+Look through your history file from lab 1 to find a model with a positive growth rate (in the fundamental mode): please add the luminosity, GYRE F_period, and GYRE F_growth to [this spreadsheet](https://docs.google.com/spreadsheets/d/1dVK0vpzgsAy0S7OG-qMyJlmwItwbp1JeB8B-xScV8WI/edit?usp=drive_link). Please also add your name or initials in the first column so you know which row contains your data. Although not necessary for the spreadsheet, you should also make a note of the model number you chose.
 
 As more people add their models, we should see a clear relationship between the period and luminosity values.
 
@@ -51,7 +51,7 @@ There are a few inlist parameters you will need to change in `inlist_rsp_Cepheid
 
 #### Task: Set up the `star_job` inlist section
 
-Add the control necessary to use RSP to the `star_job` section of the inlist. RSP does not read in a model and so please also set the starting model number to match the model whose information you added to the spreadsheet.
+Add the control necessary to use RSP to the `star_job` section of the inlist. RSP does not read in a model and so please also set the starting model number to match the model whose information you added to the spreadsheet. This does not change anything about the run, however, it makes the book keeping easier (and could be useful if you attempt the bonus task). 
 
 {{< details title="`star_job` parameters" closed="true" >}}
 
@@ -70,7 +70,7 @@ For consistency with the GYRE results obtained in lab 1, we keep the same settin
 
 #### Task: Turn on the `colors` module
 
-We will be using the V and I band magnitudes to compute an additional parameter and so we need to enable the `colors` module.
+We will be using the V and I band magnitudes to compute an additional parameter. Fortunaley (as you learned on Monday) we can do this by enabling the `colors` module.
 
 {{< details title="`colors` parameters" closed="true" >}}
 
@@ -260,7 +260,6 @@ If your second model also has a negative growth rate, consult this list to find 
 
 After setting up RSP for several different parameter combinations, you might notice that doing this manually is a little bit tedious (and if you're anything like me, very prone to human error). For the bonus task, you can try your hand at automating these runs. For this, focus first on the RSP information.
 
-The starting working directory includes a `batch_LNA.sh` template for this bonus task. You can fill in that template, adapt it, or replace it with your own script.
 
 Depending on how you're feeling halfway through Friday, there are a few different difficulty levels that you can choose from, see below. Regardless of your chosen difficulty level, once you have your results please add the luminosity, Wesenheit index, RSP period and RSP growth rate data to the shared spreadsheet. When you do this, please add your information at the bottom of the spreadsheet to avoid overwriting other people's values.
 
