@@ -31,7 +31,7 @@ As the stellar structure changes across the instability strip, the bump shifts f
 
 ## Setting up the work directory
 
-Download `lab3_work_dir.zip` from this [Google Drive](https://drive.google.com/file/d/11S0DjI8fPOw3Szli0Zpn-k8VdDDfP7YQ/view?usp=drive_link), unzip it into some empty directory, and `cd` into that directory. You'll see that it already contains the inlists you will need. However, we need to provide TDC with a starting model to make an envelope model from and track the pulsations, just as we did with RSP in Lab 2. To that end, copy the `.mod` files you created in Lab 1:
+Download `lab3_work_dir.zip` from this [Google Drive](https://drive.google.com/file/d/11S0DjI8fPOw3Szli0Zpn-k8VdDDfP7YQ/view?usp=sharing), unzip it into some empty directory, and `cd` into the resulting `lab3_work_dir/` directory. You'll see that it already contains the inlists you will need. However, we need to provide TDC with a starting model to make an envelope model from and track the pulsations, just as we did with RSP in Lab 2. To that end, copy the `.mod` files you created in Lab 1:
 
 ```bash
 cp -r /path/to/your/lab1/mod_dir/ .
@@ -78,9 +78,6 @@ Choose a model that:
 If you completed Lab 2, an especially good choice is a model with a relatively large fundamental-mode growth rate. If you also estimated that `P_2/P_0` is close to `0.5`, that makes the model even more interesting for this lab.
 
 {{< /details >}}
-
-> [!TIP]
-> If you completed Lab 2, the best starting point is usually a model that showed a relatively large growth rate in the linear analysis.
 
 > [!NOTE]
 > These `.mod` files come from the second part of Lab 1, after you restarted the evolution with `./re` and let the star pass through the Cepheid phase while GYRE was running during the evolution.
@@ -312,7 +309,7 @@ If your group finishes the core lab early, here are the most useful next steps, 
 
 You do not need to complete all of these. Pick the next one that feels most useful.
 
-### Option A: Compare Back to Lab 2
+### Option 1: Compare Back to Lab 2
 
 If you completed Lab 2, compare your non-linear result with the linear information you already had for the same model.
 
@@ -322,11 +319,9 @@ Ask yourself:
 - is the non-linear period similar to the period you expected from the linear analysis?
 - did the model you thought would be interesting actually produce a clear bump?
 
-This is a nice way to connect the Friday labs together.
-
 If you also estimated where `P_2/P_0` is closest to `0.5`, compare that expectation with the waveform shape you actually see in the TDC run.
 
-### Option B: Compare Different Diagnostics
+### Option 2: Compare Different Diagnostics
 
 If you have a clearly pulsating model, compare the bump location in:
 
@@ -336,7 +331,7 @@ If you have a clearly pulsating model, compare the bump location in:
 
 You may find that the bump is easier to identify in one diagnostic than another. Record that in your notes if it helps explain your classification.
 
-### Option C: Compare with Other Students at Your Table
+### Option 3: Compare with Other Students at Your Table
 
 If several people at your table have useful runs, compare them directly:
 
@@ -344,7 +339,7 @@ If several people at your table have useful runs, compare them directly:
 - do the PGSTAR animations suggest a smooth progression across period?
 - which models develop the clearest bump?
 
-### Option D: Making a movie
+### Option 4: Making a movie
 
 Isn't that animated PGSTAR window neat? Unfortunately, it vanishes once you end the run. Luckily, a bunch of `.png` files are output by MESA, which can be used to recreate the animated PGSTAR plots. You could either flick through them in an image viewer or combine them into a proper movie. MESA comes packaged with some tools to make such movies. To do so, run the following in your terminal:
 
@@ -361,9 +356,9 @@ images_to_movie "png_pulsation/*.png" my_Cepheid_movie.mp4
 
 Check that:
 
-- the file really exists inside `TDC_Cepheid/mod_dir/`
+- the file really exists inside `lab3_work_dir/mod_dir/`
 - `load_model_filename` matches the filename exactly
-- you are running from inside `TDC_Cepheid/`
+- you are running from inside `lab3_work_dir/`
 
 {{< /details >}}
 
@@ -401,6 +396,8 @@ If your group finishes early, try one of these:
 ### Bonus coding task: time-average the light curve over one cycle
 
 If you would like a more coding-focused extension, modify `run_star_extras` so that it measures a cycle-averaged quantity from the non-linear light curve and compares that average with the corresponding static value from the original model.
+
+You can find a complete set of [Lab 3 bonus solutions](https://drive.google.com/file/d/1N8wHaZqfFUV3_ASH4ZhjQyx0V6Y3oplH/view?usp=share_link) with these source changes already made.
 
 One possible version of this task is:
 
@@ -632,6 +629,8 @@ Make sure that:
 {{< /details >}}
 
 #### Step 7: Recompile and rerun
+
+Because this bonus task edits source include files, rerun both `./clean` and `./mk` before continuing. A plain rebuild can miss changes in included source files.
 
 If you want to start and kick a new TDC model after editing the Fortran source:
 

@@ -545,7 +545,7 @@ Mixing_file_aspect_ratio = -1 ! negative means use same value as for window
          HR_step_min = -1 ! only plot models with model number >= this
          HR_step_max = -1 ! only plot models with model number <= this
 
-         !show_HR_classical_instability_strip = .true.
+         show_HR_classical_instability_strip = .true.
          show_HR_Mira_instability_region = .false.
          show_HR_WD_instabilities = .false.
 
