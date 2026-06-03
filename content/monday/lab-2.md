@@ -55,7 +55,7 @@ We will be changing parameters in `&colors`, `&controls`, and the `inlist_pgstar
 
 #### Setting up Custom Colors in `&colors`
 
-This is where we can enable synthetic photometry and determine what filters we'd like to use. Let's look through the [documentation](https://github.com/MESAHub/mesa/tree/main/colors).
+This is where we can enable synthetic photometry and determine what filters we'd like to use. Let's look through the documentation](https://docs.mesastar.org/en/26.4.1/test_suite/custom_colors.html).
 
 The first thing we need to do is to make sure the colors module is on. By default, custom colors is turned off.
 
