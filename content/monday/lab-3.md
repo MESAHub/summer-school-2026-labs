@@ -60,11 +60,15 @@ The loop computes $dc_s/r$ shell by shell, approximating the radial derivative o
 
 ## Step 1 -- Setup
 
-Lab 3 is a self-contained working directory. You do not need to copy anything from Lab 2 but you can copy your inlist from Lab 2 into this lab for a faster setup.
+**Get the working directory.** Download the Lab 3 starter and unzip it:
+
+**→ [Download the Lab 3 starter (Google Drive)](https://drive.google.com/file/d/1zwgUNvjC7w4magIEBfSSJzVvyJu5cGxO/view?usp=drive_link)**
+
+Everything you need is already inside -- including the `run_star_extras.f90` with the seismic calculations and the `../data/` files -- so Lab 3 runs on its own without anything from Labs 1 or 2. You can still copy your inlist over from Lab 2 for a faster setup (see below).
 
 A good check when inheriting a MESA working directory could go something like:
 ```bash
-cd content/monday/Lab3       #move to where the directory is
+cd Lab3                      #the Lab 3 working directory (content/monday/Lab3 if you cloned the repo)
 
 ls                          #to see whats here
 
@@ -234,15 +238,14 @@ Copy this into the &pgstar section of your inlist_run:
 > [!TIP]
 > `Grid1_win_width` (together with `Grid1_win_aspect_ratio`) sets the size of the live pgstar window. If it is too large or too small for your screen, change `Grid1_win_width` in `inlist_run` and rerun. The size of the saved PNGs in `pgplot/` is controlled separately by `Grid1_file_width`.
 
-Now for the colors module. The namelist below is what you need, but the file paths must point to real files on your machine, so check them before you paste it in.
-
-The `instrument`, `stellar_atm`, and `vega_sed` paths are interpreted **relative to the directory you launch `./rn` from** (your Lab 3 working directory). The filter throughputs, stellar-model SEDs, and Vega reference spectrum that ship with MESA live under `$MESA_DIR/data/colors_data`. Before continuing, find them and make sure each path in the namelist resolves -- for example:
+Now for the colors module. The namelist below uses paths that are interpreted **relative to the directory you launch `./rn` from** (your Lab 3 working directory). They point to the `../data/` folder that ships with this lab, so they should resolve as they are. Before you paste the namelist in, confirm that they do -- for example:
 
 ```bash
-ls $MESA_DIR/data/colors_data     # browse what's actually available
+ls ../data/stellar_models     # Kurucz2003all__alpha_00, vega_flam.csv, ...
+ls ../data/filters/2MASS      # the 2MASS filter throughputs
 ```
 
-If a path does not resolve, edit it to match where the file really lives. Once every path checks out, add this `&colors` namelist to your `inlist_run`:
+If a file is missing, the same data also ships with MESA under `$MESA_DIR/data/colors_data` -- point the path there instead. Once every path checks out, add this `&colors` namelist to your `inlist_run`:
 
 ```fortran
 &colors
@@ -324,7 +327,7 @@ Once the run has enough history data, use `mesa_reader` to reproduce the four ke
 {{< details title="Python tips" closed="true" >}}
 You have options with how to run these. The easiest route is to probably launch python in live mode in your working directory.
 ```bash
-cd content/monday/Lab3       #move to where the working directory is
+cd Lab3                      #move to your Lab 3 working directory
 
 python                      #open python live and paste the below code into it one by one to see the plots.
 ```
