@@ -75,26 +75,15 @@ cat rn1                     #it calls star with 'inlist'
 cp ../Lab2/whatever_inlist_was_called inlist_run
 ```
 
-`run_star_extras.f90` already implements the seismic calculations.
+`run_star_extras.f90` already implements the seismic calculations, so you will not need to edit it.
 
+We are going to crowdsource our science as a group. Open the [shared Google Sheet](https://docs.google.com/spreadsheets/d/1C88C5V2siCAaK8-3qgAZoNc9-9IH-RTIqFVetXQc3EM/edit?usp=sharing), add your name to column A, and pick a mass from **0.4, 0.6, 0.8, 0.9, 1.0, 1.1, 1.2** $M_\odot$. You can take more than one mass, but try not to duplicate masses that others have already claimed.
 
-We are going to be crowd sourcing our science. 
-
-This link : [google sheets](https://docs.google.com/spreadsheets/d/1C88C5V2siCAaK8-3qgAZoNc9-9IH-RTIqFVetXQc3EM/edit?usp=sharing)
-
-Will take you to a google sheets where you can add your name to the A column and choose as mass from 
-
-**0.4, 0.6, 0.8, 0.9, 1.0, 1.1, 1.2**
-
-You can do multiple masses but try not to do repeats of the same few. 
-
-Once you have chosen a mass, you need to open `inlist_run` and set your assigned mass:
+Once you have chosen a mass, open `inlist_run` and set it:
 
 ```fortran
 initial_mass = X.X   ! set to your assigned value
 ```
-
-Mass assignments for this lab are: **0.4, 0.6, 0.8, 0.9, 1.0, 1.1, 1.2** $M_\odot$.
 
 > [!NOTE]
 > The `rn` script copies `inlist_run` to `inlist` before launching the model -- always edit `inlist_run`, not `inlist` directly. `inlist` is overwritten every time you run.
@@ -117,6 +106,9 @@ The namelist below configures five panels:
 - $\delta\nu_{02}$ vs age
 - Interior abundance profile
 - 2MASS magnitude track
+
+> [!NOTE]
+> In Labs 1 and 2 the `&pgstar` settings lived in their own separate inlist. Here we keep everything in a single `inlist_run` instead. Both layouts are perfectly valid -- MESA simply reads whichever inlist(s) you point it at -- but it is worth knowing we are doing it differently this time.
 
 Copy this into the &pgstar section of your inlist_run:
 
@@ -239,11 +231,18 @@ Copy this into the &pgstar section of your inlist_run:
 / ! end of pgstar namelist
 ```
 
-Now for the colors module. 
-The namelist below is what you need, but we should check the paths before you paste it in. 
-The stellar_atm and vega_sed paths point to files that need to exist on your machine. 
-Run ```ls``` on those paths to confirm they resolve before continuing. 
-Once you have verified them, add this &colors namelist to your inlist_run:
+> [!TIP]
+> `Grid1_win_width` (together with `Grid1_win_aspect_ratio`) sets the size of the live pgstar window. If it is too large or too small for your screen, change `Grid1_win_width` in `inlist_run` and rerun. The size of the saved PNGs in `pgplot/` is controlled separately by `Grid1_file_width`.
+
+Now for the colors module. The namelist below is what you need, but the file paths must point to real files on your machine, so check them before you paste it in.
+
+The `instrument`, `stellar_atm`, and `vega_sed` paths are interpreted **relative to the directory you launch `./rn` from** (your Lab 3 working directory). The filter throughputs, stellar-model SEDs, and Vega reference spectrum that ship with MESA live under `$MESA_DIR/data/colors_data`. Before continuing, find them and make sure each path in the namelist resolves -- for example:
+
+```bash
+ls $MESA_DIR/data/colors_data     # browse what's actually available
+```
+
+If a path does not resolve, edit it to match where the file really lives. Once every path checks out, add this `&colors` namelist to your `inlist_run`:
 
 ```fortran
 &colors
@@ -256,7 +255,7 @@ Once you have verified them, add this &colors namelist to your inlist_run:
    vega_sed = '../data/stellar_models/vega_flam.csv'                !same as above
    mag_system = 'Vega'                                              
 
-   distance = 3.0857d19                                             !10 parsecs -> absolute magnitudes
+   distance = 3.0857d19                                             !10 parsecs in cm -> absolute magnitudes
 
    make_csv = .true.                                                !Make a csv for each filter
    colors_results_directory = 'SED'                                 !put them in the SED/ directory
@@ -264,7 +263,7 @@ Once you have verified them, add this &colors namelist to your inlist_run:
 
 / ! end of colors namelist
 ```
-The distance = 3.0857d19 sets the distance to 10 parsecs, which is what puts the magnitudes on the absolute scale you used in Lab 2.
+The `distance = 3.0857d19` sets the distance to 10 parsecs (expressed in cm), which is what puts the magnitudes on the absolute scale you used in Lab 2.
 
 ---
 
@@ -274,11 +273,17 @@ The distance = 3.0857d19 sets the distance to 10 parsecs, which is what puts the
 ./rn
 ```
 
-The model will run from the pre-main sequence to **T**erminal **A**ge **M**ain **S**equence. Pay attention to:
+The model will run from the pre-main sequence to **T**erminal **A**ge **M**ain **S**equence. In the pgstar window, $\Delta\nu$ is the top-centre panel ("Large frequency separation") and $\delta\nu_{02}$ is the top-right panel ("Small frequency separation"). As it runs, pay attention to:
 
 - How quickly does $\Delta\nu$ change compared to the HR diagram position?
 - How does $\delta\nu_{02}$ behave -- does it change monotonically?
 - What is happening to the interior composition at the same time?
+
+{{< details title="Discuss in your group, then check" closed="true" >}}
+- **$\Delta\nu$:** it decreases gradually as the star expands and its mean density drops; over the main sequence it changes far less dramatically than the star's position swings across the HR diagram.
+- **$\delta\nu_{02}$:** yes -- it falls monotonically as the core sound-speed gradient steepens.
+- **Interior:** central hydrogen is being depleted (helium building up in the core), which is exactly what drives the steady fall in $\delta\nu_{02}$.
+{{< /details >}}
 
 > [!NOTE]
 > Lower-mass stars take longer to reach TAMS. ($M_\odot$ 0.4 with 1 core takes ~ 10 mins)
@@ -311,6 +316,9 @@ Seismic observables sidestep both. The $\delta\nu_{02}$ versus $\Delta\nu$ diagr
 ## Step 5 -- Plotting beyond pgstar with Python
 
 Once the run has enough history data, use `mesa_reader` to reproduce the four key plots. The `python_helpers/` directory contains more complete plotting scripts -- the code below is a minimal example you can run directly.
+
+> [!NOTE]
+> If you don't already have `mesa_reader`, install it with `pip install mesa_reader`. It's also available from [its GitHub page](https://github.com/wmwolf/py_mesa_reader). It is a small, dependency-light reader for MESA history and profile files, and you import it as `import mesa_reader as mr`.
 
 
 {{< details title="Python tips" closed="true" >}}
@@ -451,6 +459,10 @@ This link : [google sheets](https://docs.google.com/spreadsheets/d/1C88C5V2siCAa
 
 Once the full group has contributed, look at the complete grid. How well do $\Delta\nu$ and $\delta\nu_{02}$ separate stars of different masses at the same age? How does this compare to the CMD separation from Lab 2?
 
+{{< details title="What you should see" closed="true" >}}
+At a fixed age, plotting $\delta\nu_{02}$ against $\Delta\nu$ pulls the different masses apart into clearly separated tracks, whereas on the CMD the same models sit almost on top of one another. That tighter separation is the whole point of adding seismology.
+{{< /details >}}
+
 
 Age constraints from seismology are only useful for stars we can actually observe oscillating. 
 The next step takes the grid you just built and allows us to probe which of these stars are detectable, and with what instrument.
@@ -463,8 +475,6 @@ The next step takes the grid you just built and allows us to probe which of thes
 The analysis lives in a shared Google Colab notebook. Open the link below, then **make a personal copy before you do anything else** -- this is important so your edits don't overwrite someone else's work and vice versa.
 
 **→ [Open the Lab 3 detection map notebook](https://colab.research.google.com/drive/1cre1fH0yrvhCE0ZWSka4A4CloBuMWWwu#scrollTo=HkRl1EuNCjsr)**
-
-https://colab.research.google.com/drive/1cre1fH0yrvhCE0ZWSka4A4CloBuMWWwu#scrollTo=HkRl1EuNCjsr
 
 
 Once it opens:
@@ -508,7 +518,7 @@ The y-axis is logarithmic. The steep drop in amplitude towards red $J-K_s$ (K an
 
 ## Bonus Step -- What actually matters for wobbly stars?
 
-Lab 2 showed you that changing the atmospheric boundary condition (`atm_T_tau_relation`) and the mixing length parameter ($\alpha_\mathrm{MLT}$) visibly shifts a star's track on the HR diagram and CMD (https://arxiv.org/pdf/2303.09596). Here you will ask: *by how much do those same changes affect seismic observables?*
+Lab 2 showed you that changing the atmospheric boundary condition (`atm_T_tau_relation`) and the mixing length parameter ($\alpha_\mathrm{MLT}$) visibly shifts a star's track on the HR diagram and CMD [https://arxiv.org/pdf/2303.09596](https://arxiv.org/pdf/2303.09596). Here you will ask: *by how much do those same changes affect seismic observables?*
 
 The answer matters because if $\Delta\nu$ and $\delta\nu_{02}$ are insensitive to surface physics, they give more trustworthy ages than CMD position -- the seismic signal comes from the core, not the atmosphere.
 This does not mean they are completely immune to surface physics, we are investigating just how robust these observables are.
