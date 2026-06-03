@@ -45,6 +45,8 @@ Alternatively, you can download the models from the [Lab 1 mod file solutions](h
 > [!IMPORTANT]
 > Lab 3 uses a saved `.mod` file from Lab 1. It does **not** use a `photos/` restart file from Lab 1.
 
+> [!NOTE]
+> Depending on how your downloaded files were unpacked, you may need to fix permissions before opening or copying the model folders. If needed, you can use `chmod` on the extracted mass directory and its contents.
 
 ## Main Goal
 
@@ -153,9 +155,7 @@ If the compilation succeeds, start the non-linear run:
 ```
 
 > [!WARNING]
-> These inlists are set up so this TDC run continues almost **indefinitely**. It is up to you to decide when to end the run using `Ctrl+C` in the terminal on both Linux and macOS.
-> Read through the tasks below to learn when the run may be stopped. If you reach the end of these tasks and your waveform has not stabilised (Be warned, this will likely take at least 10 minutes), take a look at the _If You Are Still Waiting on a Run_ section.
-
+> Be warned, this will likely take at least 10 minutes. In the meantime, read through the tasks below. They explain what signs to look for when deciding whether the run has gone far enough to classify the bump. If you reach the end of these tasks and your waveform has not stabilised, take a look at the _If You Are Still Waiting on a Run_ section.
 
 ## Task 5: Watch the Diagnostics
 
@@ -204,6 +204,9 @@ Signs that you should stop and rethink:
 
 > [!IMPORTANT]
 > You do not need a perfect production-quality non-linear model. You only need a waveform that is good enough to classify the bump.
+
+> [!NOTE]
+> If you want a slightly more quantitative rule of thumb, a useful sign is that the cycle-to-cycle changes in quantities such as `delta_R`, `delta_logL`, `delta_Mag`, or `KE_growth_avg` become smaller and the plotted waveform begins to repeat cleanly. For this lab, that level of stability is enough; you do not need to run until every diagnostic is perfectly flat from one cycle to the next.
 
 {{< details title="What if I accidentally ended my run too early?" closed="true" >}}
 
@@ -298,7 +301,7 @@ These TDC runs can take a long time to converge, often more than `10 minutes`. I
 - inspect the output files you already have and make a preliminary guess about the bump
 - compare what you are seeing in PGSTAR with what appears in `history.data`
 
-## Task 9: If You Have Extra Time
+## Task 9 (BONUS): If You Have Extra Time
 
 If your group finishes the core lab early, here are the most useful next steps, in recommended order:
 
