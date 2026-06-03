@@ -68,8 +68,11 @@ Next, we need to provide the file path to a filter system, stellar atmosphere, a
 
 **Task:** `cd $MESA_DIR/data/colors_data/` to look for 2MASS, Kurucz2003, and vega_flam.csv and add them to your inlist:
 
+> [!Tip]
+> There are multiple Kurucz 2003 atmosphere tables in Custom Colors - let's use `Kurucz2003all__alpha_04/`
+
 > [!Note]
-> There are two Kurucz 2003 atmosphere tables in Custom Colors - let's use `Kurucz2003all/`
+> You can use [SED_tools](https://github.com/nialljmiller/SED_Tools) to download different stellar atmosphere tables and filter systems. Niall will host an open session for this tool and more about Custom Colors this week!
 
 ```fortran
   ! Points to the directory where filters are 
@@ -573,4 +576,4 @@ instrument = '../data/filters/GAIA_2MASS'
 
 ### Bonus Task - Mixing Length Parameter
 
-If you've finished the lab early you can explore the atmospheric boundary conditions and mixing length parameter more. What happens if you keep both parameters the same but change the mass? What about changing mass and $\alpha_{\rm MLT}$? Mass and b
+If you've finished the lab early you can explore the atmospheric boundary conditions and mixing length parameter more. What happens if you keep both parameters the same but change the mass? What about changing mass and $\alpha_{\rm MLT}$? Mass and boundary condition?
