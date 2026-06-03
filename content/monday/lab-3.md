@@ -276,6 +276,12 @@ The `distance = 3.0857d19` sets the distance to 10 parsecs (expressed in cm), wh
 ./rn
 ```
 
+{{< details title="What your pgstar window should look like" closed="true" >}}
+![Example Lab 3 pgstar grid for a 1.0 solar-mass run near TAMS](lab3_pgstar_example.png)
+
+This is the 1.0 $M_\odot$ reference run near TAMS. The red circle marks the current model. $\Delta\nu$ (top centre) has declined steadily as the star expanded, $\delta\nu_{02}$ (top right) has dropped towards zero as the core hydrogen ran out, and the interior panel shows central h1 nearly depleted. Your panels will differ in detail for other masses, but if they look broadly like this you are on track.
+{{< /details >}}
+
 The model will run from the pre-main sequence to **T**erminal **A**ge **M**ain **S**equence. In the pgstar window, $\Delta\nu$ is the top-centre panel ("Large frequency separation") and $\delta\nu_{02}$ is the top-right panel ("Small frequency separation"). As it runs, pay attention to:
 
 - How quickly does $\Delta\nu$ change compared to the HR diagram position?
