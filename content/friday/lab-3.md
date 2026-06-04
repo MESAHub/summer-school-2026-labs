@@ -188,7 +188,7 @@ You can see an example of healthy, developed pulsation below.
 ![pgstar](pgstar_example_labeled.gif)
 
 
-The five panels labeled with a red number are the most relevant. They show
+The four panels labeled with a red number are the most relevant. They show:
 
 1. Hertzsprung-Russell diagram. We expect an ellipsoidal path for a purely sinusoidal waveform without a bump. In this example however, you can see a downward kink around $\log{T_\mathrm{eff}} = 3.7$.
 2. effective temperature variation over time in blue and luminosity variation in solar luminosity over time, also called the *light curve*, in yellow. This example is clearly not purely sinusoidal as the peak is too thin and there's a subtle bump just before the peak. Any bumps are usually relatively easy to identify in this panel. You can see other examples of these light curves in the figure in the introduction or at [the OGLE catalog](https://ogle.astrouw.edu.pl/atlas/classical_Cepheids.html).
