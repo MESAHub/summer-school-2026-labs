@@ -17,7 +17,7 @@ Each cycle emits two neutrinos, providing a potentially significant cooling mech
 
 In this lab you will:
 1. Add the **A=23 Urca pair** (${^{23}\rm{Na}}$ ↔ ${^{23}\rm{Ne}}$) to your nuclear network and observe the Urca shell in real time with pgstar.
-2. Add the **A=25 Urca pair** (${^{25}\rm{Mg}}$ → ${^{25}\rm{Na}}$ → ${^{25}\rm{Ne}}$) and compare its effect against the A=23 run using pgstar plots and terminal history output.
+2. Add the **A=25 Urca pair** (${^{25}\rm{Mg}}$ ↔ ${^{25}\rm{Na}}$ ↔ ${^{25}\rm{Ne}}$) and compare its effect against the A=23 run using pgstar plots and terminal history output.
 3. Estimate the **compressional heating and Urca cooling timescales** of the white dwarf.
 
 The files for this lab can be found in the [Lab 2 Google Drive folder](https://drive.google.com/drive/folders/1AIM4g5PDbi5xV7wByY-F9xBA317evdMB?usp=drive_link) (starting point, partial solutions, and full solution).
