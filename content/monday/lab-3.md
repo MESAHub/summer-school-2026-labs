@@ -64,9 +64,13 @@ The loop computes $dc_s/r$ shell by shell, approximating the radial derivative o
 
 **→ [Download the Lab 3 starter (Google Drive)](https://drive.google.com/file/d/1zwgUNvjC7w4magIEBfSSJzVvyJu5cGxO/view?usp=drive_link)**
 
-Everything you need is already inside -- including the `run_star_extras.f90` with the seismic calculations and the `../data/` files -- so Lab 3 runs on its own without anything from Labs 1 or 2. You can still copy your inlist over from Lab 2 for a faster setup (see below).
+Everything you need is already inside -- including the `run_star_extras.f90` with the seismic calculations and the `../data/` files -- so Lab 3 runs on its own. Work inside this directory; there is nothing to bring over from Labs 1 or 2.
 
-A good check when inheriting a MESA working directory could go something like:
+For this lab, all of your configuration lives in a single file: `inlist_run`. Every namelist -- `&star_job`, `&controls`, `&colors`, and `&pgstar` -- sits together in that one file.
+
+This is a change from Lab 2. There, a small top-level `inlist` acted as a header that pointed MESA off to separate files: the physics in `inlist_project` and the plotting settings in `inlist_pgstar`. Here there is no header and no splitting up by namelist -- you point the `star` binary at one self-contained file and that is the whole configuration.
+
+Have a look around the directory before running anything:
 ```bash
 cd Lab3                      #the Lab 3 working directory (content/monday/Lab3 if you cloned the repo)
 
@@ -76,8 +80,9 @@ cat rn                      #lets see what rn does (it copies 'inlist_run' to 'i
 
 cat rn1                     #it calls star with 'inlist'
                             #so we have established that 'inlist_run' is what we modify. It will be copied to inlist for execution.
-cp ../Lab2/whatever_inlist_was_called inlist_run
 ```
+
+So why copy `inlist_run` to `inlist` rather than just run `inlist_run` directly? Because MESA always reads its configuration from a file named exactly `inlist` -- that name is hard-wired. Rather than edit that file by hand, we keep our real configuration in `inlist_run` and let `rn` copy it onto `inlist` at launch. That keeps `inlist` as a disposable, regenerated-every-run file: you only ever edit one master (`inlist_run`), you can never accidentally run a half-finished hand-edit, and it gives you a single, obvious place to script parameter changes if you ever want to run a grid of models.
 
 `run_star_extras.f90` already implements the seismic calculations, so you will not need to edit it.
 
@@ -90,7 +95,7 @@ initial_mass = X.X   ! set to your assigned value
 ```
 
 > [!NOTE]
-> The `rn` script copies `inlist_run` to `inlist` before launching the model -- always edit `inlist_run`, not `inlist` directly. `inlist` is overwritten every time you run.
+> Always edit `inlist_run`, never `inlist` directly -- `inlist` is overwritten by `rn` every time you run.
 
 ---
 
@@ -110,9 +115,6 @@ The namelist below configures five panels:
 - $\delta\nu_{02}$ vs age
 - Interior abundance profile
 - 2MASS magnitude track
-
-> [!NOTE]
-> In Labs 1 and 2 the `&pgstar` settings lived in their own separate inlist. Here we keep everything in a single `inlist_run` instead. Both layouts are perfectly valid -- MESA simply reads whichever inlist(s) you point it at -- but it is worth knowing we are doing it differently this time.
 
 Copy this into the &pgstar section of your inlist_run:
 
@@ -327,6 +329,9 @@ Seismic observables sidestep both. The $\delta\nu_{02}$ versus $\Delta\nu$ diagr
 Once the run has enough history data, use `mesa_reader` to reproduce the four key plots. The `python_helpers/` directory contains more complete plotting scripts -- the code below is a minimal example you can run directly.
 
 > [!NOTE]
+> If your own run didn't finish (or went wrong), you can still do the rest of the lab with this completed reference run -- a 1.0 $M_\odot$ model evolved to TAMS: [download `history.data`](https://drive.google.com/file/d/1hIcCauCh0nFQ5GsnzC4IVpBAxcm_7cH8/view?usp=drive_link). Put it in your `LOGS/` directory and point the scripts at it as usual.
+
+> [!NOTE]
 > If you don't already have `mesa_reader`, install it with `pip install mesa_reader`. It's also available from [its GitHub page](https://github.com/wmwolf/py_mesa_reader). It is a small, dependency-light reader for MESA history and profile files, and you import it as `import mesa_reader as mr`.
 
 
@@ -457,6 +462,42 @@ with open('inlist') as f:
         if 'initial_mass' in line:
             print(line.strip())
 ```
+
+{{< details title="Bash alternative" closed="true" >}}
+You can pull the same numbers straight out of `history.data` with `awk`, which ships with essentially every Linux distro and with macOS. It reads the column names from the header line, so it doesn't depend on the column order:
+
+```bash
+awk '
+!hdr {
+  for (i = 1; i <= NF; i++) if ($i == "star_age") { for (j = 1; j <= NF; j++) c[$j] = j; hdr = 1 }
+  next
+}
+{
+  n++
+  age[n]=$(c["star_age"]); teff[n]=$(c["Teff"]); logL[n]=$(c["log_L"])
+  jmag[n]=$(c["J"]); ksmag[n]=$(c["Ks"])
+  dnu[n]=$(c["Delta_nu_int"]); dnu02[n]=$(c["delta_nu02_int"])
+}
+END {
+  m = split("1 3 5 7 9", t, " ")
+  for (k = 1; k <= m; k++) {
+    target = t[k] * 1e9
+    best = 1; bd = 1e99
+    for (i = 1; i <= n; i++) { d = age[i] - target; if (d < 0) d = -d; if (d < bd) { bd = d; best = i } }
+    i = best
+    printf "Age: %.1f Gyr  Teff: %.0f K  L/Lsun: %.4f  J-Ks: %.4f  Delta_nu: %.2f uHz  delta_nu02: %.2f uHz\n", \
+           age[i]/1e9, teff[i], 10^logL[i], jmag[i]-ksmag[i], dnu[i]*1e6, dnu02[i]*1e6
+  }
+}
+' LOGS/history.data
+```
+
+And the mass check is just:
+
+```bash
+grep initial_mass inlist
+```
+{{< /details >}}
 
 Add the results to the google sheets file.
 This link : [google sheets](https://docs.google.com/spreadsheets/d/1C88C5V2siCAaK8-3qgAZoNc9-9IH-RTIqFVetXQc3EM/edit?usp=sharing)
