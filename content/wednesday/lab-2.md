@@ -32,7 +32,7 @@ Consult the [MESA documentation](https://docs.mesastar.org/en/latest/) throughou
 
 | 📋 TASK 1 |
 |:--------|
-| **Download** the Lab 2 starting point from the [Google Drive](https://drive.google.com/file/d/1V68deP8I-exN8hjD3N-BFnvtl8AkZr91/view?usp=sharing) and **unzip** it to a local working directory. |
+| **Download** the Lab 2 starting point from the [Google Drive](https://drive.google.com/file/d/1G-BdTQD5t76uFWeSdFA3hd-5cF0-bPxE/view?usp=sharing) and **unzip** it to a local working directory. |
 
 The starting point is similar to your completed Lab 1 setup, but now configured to load a 1.1 M<sub>&#9737;</sub> O-Ne-Na white dwarf model.
 
@@ -570,8 +570,8 @@ This balance is sensitive to $\dot{M}$ and the Urca pair threshold densities —
 
 ## Solution / End Point
 
-The end-of-Part-2 solution for Lab 2 (which also serves as a starting point for Lab 3) can be downloaded [HERE](https://drive.google.com/file/d/1MD5eCGoM08RIHP4xbuZf7X4kUaLOPjxS/view?usp=sharing).
+The end-of-Part-2 solution for Lab 2 (which also serves as a starting point for Lab 3) can be downloaded [HERE](https://drive.google.com/file/d/1vlbxquOjileIJY7UogjK0uygmGJMzJjn/view?usp=sharing).
 
-If you also completed the bonus section, the full bonus solution can be downloaded [HERE](https://drive.google.com/file/d/19RUf2R0R3zWBR1IVTqt06RPRcoax2pBP/view?usp=sharing).
+If you also completed the bonus section, the full bonus solution can be downloaded [HERE](https://drive.google.com/file/d/1LDzAf6e-YG44iHIwmgbG3UDjS5NDOTK9/view?usp=sharing).
 
 [^1]: Suzuki et al. 2016, ApJ 817, 163 — sd-shell electron capture and β-decay rates at stellar densities.
