@@ -320,6 +320,13 @@ contains
          if (ierr /= 0) return
          extras_finish_step = keep_going
 
+         ! ====== TODO: add stopping condition here! ======
+
+         ! ================================================
+
+
+
+         ! ======= Routines for the core-helium burning part of the evolution ! ======
          call_gyre = .false. ! Assume we don't need to call GYRE
          need_to_save_model = .false.
 
@@ -330,10 +337,6 @@ contains
 
          save_mod_Teff_limit = s% x_ctrl(1) ! Sets minimum Teff necessary to save a model
          logTeff = safe_log10(s% Teff)
-
-         ! ====== TODO: add stopping condition here! ======
-
-         ! ================================================
 
          ! Zero out period and growth rate information from previous step, if we don't call GYRE then values stay 0.
          F_period = 0d0
@@ -374,7 +377,7 @@ contains
             end if
 
             ! This subroutine constructs the data structure that GYRE uses to calculate modes
-            call set_model(global_data, point_data, s%gyre_data_schema)
+            ! ====== TODO: add the GYRE model setup call here! ======
 
             ! Write header to terminal
             write(*, 100) 'model', 'order', 'freq (Hz)', &

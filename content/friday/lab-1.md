@@ -42,11 +42,15 @@ Next, instruct MESA about initial mass you just chose. To do so, open the ```inl
 You should look for the ```&controls``` namelist in the ```inlist_project``` file, and you will find something like this:
 
 ```fortran
-   ! set the initial mass here
-   initial_mass = 4.5d0
+   ! ======= TODO: set the initial mass here! ======
+   initial_mass =
 ```
 
-Change the value of the ```initial_mass``` variable!
+Set the value of the ```initial_mass``` variable to the mass you chose. For example, for a $4.5\,M_\odot$ model you would use:
+
+```fortran
+   initial_mass = 4.5d0
+```
 {{< /details >}}
 
 Great, now MESA knows what mass we should _start_ to simulate. However, a MESA run is not complete until we know **when to _stop_**!
@@ -192,7 +196,7 @@ Open ```run_star_extras.f90``` again and look for the stopping condition you jus
 > [!TIP]
 > To comment lines in Fortran, simply add a ```!``` at the beginning of the line.
 
-Since you changed ```run_star_extras.f90```, you also need to update the executable. In order to effectively remove the stopping condition based on the temperature from the next part of the evolution, we need to delete the previous ```star``` file from the folder. Now make a new executable file using
+Since you changed ```run_star_extras.f90```, you also need to update the executable. In order to effectively remove the first stopping condition from the next part of the evolution, we need to delete the previous ```star``` file from the folder. Now make a new executable file using
 
 ```bash
 ./clean
@@ -258,7 +262,7 @@ termination code: extras_finish_step
 ```
 
 > [!NOTE]
-> How often a photos are written is set with `photo_interval` in the `controls` section of the inlist. Another important control is `photo_digits` which sets how many digits from the end of the model number are used in the photo name. We set `photo_interval = 8`, so unless we run more than 100,000,000 models, the photo number will always correspond to the model number.
+> How often photos are written is set with `photo_interval` in the `controls` section of the inlist. Another important control is `photo_digits`, which sets how many digits from the end of the model number are used in the photo name. We set `photo_interval = 100`, so unless we run more than 100,000,000 models, the photo number will always correspond to the model number.
 
 If we want to restart from a specific photo we pass it to the `re` script like this:
 
@@ -477,7 +481,7 @@ In this file, we find that this function points to another function in the `puls
 
 {{< /details >}}
 
-After getting the pulse data, we now need to put it into a form that GYRE can handle.
+After getting the pulse data, we now need to put it into a form that GYRE can handle. The starter has a TODO in this part of `run_star_extras`; without this call, GYRE has no model to use and the run stops with the error shown above.
 
 **Task 5.3** Take a look at `$MESA_DIR/gyre/public/gyre_mesa_m.f90` to see if you can figure out the correct subroutine to call.
 
@@ -486,13 +490,21 @@ After getting the pulse data, we now need to put it into a form that GYRE can ha
 
 {{< details title="Answer 5.3" closed="true" >}}
 
-The correct routine is `set_model` and the necessary code is
+The correct routine is `set_model`, and the necessary code to put in the TODO is
 
 ```fortran
 call set_model(global_data, point_data, s%gyre_data_schema)
 ```
 
 {{< /details >}}
+
+After making the changes for Tasks 5.1 and 5.3, rebuild the executable and restart again:
+
+```bash
+./clean
+./mk
+./re
+```
 
 We then write a header to the terminal so that you know what information is being printed, set a few parameters we'll discuss in a moment and
 

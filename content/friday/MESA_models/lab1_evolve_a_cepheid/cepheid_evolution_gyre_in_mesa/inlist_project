@@ -34,7 +34,7 @@
 / !end of eos namelist
 
 &colors
-   use_colors = .false.
+   use_colors = .true.
    instrument = 'data/colors_data/filters/Generic/Johnson'
    stellar_atm = 'data/colors_data/stellar_models/Kurucz2003all/'
    vega_sed = 'data/colors_data/stellar_models/vega_flam.csv'
