@@ -234,10 +234,10 @@ Just as in Lab 1, these `photos/` files are for continuing your own run on your 
 
 If the optical depth as a proxy of distance to the surface in panel 4 confuses you, you can alter the x-axis to your liking (radius, mass, zone number...). To do so, update `Profile_Panels3_xaxis_name` in `inlist_pgstar`. You need to give it the name of a column in your profile output, so check `profile_columns.list` to see all the options.
 
-Depending on what quantity you pick, you may also have to alter the limits of the x-axis using `Profile_Panels1_xmin` and `Profile_Panels1_xmax`. The initial version of the plot , which you can disable by setting
+Depending on what quantity you pick, you may also have to alter the limits of the x-axis using `Profile_Panels3_xmin` and `Profile_Panels3_xmax`. The default plot reverses the x-axis; you can disable that by setting
 
 ```fortran
-Profile_Panels1_xaxis_reversed = .false.
+Profile_Panels3_xaxis_reversed = .false.
 ```
 
 {{< /details >}}
