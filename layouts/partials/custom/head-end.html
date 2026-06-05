@@ -1,3 +1,4 @@
+{{- if .Params.lazyAnimation -}}
 <script>
   (function () {
     if (window.mesaLazyAnimationReady) return;
@@ -22,3 +23,4 @@
     });
   })();
 </script>
+{{- end -}}

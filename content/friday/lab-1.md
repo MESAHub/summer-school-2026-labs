@@ -2,6 +2,7 @@
 weight: 2
 title: "Lab 1: Evolving a Cepheid into the Instability Strip"
 linkTitle: Lab 1
+lazyAnimation: true
 ---
 
 {{< details title="Show Cepheid evolution animation" closed="true" >}}

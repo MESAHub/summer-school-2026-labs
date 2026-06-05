@@ -2,6 +2,7 @@
 weight: 4
 title: "Lab 3: The Hertzsprung Progression"
 linkTitle: Lab 3
+lazyAnimation: true
 ---
 
 *Lab written by: Mathijs Vanrespaille(lead TA), Andy Santarelli (lead TA), Ebraheem Farag (lecturer), Sofia Mesini, and Andy Santarelli*
