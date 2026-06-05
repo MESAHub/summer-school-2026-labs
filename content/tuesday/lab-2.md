@@ -1,4 +1,11 @@
-# Lab 2 - Changing Tempo
+---
+title: "Lab 2: Changing Tempo"
+author: Caleb Eastlund (Lead), Meng Sun, Ducheng Lu, Daniel Lecoanet (Lecturer)
+weight: 2
+math: true
+toc: true
+linkTitle: Lab 2
+---
 
 ## Learning Goals
 
