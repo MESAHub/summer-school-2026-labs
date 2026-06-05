@@ -1,6 +1,6 @@
 ---
 weight: 1
-author: Tryston Raecke, Sunny Wong, Josh Wanninger, Michael Zingale
+author: Tryston Raecke (Lead TA), Sunny Wong, Josh Wanninger, Michael Zingale
 math: true
 disableKinds: "rss"
 ---
@@ -10,10 +10,10 @@ disableKinds: "rss"
 ## Introduction
 
 Urca processes describe sets of reactions whereby isobars cyclically experience electron capture and $\beta$ decay (i.e. electron emission), both releasing neutrinos which stream freely away. [^GamowSchoenberg41] The net effect can lead to more efficient cooling that decreases thermal support to the point of collapse ("bankrupting" the star, hence the eponymous Casino de Urca in Rio de Jainero![^Haensel95]). 
-Due to the varying dependencies of these reaction rates on temperature and density, the locations whereby the urca process dominate can be described by distinct shells. [^MartinezPinedo14]
+Due to the varying dependencies of these reaction rates on temperature and density, the locations whereby the Urca process dominate can be described by distinct shells. [^MartinezPinedo14]
 <!-- Within these shells, $\beta$ decay produces local heating, while electron capture can either heat or cool the surrounding medium (dependent on density).-->
 
-In the temperatures and densities characteristic of an accreting oxygen-neon (ONe) white dwarf, it is expected that these urca processes are critical to accurately modeling the expected end state of the star (implosion versus explosion).[^Hola26] To account for these processes, it is essential to carefully consider the nuclear network used throughout our models. 
+In the temperatures and densities characteristic of an accreting oxygen-neon (ONe) white dwarf, it is expected that these Urca processes are critical to accurately modeling the expected end state of the star (implosion versus explosion).[^Hola26] To account for these processes, it is essential to carefully consider the nuclear network used throughout our models. 
 
 In this lab, we will model the accretion stage of an ONe white dwarf, beginning from a precomputed starting point and evolving to oxygen ignition. To accomplish this, we will build a custom nuclear network and measure the rate balance between electron capture/$\beta^-$ decay rates. In the end, we will map the density at oxygen ignition to answer the question: Will this star explode or implode?
 
@@ -22,39 +22,23 @@ For more discussion on accretion-induced collapse in accreting white dwarfs, see
 
 ### Helpful Links
 
-The general Google drive for these Wednesday labs can be found [HERE](https://drive.google.com/drive/folders/1OkVI_D5ilrETjjRzcqswcafA9bwROWfV?usp=drive_link). 
+The Google drive for Lab 1 can be found [HERE](https://drive.google.com/drive/folders/1Pht6YvypYnXKGyDYzHVphCF7SZQ7MYAL?usp=drive_link). This drive contains the starting point, partial solutions (separated by task), and a full solution. You do **not** need to download the entire drive! 
 
-More specifically, the files for Lab 1 can be found [HERE](https://drive.google.com/drive/folders/1Pht6YvypYnXKGyDYzHVphCF7SZQ7MYAL?usp=drive_link). This drive contains the starting point, partial solutions (separated by task), and a full solution. You do **not** need to download the entire drive!
+Values that need to be altered in the files will generally be marked with `!!!!!`, but feel free to look over the provided solutions if you get stuck! It is **highly** suggested that you use hints where applicable as parts of this lab can be a bit tricky.
+
+If you are unfamiliar with Fortran, see Georgia Tech's [Aerospace Engineering Resource page for Fortran90](https://aeresources.gatech.edu/Fortran/Webpage/) which compiles information on Fortran types/modules/loops/etc at an undergraduate level.
 
 Lastly, it will be helpful to consult the [MESA documentation](https://docs.mesastar.org/en/latest/) throughout this lab.
 
 
 ## How to destroy a White Dwarf in 7(ish) easy steps!
 
-Note throughout this lab expected tasks are outlayed specifically with: 
-| 📋 TASK 0 |
-|:--------|
-| (insert stuff to do here) |
-
-Additionally, there will be various
-> [!WARNING]
-> WARNINGS,
-
-> [!NOTE]
-> NOTES,
-
-{{< details title="and hints (click me)" closed="true" >}}
-to help you along.
-{{< /details >}}
-
-Values that need to be altered in the files will generally be marked with `!!!!!`, but feel free to look over the provided solutions if you get stuck!
-
 
 ### Step 0: Start Up
 
 | 📋 TASK 1 |
 |:--------|
-| **Download** the starting point from the [Google Drive](https://drive.google.com/drive/folders/1Pht6YvypYnXKGyDYzHVphCF7SZQ7MYAL?usp=drive_link) to a local working directory. |
+| **Download and unzip** the starting point from the [Google Drive](https://drive.google.com/drive/folders/1Pht6YvypYnXKGyDYzHVphCF7SZQ7MYAL?usp=drive_link) to a local working directory. |
 
 This starting point is a standard set of MESA files complete with a precomputed 1.1 M<sub>&#9737;</sub> Oxygen-Neon (ONe) white dwarf model.
 
@@ -93,7 +77,7 @@ At this stage, we are now ready to dive into some inlists!
 
 ### Step 2: Inlist Common
 
-`inlist_common` holds the set of "defaults" that we want to be common between various accretion runs. The primary point of this is to make changes to more modular. Instead of having to sort through walls of variables for each change, the core functionality can be stored in... common.
+`inlist_common` holds the set of "defaults" that we want to be common between various accretion runs. The primary point of this is to make changes more modular. Instead of having to sort through walls of variables for each change, the core functionality can be stored in... common.
 
 Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances and help the model converge at later times. Check the aside below **after** the lab for more details on particular choices in this file. [^Potekhin09] [^Itoh02] [^Jermyn21] [^Timmes00]
 
@@ -101,11 +85,11 @@ Now let's look over the file. You will notice that some variables have already b
 
 The work that will be done throughout this lab requires careful consideration of input physics for real science cases. Much of this has been smoothed over for the sake of brevity, as many of the necessary inputs would also scale up runtimes, but some important eos and coulomb correction details have been retained.
 
-IN `&star_job`, we are using coulomb corrections from Potekhin+09 <sup id="fnref:Potekhin09"><a href="#fn:8" class="footnote-ref">8</a></sup>. for ions and Itoh+02<sup id="fnref:Itoh02"><a href="#fn:9" class="footnote-ref">9</a></sup> for electrons. These provide modifications to the ion and electron chemical potentials due to coulomb coupling and screening, respectively. In the ONe white dwarf regime of the these corrections become essential pieces on the rate and balance of URCA production. 
+IN `&star_job`, we are using coulomb corrections from Potekhin+09 <sup id="fnref:Potekhin09"><a href="#fn:8" class="footnote-ref">8</a></sup>. for ions and Itoh+02<sup id="fnref:Itoh02"><a href="#fn:9" class="footnote-ref">9</a></sup> for electrons. These provide modifications to the ion and electron chemical potentials due to coulomb coupling and screening, respectively. In the ONe white dwarf regime of the these corrections become essential pieces on the rate and balance of Urca production. 
 
 In `&eos`, the inlist is effectively forcing the use of the proper equation of state, Skye, throughout the core of the white dwarf, while dropping fidelity in the non-degenerate outer shell. The other eos options (PC, FreeEOS, and OPAL/SCVH) are explicitly deactivated, while dropping the mass fraction needed to consider an isotope in the Skye EOS. The means that in the portions of the star where Skye is not appropriate, MESA jumps down the order of precedence for EOS components directly to HELM, reducing runtimes. Note, the backstop eos, HELM, cannot be deactivated and (again) will still be the dominant eos in the outermost layers of non-degenerate accreted material (~5 km or ~0.4%). The explicit details of the Skye EOS and HELM EOS can be found in Jermyn+21 <sup id="fnref:Jermyn21"><a href="#fn:10" class="footnote-ref">10</a></sup> . and Timmes&Swesty00 <sup id="fnref:Timmes00"><a href="#fn:11" class="footnote-ref">11</a></sup>. 
 
-In `&controls`, the inlist first **turns off** convective mixing entirely. This is purely a simplification to focus on where our URCA reactions take place, rather than dealing with the entire picture of convective URCA. Next, various smoothing options are set to 0. As for timesteps, the timestep size is doubled from the default and the tolerance for energy conservation made wider. The inlist also uses a larger mesh with cell sizes that preference refinement by q rather than temperature. For the solver, the use of eps_grav is motivated by the degenerate regime, where our entropy matter more than energy. The inlist also loosens many residual limits by **quite** a bit to ensure that the solver does not quit early or get caught trying to particularly resolve behavior too fine for the lesson in this lab. 
+In `&controls`, the inlist first **turns off** convective mixing entirely. This is purely a simplification to focus on where our Urca reactions take place, rather than dealing with the entire picture of convective Urca. Next, various smoothing options are set to 0. As for timesteps, the timestep size is doubled from the default and the tolerance for energy conservation made wider. The inlist also uses a larger mesh with cell sizes that preference refinement by q rather than temperature. For the solver, the use of eps_grav is motivated by the degenerate regime, where our entropy matter more than energy. The inlist also loosens many residual limits by **quite** a bit to ensure that the solver does not quit early or get caught trying to particularly resolve behavior too fine for the lesson in this lab. 
 
 If you have extra time after the lab, feel free to take away some of the smoothing elements and explore which ones most effect the runtime on your device! More information on any particular option can also be found in the [MESA documentation](https://docs.mesastar.org/en/latest/)!
 
@@ -169,15 +153,12 @@ The parameter that should be added is:
 ```
 {{< /details >}}
 
-> [!WARNING]
-> Don't forget to save your changes to the inlist!
-
 
 ### Step 3: Inlist Accrete
 
 With the common variables set, now we can focus on the fun part: throwing material on the surface. We will control which reaction network is used and the material accreted within `inlist_accrete`. Unlike our previous inlist, this file has been provided mostly empty. 
 
-Starting in `&star_jobs`, load in the downloaded model (`1.1Msun_ONe.mod`), change the initial network to a file we will later create called `ONe.net`, and set the weak rates to those of Suzuki+2016[^Suzuki16]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the URCA process. Without these rates, the weak reaction rates A=17 through A=28 isotopes would be interpolated with earlier weaklib tables that will not sufficiently resolve the cooling/heating features at the core of this lab. 
+Starting in `&star_jobs`, load in the downloaded model (`1.1Msun_ONe.mod`), change the initial network to a file we will later create called `ONe.net`, and set the weak rates to those of Suzuki+2016[^Suzuki16]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the Urca process. Without these rates, the weak reaction rates A=17 through A=28 isotopes would be interpolated with earlier weaklib tables that will not sufficiently resolve the cooling/heating features at the core of this lab. 
 
 
 | 📋 TASK 4 |
@@ -223,7 +204,7 @@ In `&controls`, set the accretion rate to 10<sup>-6</sup> M<sub>&#9737;</sub> / 
 > [!NOTE]
 > You will need to both explicitly stop MESA from accreting the same composition as the surface and flag that the new accretion composition will be given as mass fractions.
 
-> [!NOTE]
+> [!CAUTION]
 > The isotope names are **case sensitive** and should be provided in lowercase!
 
 {{< details title="Hint: What variables need to be changed?" closed="true" >}}
@@ -278,9 +259,6 @@ Therefore, if we wanted to accrete only Hydrogen-2, we would use:
 {{< /details >}}
 
 
-> [!WARNING]
-> Don't forget to save your changes to the inlist!
-
 
 ### Step 4: Building a Nuclear Network
 
@@ -321,7 +299,7 @@ is included in the MESA rate we use.
 |:--------|
 | **Create a new file `ONe.net`**, and **add the necessary isotopes** to encompass the reactions in the table above. |
 
-> [!NOTE]
+> [!CAUTION]
 > You must also add Hydrogen to the mix! MESA **requires** all nuclear networks to contain both Hydrogen-1 and Helium-4. 
 
 {{< details title="Hint: What isotopes need to be added?" closed="true" >}}
@@ -440,8 +418,6 @@ add_reactions(
 ```
 {{< /details >}}
 
-> [!WARNING]
-> Don't forget to save your changes!
 
 
 ### Step 5: History/Profile Columns
@@ -488,8 +464,6 @@ profile_panels1_other_ymax(1) = 5d0
 > [!NOTE]
 > With these inclusions, the provided `inlist_pgstar` will now be expecting two new profile columns: `lambda_ne20_f20`, `lambda_f20_ne20`
 
-> [!WARNING]
-> Don't forget to save your changes!
 
 
 ### Step 7: Run Star Extras
@@ -502,8 +476,6 @@ Thankfully, most of the work has already been done for this lambda computation u
 |:--------|
 | In `src/run_star_extras.f90`, **bulk import** the new submodules (`rates_lib`, `eos_lib`, and `eos_def`) and **selectively import** `Coulomb_Info` from `rates_def`.  |
 
-> [!NOTE]
-> If you are unfamiliar with Fortran, see Georgia Tech's [Aerospace Engineering Resource page for Fortran90](https://aeresources.gatech.edu/Fortran/Webpage/) which compiles information on Frotran types/modules/loops/etc at an undergraduate level
 
 > [!NOTE]
 > These module names are the base name of the file which contains the necessary function. For instance, the `eval_weak_reaction_info` subroutine is defined in the file `$MESA_DIR/rates/public/rates_lib.f90`, hence the necessary module is `rates_lib`.
@@ -514,7 +486,7 @@ use module
 ```
 {{< /details >}}
 
-{{< details title="Hint: What is the format for selctive imports?" closed="true" >}}
+{{< details title="Hint: What is the format for seletive imports?" closed="true" >}}
 ```fortran
 use module, only: some_module_entity
 ```
@@ -639,8 +611,6 @@ end do
 {{< /details >}}
 
 
-> [!WARNING]
-> Don't forget to save your changes to run_star_extras!
 
 ### Step 8: Run the Model!
 
@@ -648,16 +618,11 @@ With all the inlists complete, we can finally answer the age old question: **Wil
 
 | 📋 TASK 14 |
 |:--------|
-| **Run** the model! Observe the behavior and evolution of the star up to oxygen ignition. Does the balance of lambda values make sense? Does the crossing point agree with Figure 4 from Pinedo+14[^MartinezPinedo14] (below)? |
+| **Run** the model! Do not forget to `./clean`, then `./mk`, then `./rn`. 
+|Observe the behavior and evolution of the star up to oxygen ignition. Does the balance of lambda values make sense? Does the crossing point agree with Figure 4 from Pinedo+14[^MartinezPinedo14] (below)? |
 ![landscape](/wednesday/Pinedo+14_Fig4.png)
 *Figure 4, from Pinedo+14: Electron capture and beta decay rates on $\ce{^{20}Ne<->^{20}F}$ with and without screening. Top panel log(T[K]) = 8.6. Bottom panel log(T[K]) = 9.0* [^MartinezPinedo14]
 
-
-> [!IMPORTANT]
-> Do not forget to `./clean`, then `./mk`, then `./rn`
-
-> [!NOTE]
-> If you want to look at the final pgplot longer, try adding `pause_before_terminate = .true.` into the `&star_jobs` section of `inlist_common`. 
 
 {{< details title="Answer: What you should see" closed="true" >}}
 Note: This gif stacks both the pgstar plots, but they will be separate during the run!
