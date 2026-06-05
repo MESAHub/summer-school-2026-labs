@@ -69,15 +69,15 @@ At this stage, we are now ready to dive into some inlists!
 
 ### Step 1: Inlist
 
-`inlist` serves as a direction point for the run, guiding the order and precedence of variables in various other inlist files. Given this, take a peak at `inlist`. For the `&star_jobs`, `&eos`, `&kap`, and `&controls` namelists (ie. groups of variables), the run will begin by pulling in everything from `inlist_common`. Then, for the `&star_job` and `&controls` namelists, the run will overwrite settings using values from `inlist_accrete`. Lastly, the activity of pgstar will be controlled by a separate inlist entirely, `inlsit_pgstar`.
+`inlist` serves as a direction point for the run, guiding the order and precedence of variables in various other inlist files. Given this, take a peak at `inlist`. For the `&star_jobs`, `&eos`, `&kap`, and `&controls` namelists (ie. groups of variables), the run will begin by pulling in everything from `inlist_common`. Then, for the `&star_job` and `&controls` namelists, the run will overwrite settings using values from `inlist_accrete`. Lastly, the activity of pgstar will be controlled by a separate inlist entirely, `inlist_pgstar`.
 
 
 
 ### Step 2: Inlist Common
 
-`inlist_common` holds the set of "defaults" that we want to be common between various accretion runs. The primary point of this is to make changes more modular. Instead of having to sort through walls of variables for each change, the core functionality can be stored in... common.
+Throughout today's runs, we will be varying the accretion behavior of our system, but expect that some portion of variables will be the same. `inlist_common` holds the set of "defaults" that we want to be common between runs (hence the name), making changes more modular.
 
-Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances and help the model converge at later times. Check the aside below **after** the lab for more details on particular choices in this file. [^Potekhin09] [^Itoh02] [^Jermyn21] [^Timmes00]
+Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances. This will help the model converge at later times by loosening what counts as an "ok" step. Check the aside below **after** the lab for more details on particular choices in this file. [^Potekhin09] [^Itoh02] [^Jermyn21] [^Timmes00]
 
 {{< details title="Aside on miscellaneous variable choices in `inlist_common`" closed="true" >}}
 
@@ -93,49 +93,13 @@ If you have extra time after the lab, feel free to take away some of the smoothi
 
 {{< /details >}}
 
-Throughout these labs, we will be loading in precomputed white dwarf models as starting points to avoid dealing with earlier stages of evolution. To improve the relevant accounting of our simulated accretion stages, it can be helpful to reset the initial age and initial model number of these models once read, making our runs look like fresh runs. Starting with the top of the file, reset the initial age, reset the initial model number, turn on pgstar, and save our final model as `ONE_1d-6`. 
+Throughout these labs, we will be loading in precomputed white dwarf models as starting points to avoid dealing with earlier stages of evolution. To improve the relevant accounting of our simulated accretion stages, the initial age and initial model number of these models will be reset once read, making our runs look like fresh runs.
 
-| 📋 TASK 2 |
-|:--------|
-| In `&star_jobs`, **update `inlist_common`** to set initial age to 0, set initial model number to 0, turn on pgstar, and save our final model as `ONE_1d-6`. |
-
-
-{{< details title="Hint: What variables need to be changed?" closed="true" >}}
-The parameters that should be updated/added are:
-- `save_model_when_terminate`
-- `save_model_filename`
-- `set_initial_age`
-- `initial_age`
-- `set_initial_model_number`
-- `initial_model_number`
-- `pgstar_flag`
-
-{{< /details >}}
-
-{{< details title="Partial Solution" closed="true" >}}
-```fortran
-! save a model at the end of the run
-    save_model_when_terminate = .true. !!!!!
-    save_model_filename = 'ONE_1d-6'    !!!!!
-
-  ! initial model
-    set_initial_age = .true. !!!!!
-    initial_age = 0d0        !!!!!
-
-    set_initial_model_number = .true. !!!!!
-    initial_model_number = 0          !!!!!
-
-  ! display on-screen plots
-    pgstar_flag = .true.          !!!!!
-    disable_pgstar_during_relax_flag = .false.
-```
-{{< /details >}}
-
-Next, we want to record the point of oxygen ignition in the white dwarf, but **DO NOT** want to try running through explosion/implosion during these labs. Set the maximum temperature of the model to 10<sup>9.1</sup> K (when the white dwarf begins to ignite oxygen). 
+Next, we want to record the point of oxygen ignition in the white dwarf, but **DO NOT** want to try running through explosion/implosion during these labs. Beyond that point, the relevant timescale will shrink rapidly to that of the deflagration/detonation front, massively increasing the computation required. Stop the evolution when the maximum temperature within the model is 10<sup>9.1</sup> K (when the white dwarf begins to ignite oxygen).
 
 | 📋 TASK 3 |
 |:--------|
-| In `&controls`, **update `inlist_common`** to stop the model once temperature reaches 10<sup>9.1</sup> K |
+| In `&controls`, **update `inlist_common`** to stop the model once temperature reaches 10<sup>9.1</sup> K. Available stopping parameters can be found [here](https://docs.mesastar.org/en/latest/reference/controls.html#when-to-stop). |
 
 {{< details title="Hint: What variables need to be changed?" closed="true" >}}
 The parameter that should be added is:
