@@ -1216,6 +1216,7 @@ Begin with the `GYRE` inlist from Lab 1. If need a new copy, make a new file nam
 /
 
 ```
+{{< /details >}}
 First, we will point `GYRE` to the first saved model, which should have been saved at a central hydrogen abundance of 0.6. Because it was the first profile generated, it should be named `./LOGS/profile1.data.FGONG`. **Replace the `file` line with this code**:
 ```fortran
     file = './LOGS/profile1.data.FGONG'
