@@ -1,10 +1,10 @@
 ---
 weight: 4
-title: Lab 3 - The Hertzsprung Progression
+title: "Lab 3: The Hertzsprung Progression"
 linkTitle: Lab 3
 ---
 
-**Lead TA**: Andy Santarelli
+*Lab written by: Mathijs Vanrespaille(lead TA), Andy Santarelli (lead TA), Ebraheem Farag (lecturer), Sofia Mesini, and Andy Santarelli*
 
 In this lab you will take one of your saved Cepheid models from Lab 1, use a non-linear pulsation setup to kick it into motion, and inspect the resulting waveform. Your goal is to identify where the bump appears in the cycle and combine your result with the rest of the class to reconstruct the Hertzsprung progression.
 
@@ -19,15 +19,35 @@ This is the non-linear pulsation lab for Friday. That means the details are a li
 
 Many classical Cepheids show a distinctive "bump" in their waveform. The figure below shows a few examples of folded Cepheid light curves observed by the OGLE study.
 
-![OGLE](OGLE_compilation.png)
+![OGLE](plots/lab3/OGLE_compilation.png)
 
-The location of that bump changes with the pulsation period. In the standard picture, this is related to a near `2:1` resonance between the second overtone and the fundamental mode, so a useful quantity to keep in mind is
+The location of that bump changes with the pulsation period. In the standard single-mode picture, this is related to a near `2:1` resonance between the second overtone and the fundamental mode, so a useful quantity to keep in mind is
 
 $$
 P_2/P_0 \approx 0.5.
 $$
 
+The linear nonadiabatic (LNA) plot below shows the overtone period ratios as a function of the fundamental-mode period, $P_0$. It shows why this ratio is useful: the second-overtone ratio, $P_2/P_0$, passes through the resonance range near the periods where bump Cepheids become most morphologically interesting.
+
+![Linear period ratios for the selected nonlinear Cepheid grid](plots/lab3/03_period_ratios_step200_lna_test_lmc_z006_o26.png)
+
 As the stellar structure changes across the instability strip, the bump shifts from the descending branch, through the middle of the cycle, and onto the rising branch. In this lab, you will see that progression directly in non-linear MESA models.
+
+![Short-period nonlinear Cepheid structure animation in radius coordinates](plots/lab3/initial_mass_4p5_work_radius_phase_cycle_dark.gif)
+
+![Short-period nonlinear Cepheid structure animation in log-temperature coordinates](plots/lab3/initial_mass_4p5_work_logT_phase_cycle_dark.gif)
+
+![Short-period nonlinear Cepheid structure animation in log-optical-depth coordinates](plots/lab3/initial_mass_4p5_work_logtau_phase_cycle_dark.gif)
+
+These animations follow the final limit cycle of one non-linear Cepheid model from the grid, with a fundamental-mode pulsation period of $P_0 \simeq 6.36$ days. Phase zero is minimum light. This model is on the short-period side of the $P_2/P_0 \approx 0.5$ resonance picture, so the bump appears on the descending branch of the light curve, after maximum light and before minimum light.
+
+The left panels show how the same phase maps onto the stellar envelope in radius, log temperature, and log optical depth. They include pressure-volume work, net heating, scaled log opacity, and scaled $\mathcal{Y}=\nabla_T-\nabla_L$, with $\mathcal{Y}$ plotted as $0.1\,\mathtt{mlt\_Y\_face}$. The separate radiative and convective heating curves are omitted from this cleaned version. Convection is shown by hatching, and the shaded bands mark the ionization zones.
+
+This is the clean case, not the full pulsation landscape. OGLE classifies many classical Cepheids as fundamental-mode or first-overtone pulsators, but it also contains rarer second-overtone, double-mode, and triple-mode Cepheids. Nearby in the Cepheid family, Type II Cepheids and RV Tauri stars show still richer behavior, including alternating minima and significant amplitude or period changes.
+
+A single period and a single limit cycle are the right language for a stable single-mode pulsator. They are not the right description for every variable star.
+
+In model language, the broader problem is **nonlinear mode selection**: linear growth rates say which modes can grow, while nonlinear saturation and mode coupling decide which mode, or which combination of modes, survives at finite amplitude. Period doubling and irregular cycle-to-cycle behavior can be observational signatures of more complex dynamics, including chaotic nonlinear dynamics in some pulsating-variable classes. We are not trying to model all of that today. We are using the stable fundamental-mode case because it is the cleanest way to see the Hertzsprung progression.
 
 ## Setting up the work directory
 
@@ -40,7 +60,7 @@ cp -r /path/to/your/lab1/mod_dir/ .
 > [!IMPORTANT]
 > Keep your Lab 1 and Lab 3 runs in separate working directories.
 
-Alternatively, you can download the models from the [Lab 1 mod file solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link), which are grouped by mass.
+Alternatively, you can download the models from the [Lab 1 mod file solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link), which are grouped by mass. If you do not have a useful saved model ready to run, use the [Lab 3 nonlinear-start model bundle](https://drive.google.com/file/d/1bTVVwBIyBsIVBZUVmIxXKwcFWXTSjcUj/view?usp=share_link), which contains the selected `.mod` files used for the shared Lab 3 sample.
 
 > [!IMPORTANT]
 > Lab 3 uses a saved `.mod` file from Lab 1. It does **not** use a `photos/` restart file from Lab 1.
@@ -74,10 +94,15 @@ modelNumber_currentMass_effectiveTemperature_luminosity.mod
 Choose a model that:
 
 - is in the Cepheid part of the blue loop
-- preferably showed positive fundamental-mode growth in Lab 1 or Lab 2
+- is on the redder side of the instability strip, ideally about 10-30% in from the red edge
+- preferably showed positive fundamental-mode growth in Lab 1 or in the Lab 2 Table 2 comparison
 - is part of the shared class sample, so different groups cover different periods
 
-If you completed Lab 2, an especially good choice is a model with a relatively large fundamental-mode growth rate. If you also estimated that `P_2/P_0` is close to `0.5`, that makes the model even more interesting for this lab.
+For this lab, the redder edge is a safer place to start because the nonlinear run is more likely to stay in the fundamental mode instead of switching into an overtone. Table 2 in Lab 2 lists the redder selected models used for the shared Lab 3 sample. Some of those rows have negative RSP-LNA growth rates even though the other linear checks mark the fundamental mode as unstable; that is a useful reminder that different linear tools do not always make the same stability call for the same model. In particular, RSP builds its own envelope model and uses different boundary conditions and eddy-viscous damping, so disagreement with the Lab 1 GYRE result is expected near the edges of the strip.
+
+If you completed Lab 2, an especially good choice is a model with a relatively large fundamental-mode growth rate in the selected-model comparison. If you also estimated that `P_2/P_0` is close to `0.5`, that makes the model even more interesting for this lab.
+
+This choice is partly about mode selection. A model can have more than one linearly unstable radial mode. The final nonlinear state is then not determined by the largest linear growth rate alone. The initial perturbation, saturation, damping, and mode coupling can all matter. For this lab we deliberately choose models and kicks that favor a stable fundamental-mode pulsator.
 
 {{< /details >}}
 
@@ -110,7 +135,7 @@ It can take a very long time for a MESA TDC model to start pulsating "naturally"
 
 The closer this kick is to the final pulsational radial velocity, the faster the bump in the light curve will develop. **From the figure below, read off a reasonable initial kick for your chosen model.**
 
-![kicks](initial_kicks.png)
+![kicks](plots/lab3/initial_kicks.png)
 
 Now add this value into your `inlist_pulses`. **Question:** Can you find which variable stores the initial kick?
 
@@ -135,6 +160,8 @@ Find and update this line in the `&controls` of *inlist_pulses*:
 
 > [!CAUTION]
 > In real scientific applications, it is safest to give the Cepheid a small initial kick and give the model a long time to converge to its final value. In this lab, however, it is okay to risk using a larger kick to save time.
+
+The kick is also a mode-selection choice. Here we seed the fundamental radial mode because the class goal is the fundamental-mode Hertzsprung progression. For a production calculation, especially near regions where multiple modes are unstable, you would test that the final state does not depend strongly on the exact kick amplitude or on which mode was initially excited.
 
 ## Task 4: Compile and Run the Model
 
@@ -177,6 +204,19 @@ For the purpose of this lab, the run is useful once you can see that the kick ha
 - still clearly growing
 - or close to a repeating finite-amplitude cycle
 
+For a research-quality non-linear pulsation calculation, the standard is stricter. A true limit cycle means the initial transient has died away and the model has settled into a repeating finite-amplitude pulsation. In practice, you would check the last several cycles and look for:
+
+- a stable period from one cycle to the next
+- stable maximum and minimum radius, luminosity, magnitude, and velocity
+- no obvious secular drift in the waveform or bump phase
+- `growth` or `KE_growth_avg` close to zero on average, because the pulsation is no longer growing or decaying
+
+Positive growth is useful early in the run because it tells you the kick has excited a mode that is growing, but positive growth by itself does **not** mean the model has reached a limit cycle. It means the finite-amplitude pulsation is still developing.
+
+In this lab, we are using a looser practical standard. You do not need to prove that the model has reached a fully converged limit cycle. You only need a developed enough waveform to identify where the bump appears in the cycle.
+
+The limit-cycle test above is also specific to stable single-mode pulsation. If a model settles into two persistent periods, switches mode, alternates cycle shapes, or keeps changing in a structured way, that is not just a failed single-mode limit cycle. It may be a different nonlinear solution. In real work you would report that behavior, check whether it is physical or numerical, and then decide whether the model belongs in a single-mode Cepheid sample.
+
 Signs that the run is doing the right thing:
 
 - `growth` is positive for at least part of the run
@@ -185,7 +225,7 @@ Signs that the run is doing the right thing:
 
 You can see an example of healthy, developed pulsation below.
 
-![pgstar](pgstar_example_labeled.gif)
+![pgstar](plots/lab3/pgstar_example_labeled.gif)
 
 
 The four panels labeled with a red number are the most relevant. They show:
@@ -206,7 +246,7 @@ Signs that you should stop and rethink:
 > You do not need a perfect production-quality non-linear model. You only need a waveform that is good enough to classify the bump.
 
 > [!NOTE]
-> If you want a slightly more quantitative rule of thumb, a useful sign is that the cycle-to-cycle changes in quantities such as `delta_R`, `delta_logL`, `delta_Mag`, or `KE_growth_avg` become smaller and the plotted waveform begins to repeat cleanly. For this lab, that level of stability is enough; you do not need to run until every diagnostic is perfectly flat from one cycle to the next.
+> If you want a slightly more quantitative rule of thumb, compare the last few cycles. For this lab, it is enough if the cycle-to-cycle changes in quantities such as `delta_R`, `delta_logL`, `delta_Mag`, or `KE_growth_avg` are getting smaller and the plotted waveform begins to repeat cleanly. For a science-quality limit cycle, you would keep running until those diagnostics are nearly stationary and `growth` or `KE_growth_avg` is close to zero rather than still clearly positive.
 
 {{< details title="What if I accidentally ended my run too early?" closed="true" >}}
 
@@ -267,6 +307,28 @@ Use the following simple classification:
 > [!TIP]
 > Do not spend too long debating a borderline case. If the bump is ambiguous, record that uncertainty and move on.
 
+{{< details title="Solution examples: nonlinear light curves across period" closed="true" >}}
+
+The examples below are selected from the period-limited nonlinear grid and are phased so that minimum V-band light is at phase `0`. The periods are approximately `6`, `8`, `10`, `12`, `14`, and `18` days.
+
+![Nonlinear limit-cycle example near 6 days](plots/lab3/limit_cycle_example_P006p1d.png)
+
+![Nonlinear limit-cycle example near 8 days](plots/lab3/limit_cycle_example_P008p0d.png)
+
+![Nonlinear limit-cycle example near 10 days](plots/lab3/limit_cycle_example_P010p0d.png)
+
+![Nonlinear limit-cycle example near 12 days](plots/lab3/limit_cycle_example_P011p9d.png)
+
+![Nonlinear limit-cycle example near 14 days](plots/lab3/limit_cycle_example_P014p1d.png)
+
+![Nonlinear limit-cycle example near 18 days](plots/lab3/limit_cycle_example_P017p5d.png)
+
+{{< /details >}}
+
+The stacked $\Delta \log L$ plot below shows the same progression for all of the nonlinear models with periods less than `20` days.
+
+![Stacked nonlinear log luminosity light curves for periods less than 20 days](plots/lab3/global_phased_logL_periods_less_than_20_days.png)
+
 ## Task 8: Record Your Result
 
 Add one row for your successful model to the shared class table.
@@ -290,7 +352,8 @@ As the class table fills in, discuss these questions at your table:
 - how does bump location change with period?
 - where does the bump move from the descending branch to the rising branch?
 - does the class sample support the idea that the morphology is tied to the `P_2/P_0 \approx 0.5` resonance?
-- what does the TDC waveform show that the linear analysis in Lab 2 could not show on its own?
+- what finite-amplitude information does the TDC waveform add beyond the Lab 2 periods and growth rates?
+- did any model show behavior that was not cleanly single-mode, such as overtone selection, alternating cycles, or a waveform that did not settle?
 
 ## If You Are Still Waiting on a Run
 
@@ -388,9 +451,9 @@ If the same feature appears consistently in more than one place, it is more like
 
 {{< /details >}}
 
-## Challenge Problems
+## Additional Challenge Problems
 
-If your group finishes early, try one of these:
+If your group still has time after the main lab, try one of these:
 
 - use your Lab 2 linear results to estimate where `P_2/P_0` is closest to `0.5`, then see whether that corresponds to the most interesting waveform shape
 - compare the bump location in luminosity, radius, and velocity and decide which diagnostic is most useful
@@ -674,6 +737,9 @@ Write down a short conclusion:
 
 ## Suggested Reading
 
+- [OGLE Atlas of Variable Star Light Curves, classical Cepheids](https://ogle.astrouw.edu.pl/atlas/classical_Cepheids.html)
+- [OGLE Atlas of Variable Star Light Curves, Type II Cepheids](https://ogle.astrouw.edu.pl/atlas/type_II_Cepheids.html)
 - [Farag et al. 2026, self-consistent nonlinear classical Cepheid pulsations during stellar evolution with MESA](https://arxiv.org/abs/2603.15766)
+- [Smolec 2014, mode selection in pulsating stars](https://arxiv.org/abs/1309.5959)
 - [Bono, Marconi, and Stellingwerf 2000, the Hertzsprung progression](https://ui.adsabs.harvard.edu/abs/2000A%26A...360..245B/abstract)
 - [Marconi et al. 2024, the Hertzsprung progression of classical Cepheids in the Gaia era](https://ui.adsabs.harvard.edu/abs/2024MNRAS.529.4210M/abstract)
