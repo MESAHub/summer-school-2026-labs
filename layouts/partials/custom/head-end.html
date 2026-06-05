@@ -1,0 +1,24 @@
+<script>
+  (function () {
+    if (window.mesaLazyAnimationReady) return;
+    window.mesaLazyAnimationReady = true;
+
+    document.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-lazy-animation-button]");
+      if (!button) return;
+
+      const container = button.closest("[data-lazy-animation]");
+      const target = container.querySelector("[data-lazy-animation-target]");
+      if (!target.querySelector("img")) {
+        const image = document.createElement("img");
+        image.src = button.dataset.src;
+        image.alt = button.dataset.alt || "";
+        image.loading = "lazy";
+        image.decoding = "async";
+        image.className = "hx-rounded-md hx-border hx-border-gray-200 dark:hx-border-neutral-800";
+        target.appendChild(image);
+      }
+      button.hidden = true;
+    });
+  })();
+</script>
