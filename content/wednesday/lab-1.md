@@ -38,7 +38,7 @@ Lastly, it will be helpful to consult the [MESA documentation](https://docs.mesa
 
 | 📋 TASK 1 |
 |:--------|
-| **Download and unzip** the starting point from the [Google Drive](https://drive.google.com/drive/folders/1Pht6YvypYnXKGyDYzHVphCF7SZQ7MYAL?usp=drive_link) to a local working directory. |
+| **Download and unzip** the starting point from the [Google Drive](https://drive.google.com/drive/folders/1wnWBNuUa2h8vivr8JxMhZHLr_toeDSRM?usp=drive_link) to a local working directory. |
 
 This starting point is a standard set of MESA files complete with a precomputed 1.1 M<sub>&#9737;</sub> Oxygen-Neon (ONe) white dwarf model.
 
@@ -69,10 +69,8 @@ At this stage, we are now ready to dive into some inlists!
 
 ### Step 1: Inlist
 
-`inlist` serves as a direction point for the run, guiding the order and precedence of variables in various other inlist files. Given this, take a peak at `inlist`. What is the hierarchy of the provided inlists?
+`inlist` serves as a direction point for the run, guiding the order and precedence of variables in various other inlist files. Given this, take a peak at `inlist`. For the `&star_jobs`, `&eos`, `&kap`, and `&controls` namelists (ie. groups of variables), the run will begin by pulling in everything from `inlist_common`. Then, for the `&star_job` and `&controls` namelists, the run will overwrite settings using values from `inlist_accrete`. Lastly, the activity of pgstar will be controlled by a separate inlist entirely, `inlsit_pgstar`.
 
-> [!NOTE]
-> There is no task for this step! 
 
 
 ### Step 2: Inlist Common
@@ -117,7 +115,7 @@ The parameters that should be updated/added are:
 {{< details title="Partial Solution" closed="true" >}}
 ```fortran
 ! save a model at the end of the run
-    save_model_when_terminate = .false. !!!!!
+    save_model_when_terminate = .true. !!!!!
     save_model_filename = 'ONE_1d-6'    !!!!!
 
   ! initial model
