@@ -4,7 +4,15 @@ title: "Lab 1: Evolving a Cepheid into the Instability Strip"
 linkTitle: Lab 1
 ---
 
-![Cepheid model moving through the HR diagram and changing pulsation structure](plots/lab1/cepheid_4p5_hr_lightcurve_structure_animation.gif)
+{{< details title="Show Cepheid evolution animation" closed="true" >}}
+
+{{< lazy-animation
+  src="plots/lab1/cepheid_4p5_hr_lightcurve_structure_animation_dark.gif"
+  alt="Cepheid model moving through the HR diagram and changing pulsation structure"
+  button="Load Cepheid evolution animation"
+>}}
+
+{{< /details >}}
 
 ## Summary
 
@@ -645,3 +653,24 @@ Can you answer the following questions? Share possible hypotheses with the folks
 * Which saved structures are the best starting points for Lab 2?
 
 <!-- Mathijs: If these questions will be discussed in the wrap-up lecture, please mention that here! -->
+
+{{< details title="Solution example: GYRE-unstable Cepheid candidates" closed="true" >}}
+
+The plots below show the full Lab 1 grid after running GYRE in MESA. The colored tracks are grouped by initial mass. The overplotted points mark saved models where the GYRE fundamental mode is unstable, and where the second overtone is subdominant to the plotted mode. These are useful structures to compare when choosing Lab 2 RSP-LNA starting models.
+
+The first plot shows the full HR diagram. The two plots underneath restrict the tracks to the blue-loop phase, first in the HR diagram and then in the $V-I$ color-magnitude plane.
+
+<figure style="margin: 1rem 0;">
+  <img src="plots/lab1/01_hr_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Full HR diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
+</figure>
+
+<div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); margin: 1rem 0;">
+  <figure style="margin: 0;">
+    <img src="plots/lab1/01_hr_blue_loop_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Blue-loop HR diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
+  </figure>
+  <figure style="margin: 0;">
+    <img src="plots/lab1/01_hr_blue_loop_vi_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Blue-loop V minus I color-magnitude diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
+  </figure>
+</div>
+
+{{< /details >}}

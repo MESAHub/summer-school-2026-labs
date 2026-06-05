@@ -33,11 +33,33 @@ The linear nonadiabatic (LNA) plot below shows the overtone period ratios as a f
 
 As the stellar structure changes across the instability strip, the bump shifts from the descending branch, through the middle of the cycle, and onto the rising branch. In this lab, you will see that progression directly in non-linear MESA models.
 
-![Short-period nonlinear Cepheid structure animation in radius coordinates](plots/lab3/initial_mass_4p5_work_radius_phase_cycle_dark.gif)
+{{< details title="Show nonlinear structure animations" closed="true" >}}
 
-![Short-period nonlinear Cepheid structure animation in log-temperature coordinates](plots/lab3/initial_mass_4p5_work_logT_phase_cycle_dark.gif)
+{{< tabs items="Radius,Log T,Log tau" >}}
+{{< tab >}}
+{{< lazy-animation
+  src="plots/lab3/initial_mass_4p5_work_radius_phase_cycle_dark.gif"
+  alt="Short-period nonlinear Cepheid structure animation in radius coordinates"
+  button="Load radius animation"
+>}}
+{{< /tab >}}
+{{< tab >}}
+{{< lazy-animation
+  src="plots/lab3/initial_mass_4p5_work_logT_phase_cycle_dark.gif"
+  alt="Short-period nonlinear Cepheid structure animation in log-temperature coordinates"
+  button="Load log T animation"
+>}}
+{{< /tab >}}
+{{< tab >}}
+{{< lazy-animation
+  src="plots/lab3/initial_mass_4p5_work_logtau_phase_cycle_dark.gif"
+  alt="Short-period nonlinear Cepheid structure animation in log-optical-depth coordinates"
+  button="Load log tau animation"
+>}}
+{{< /tab >}}
+{{< /tabs >}}
 
-![Short-period nonlinear Cepheid structure animation in log-optical-depth coordinates](plots/lab3/initial_mass_4p5_work_logtau_phase_cycle_dark.gif)
+{{< /details >}}
 
 These animations follow the final limit cycle of one non-linear Cepheid model from the grid, with a fundamental-mode pulsation period of $P_0 \simeq 6.36$ days. Phase zero is minimum light. This model is on the short-period side of the $P_2/P_0 \approx 0.5$ resonance picture, so the bump appears on the descending branch of the light curve, after maximum light and before minimum light.
 
@@ -225,8 +247,15 @@ Signs that the run is doing the right thing:
 
 You can see an example of healthy, developed pulsation below.
 
-![pgstar](plots/lab3/pgstar_example_labeled.gif)
+{{< details title="Show PGSTAR pulsation example animation" closed="true" >}}
 
+{{< lazy-animation
+  src="plots/lab3/pgstar_example_labeled.gif"
+  alt="PGSTAR example of healthy developed nonlinear Cepheid pulsation"
+  button="Load PGSTAR example animation"
+>}}
+
+{{< /details >}}
 
 The four panels labeled with a red number are the most relevant. They show:
 
@@ -311,23 +340,37 @@ Use the following simple classification:
 
 The examples below are selected from the period-limited nonlinear grid and are phased so that minimum V-band light is at phase `0`. The periods are approximately `6`, `8`, `10`, `12`, `14`, and `18` days.
 
-![Nonlinear limit-cycle example near 6 days](plots/lab3/limit_cycle_example_P006p1d.png)
+<figure style="margin: 1rem 0;">
+  <img src="plots/lab3/limit_cycle_example_P006p1d.png" alt="Nonlinear limit-cycle example near 6 days" style="width: 100%; height: auto;">
+</figure>
 
-![Nonlinear limit-cycle example near 8 days](plots/lab3/limit_cycle_example_P008p0d.png)
+<figure style="margin: 1rem 0;">
+  <img src="plots/lab3/limit_cycle_example_P008p0d.png" alt="Nonlinear limit-cycle example near 8 days" style="width: 100%; height: auto;">
+</figure>
 
-![Nonlinear limit-cycle example near 10 days](plots/lab3/limit_cycle_example_P010p0d.png)
+<figure style="margin: 1rem 0;">
+  <img src="plots/lab3/limit_cycle_example_P010p0d.png" alt="Nonlinear limit-cycle example near 10 days" style="width: 100%; height: auto;">
+</figure>
 
-![Nonlinear limit-cycle example near 12 days](plots/lab3/limit_cycle_example_P011p9d.png)
+<figure style="margin: 1rem 0;">
+  <img src="plots/lab3/limit_cycle_example_P011p9d.png" alt="Nonlinear limit-cycle example near 12 days" style="width: 100%; height: auto;">
+</figure>
 
-![Nonlinear limit-cycle example near 14 days](plots/lab3/limit_cycle_example_P014p1d.png)
+<figure style="margin: 1rem 0;">
+  <img src="plots/lab3/limit_cycle_example_P014p1d.png" alt="Nonlinear limit-cycle example near 14 days" style="width: 100%; height: auto;">
+</figure>
 
-![Nonlinear limit-cycle example near 18 days](plots/lab3/limit_cycle_example_P017p5d.png)
+<figure style="margin: 1rem 0;">
+  <img src="plots/lab3/limit_cycle_example_P017p5d.png" alt="Nonlinear limit-cycle example near 18 days" style="width: 100%; height: auto;">
+</figure>
+
+The stacked $\Delta \log L$ plot below shows the same progression for all of the nonlinear models with periods from `4.2` to `19.4` days.
+
+<figure style="margin: 1rem 0;">
+  <img src="plots/lab3/global_phased_logL_periods_less_than_20_days.png" alt="Stacked nonlinear log luminosity light curves for periods from 4.2 to 19.4 days" style="width: 100%; height: auto;">
+</figure>
 
 {{< /details >}}
-
-The stacked $\Delta \log L$ plot below shows the same progression for all of the nonlinear models with periods less than `20` days.
-
-![Stacked nonlinear log luminosity light curves for periods less than 20 days](plots/lab3/global_phased_logL_periods_less_than_20_days.png)
 
 ## Task 8: Record Your Result
 
