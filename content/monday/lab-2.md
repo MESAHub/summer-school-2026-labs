@@ -55,7 +55,7 @@ We will be changing parameters in `&colors`, `&controls`, and the `inlist_pgstar
 
 #### Setting up Custom Colors in `&colors`
 
-This is where we can enable synthetic photometry and determine what filters we'd like to use. Let's look through the documentation](https://docs.mesastar.org/en/26.4.1/test_suite/custom_colors.html).
+This is where we can enable synthetic photometry and determine what filters we'd like to use. Let's look through the [documentation](https://docs.mesastar.org/en/26.4.1/test_suite/custom_colors.html).
 
 The first thing we need to do is to make sure the colors module is on. By default, custom colors is turned off.
 
@@ -152,7 +152,7 @@ This is the section with the main stellar evolution parameters. Our goal is to c
 
 `log_directory = 'LOGS'`
 
-The first thing we want to change is how the atmospheric boundary conditions are controlled. Look through the _controls_ tab under star defaults in the [documentation](https://docs.mesastar.org/en/26.4.1/reference.html) to the right parameters to change. What does it control specifically?
+The first thing we want to change is how the atmospheric boundary conditions are controlled. Look through the _controls_ tab under star defaults in the [documentation](https://docs.mesastar.org/en/26.4.1/reference/controls.html) for the right parameters to change. What does it control specifically?
 
 
 {{< details title="Hint" closed="true" >}}
