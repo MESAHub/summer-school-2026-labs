@@ -86,8 +86,6 @@ cat rn1                     #it calls star with 'inlist'
                             #so we have established that 'inlist_run' is what we modify. It will be copied to inlist for execution.
 ```
 
-So why copy `inlist_run` to `inlist` rather than just run `inlist_run` directly? Because MESA always reads its configuration from a file named exactly `inlist` -- that name is hard-wired. Rather than edit that file by hand, we keep our real configuration in `inlist_run` and let `rn` copy it onto `inlist` at launch. That keeps `inlist` as a disposable, regenerated-every-run file: you only ever edit one master (`inlist_run`), you can never accidentally run a half-finished hand-edit, and it gives you a single, obvious place to script parameter changes if you ever want to run a grid of models.
-
 `run_star_extras.f90` already implements the seismic calculations, so you will not need to edit it.
 
 We are going to crowdsource our science as a group. Open the [shared Google Sheet](https://docs.google.com/spreadsheets/d/1C88C5V2siCAaK8-3qgAZoNc9-9IH-RTIqFVetXQc3EM/edit?usp=sharing), add your name to column A, and pick a mass from **0.4, 0.6, 0.8, 0.9, 1.0, 1.1, 1.2** $M_\odot$. You can take more than one mass, but try not to duplicate masses that others have already claimed.
