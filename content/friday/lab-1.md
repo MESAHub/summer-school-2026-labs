@@ -9,7 +9,7 @@ lazyAnimation: true
 
 {{< details title="Show Cepheid evolution animation" closed="true" >}}
 
-Adapted from scripts written and shared by Selim.
+Adapted from scripts written and shared by Selim Kalici.
 
 {{< lazy-animation
   src="../plots/lab1/cepheid_4p5_hr_lightcurve_structure_animation_dark.gif"

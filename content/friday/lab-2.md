@@ -185,7 +185,7 @@ then try following the suggestion made in the error message and increase `RSP_T_
 
 If you have tried two models and have not gotten RSP to converge, consult the tables below. For the main Lab 2 RSP exercise, Table 1 gives one RSP-positive fallback model per available initial mass. For the Lab 3 nonlinear run, Table 2 gives the shared starting model list and shows the RSP-LNA cross-checks for those exact model numbers.
 
-{{< details title="Shared Lab 2 and Lab 3 model tables" closed="true" >}}
+{{< details title="Solution examples for each mass (spoilers!)" closed="true" >}}
 
 These tables give two different fallback lists. Table 1 is the Lab 2/RSP-oriented list: one model per available initial mass where RSP-LNA built an envelope and returned a positive fundamental-mode growth rate. Use it if you need a model that should work cleanly for the Lab 2 RSP-LNA exercise.
 
