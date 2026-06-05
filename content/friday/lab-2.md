@@ -29,17 +29,27 @@ To account for this, we’ll now use a different pulsation tool included in MESA
 
 For this lab we’ll be using the histories and saved models from Lab 1. If your Lab 1 run completed, use your own `history.data` file and saved `.mod` files. If your run did not complete, use the [Lab 1 history file solutions](https://drive.google.com/drive/folders/1LUQkr654JLP1oKbPrYkLx-JUfL7-8bKz?usp=share_link) and open the solution `history.data` file for your initial mass. You should also grab the saved MESA model from your track, found in the [Lab 1 mod file solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link), which are zipped by mass.
 
-As an optional shortcut, the [Lab 1 GYRE file solutions](https://drive.google.com/drive/folders/1woaPSSlIvNQADA5Eg-SGO0N11gXHa-S2?usp=share_link) provide a compact `gyre_in_mesa.data` file for each initial mass. This compact file contains the columns `model_number`, `star_mass`, `X`, `Z`, `Teff`, `L`, and the period and growth information for the fundamental, first-overtone, and second-overtone modes. The `F_period`, `O1_period`, and `O2_period` columns correspond to the same GYRE periods from the full history file, but they are set to `-1` when that mode was not unstable. The `F_logKE_per_cycle`, `O1_logKE_per_cycle`, and `O2_logKE_per_cycle` columns are `2*growth` for unstable modes and `-1` otherwise. If you are using these compact files, use `L`, `F_period`, and `F_logKE_per_cycle` for the spreadsheet, and use `star_mass`, `X`, `Z`, and `Teff` when setting up RSP.
+{{< details title="Optional shortcut: using `gyre_in_mesa.data` files" closed="true" >}}
+
+The [Lab 1 GYRE file solutions](https://drive.google.com/drive/folders/1woaPSSlIvNQADA5Eg-SGO0N11gXHa-S2?usp=share_link) provide a compact `gyre_in_mesa.data` file for each initial mass. These files can be used instead of searching through the full `history.data` file.
+
+The compact file contains `model_number`, `star_mass`, `X`, `Z`, `Teff`, `L`, and the period and growth information for the fundamental, first-overtone, and second-overtone modes. The `F_period`, `O1_period`, and `O2_period` columns correspond to the same GYRE periods from the full history file, but they are set to `-1` when that mode was not unstable. The `F_logKE_per_cycle`, `O1_logKE_per_cycle`, and `O2_logKE_per_cycle` columns are `2*growth` for unstable modes and `-1` otherwise.
+
+If you are using the compact file, use `L`, `F_period`, and `F_logKE_per_cycle` for the spreadsheet. Use `star_mass`, `X`, `Z`, and `Teff` when setting up RSP.
+
+For the fundamental-mode model choice, use `F_logKE_per_cycle > 0` and `F_logKE_per_cycle > O2_logKE_per_cycle`. For a first-overtone comparison, use `O1_logKE_per_cycle > 0` and `O1_logKE_per_cycle > O2_logKE_per_cycle`.
+
+{{< /details >}}
 
 ### Setting up
 
 Recall that in lab 1 we saved the GYRE results for the fundamental radial mode and the first and second overtones in the history file. We'll now use that information to look for models where we expect pulsations in the fundamental mode to be excited. These are the modes with positive growth rates.
 
-For the fundamental-mode model choice, use a model where the fundamental mode has positive growth and is growing faster than the second overtone: `F_growth > 0` and `F_growth > O2_growth`. If you are using the compact `gyre_in_mesa.data` table, this means `F_logKE_per_cycle > 0` and `F_logKE_per_cycle > O2_logKE_per_cycle`. For a first-overtone comparison, use the analogous condition `O1_growth > 0` and `O1_growth > O2_growth`, or `O1_logKE_per_cycle > 0` and `O1_logKE_per_cycle > O2_logKE_per_cycle` in the compact table. This extra check is useful because the GYRE calculation does not include the same eddy-viscous damping of overtone modes that we will use in RSP.
+For the fundamental-mode model choice, use a model where the fundamental mode has positive growth and is growing faster than the second overtone: `F_growth > 0` and `F_growth > O2_growth`. For a first-overtone comparison, use the analogous condition `O1_growth > 0` and `O1_growth > O2_growth`. This extra check is useful because the GYRE calculation does not include the same eddy-viscous damping of overtone modes that we will use in RSP. If you are using the compact `gyre_in_mesa.data` table instead, use the equivalent columns listed in the optional drop-down above.
 
 #### Task: Find a model and add your information to the spreadsheet
 
-Look through your history file from lab 1 to find a model with `F_growth > 0` and `F_growth > O2_growth`. If you are using the compact `gyre_in_mesa.data` solution table instead, look for an entry where `F_logKE_per_cycle > 0` and `F_logKE_per_cycle > O2_logKE_per_cycle`. Please add the luminosity, GYRE F period, and GYRE F growth information to [this spreadsheet](https://docs.google.com/spreadsheets/d/1dVK0vpzgsAy0S7OG-qMyJlmwItwbp1JeB8B-xScV8WI/edit?usp=drive_link). From a full `history.data` file, use `luminosity`, `F_period`, and `F_growth`. From the compact `gyre_in_mesa.data` file, use `L`, `F_period`, and `F_logKE_per_cycle`. Please also add your name or initials in the first column so you can find your data again. Although not necessary for the spreadsheet, you should also make a note of the model number you chose.
+Look through your history file from lab 1 to find a model with `F_growth > 0` and `F_growth > O2_growth`. Please add the luminosity, GYRE F period, and GYRE F growth information to [this spreadsheet](https://docs.google.com/spreadsheets/d/1dVK0vpzgsAy0S7OG-qMyJlmwItwbp1JeB8B-xScV8WI/edit?usp=drive_link). From a full `history.data` file, use `luminosity`, `F_period`, and `F_growth`. If you are using the compact `gyre_in_mesa.data` file instead, use the column mapping in the optional drop-down above. Please also add your name or initials in the first column so you can find your data again. Although not necessary for the spreadsheet, you should also make a note of the model number you chose.
 
 As more people add their models, we should see a clear relationship between the period and luminosity values.
 
