@@ -7,7 +7,7 @@ toc: true
 linkTitle: Lab 3
 ---
 
-## Overview and Starting Files
+## Overview
 
 In this lab, we will study how different convective boundary mixing prescriptions affect stellar evolution, internal structure, and g-mode pulsations. There are three treatments of mixing near the top boundary of a hydrogen burning convective core:
 
@@ -16,11 +16,6 @@ In this lab, we will study how different convective boundary mixing prescription
 3. convective penetration.
 
 The main goal is to understand how these mixing prescriptions modify the near-core chemical-gradient region and the Brunt–Väisälä frequency profile. These structural differences may leave measurable signatures in stellar eigenmodes.
-
-We use a two-step evolution. Taking the step overshooting case as an example:
-
-1. `inlist_step_ov_ZAMS` evolves the model from the pre-main sequence to the ZAMS and saves the ZAMS model for the next step.
-2. `inlist_step_ov_MS` starts from the saved ZAMS model and evolves the star to a later main-sequence phase. During this step, MESA also outputs `.GYRE` files for the asteroseismic analysis.
 
 <!-- Before running the models, remember to replace all placeholder values such as
 
@@ -42,10 +37,22 @@ Exponential overshooting:
 
 In the first part of the lab, we will build MESA models using different mixing prescriptions. Next, we will inspect their internal structures at an intermediate main-sequence stage. Finally, we will use GYRE to compute g-mode frequencies, compare them with a reference set of modes, and identify the best-fit model.
 
+## Task 0. Model Grid
+<!-- 
+This is a crowd-sourcing exercise, meaning that we will work together to cover the range of suggested parameter space in the shared spreadsheet: [Lab 3 grid tracker](https://docs.google.com/spreadsheets/d/1v9Dq4AV1ZGssSdy1lQE3uiXW0afyK1mRk9uvBgGOaGI/edit?usp=sharing). -->
+
+This is a crowd-sourcing exercise: together, we will explore the suggested parameter space in the shared spreadsheet: [Lab 3 grid tracker](https://docs.google.com/spreadsheets/d/1v9Dq4AV1ZGssSdy1lQE3uiXW0afyK1mRk9uvBgGOaGI/edit?usp=sharing). 
+
+Each table should pick **one initial mass and one parameter value** (weak, middle or strong). Within each table, make sure that there is at least one person for each of the three mixing prescriptions. If time allows, students with faster computers can explore more values.
+
+For each model, evolve from ZAMS to an evolved main-sequence model with central hydrogen mass fraction of 0.1.
+
+## Starting Files
+
 **[Here](/tuesday/downloads/lab3/day2_lab3.zip) is the working directory to get you started.**
 
 <a id="skeleton_inlists"></a>
-Additionally, we have prepared the **incomplete** inlists for the two-step evolution:
+Additionally, we have prepared the **incomplete** inlists. We use a two-step evolution:
 <!-- - [`inlist_XXXXX_ZAMS`](/tuesday/downloads/lab3/inlist_XXXXX_ZAMS), which you will modify to compute the ZAMS models;
 - [`inlist_XXXXX_MS`](/tuesday/downloads/lab3/inlist_XXXXX_MS), which you will modify to compute the MS models. -->
 {{<details title="`inlist_XXXXX_ZAMS`, for evolution up to ZAMS" closed="true">}}
@@ -335,10 +342,38 @@ Additionally, we have prepared the **incomplete** inlists for the two-step evolu
 ```
 {{</details>}}
 
-You will create different inlists for the models with step overshoot, exponential overshoot, and penetrative convection by replacing the `XXXXX` by `step_ov`, `exp_ov`, and `PC`, respectively. In the next sections, we will modify the `!Overshoot` section of the `&control` namelist to tell MESA to run the model with different convective boundary mixing schemes.
-
 >[!Tip]
 > The lines to be modified in the inlists to be modified are marked with `!!! To-do`.
+
+You can create different inlists for the models with step overshoot, exponential overshoot, and penetrative convection by replacing the `XXXXX` by `step_ov`, `exp_ov`, and `PC`, respectively. Then points the `extra_star_job_inlist_name(1)` in the master `inlist` to the correct one.
+
+<!-- Taking the step overshooting case as an example:
+
+1. `inlist_step_ov_ZAMS` evolves the model from the pre-main sequence to the ZAMS and saves the ZAMS model for the next step.
+2. `inlist_step_ov_MS` starts from the saved ZAMS model and evolves the star to a later main-sequence phase. During this step, MESA also outputs `.GYRE` files for the asteroseismic analysis. -->
+
+### Example One Run
+For step overshooting, two inlists are needed:
+- `inlist_step_ov_ZAMS_solution`
+- `inlist_step_ov_MS_solution`
+
+Use `inlist_step_ov_ZAMS_solution` for the first-stage run, from the pre-main sequence to ZAMS. This run uses:
+
+```fortran
+stop_near_zams = .true.
+```
+
+and saves the ZAMS model for the next step. Then use `inlist_step_ov_MS_solution` for the second-stage run, from the saved ZAMS model to the late main sequence. This run loads the saved ZAMS file and stops when the central hydrogen abundance reaches 0.1:
+
+```fortran
+xa_central_lower_limit_species(1) = 'h1'
+xa_central_lower_limit(1) = 0.1
+```
+The same two stage workflow should be followed for the exponential overshoot and penetration convection cases.
+
+>[!Important]
+> The expected running time to reach ZAMS is long (~15 mins)! Launch the first step before you move on to modify the inlist for the MS evolution (which takes ~6 mins).
+
 ---
 
 ## Background: Standard Overshooting Prescriptions
@@ -356,6 +391,8 @@ These lines tell MESA where the overshooting is applied:
 - `any`: allow this prescription to be applied to any relevant convective boundary;
 - `core`: apply it to a convective core;
 - `top`: apply it at the outer edge of the convective core.
+
+In the next sections, we will further modify the `!Overshoot` section of the `&control` namelist to tell MESA to run the model with different convective boundary mixing schemes.  You can skip to the description of the prescription that you have chosen, and come back to read about the other two prescriptions when you have launched your first run.
 
 ---
 
@@ -401,8 +438,6 @@ In the model grid, we will vary `overshoot_f(1)`.
 
 ## Convective Penetration
 
-This section is a guided code-reading exercise. The goal is to understand how the custom scheme is connected to MESA.
-
 Convective penetration is different from standard MESA overshooting, where material beyond the convective boundary is chemically mixed, but the thermal structure is usually still treated as radiative. In convective penetration, convective motions penetrate into the formally stable region and can modify both the chemical composition and the thermal stratification. In the implementation used here, the penetration extent is computed inside `run_star_extras.f90`. 
 
 In the inlists for the convective penetration runs, use
@@ -421,7 +456,7 @@ The key line is
 overshoot_scheme(1) = 'other'
 ```
 
-This tells MESA to call the user-supplied overshooting routine from `run_star_extras.f90`. The coding part of this implementation is relatively complicated, so we have provided the code. Go ahead to copy and paste the content in your `run_star_extras.f90`.
+This tells MESA to call the user-supplied overshooting routine from `run_star_extras.f90`. The coding part of this implementation is relatively complicated, so we have provided the code. Go ahead and replace the content of your `run_star_extras.f90` by the given one:
 <!-- [here](/tuesday/downloads/lab3/run_star_extras_solution.f90).  -->
 
 {{<details title="Complete `run_star_extras.f90`" closed="true">}}
@@ -1159,9 +1194,14 @@ real(dp), parameter :: f = X.Xd0
 
 and replace `X.Xd0` with the value specified for your run (0.98, 0.86 or 0.72).
 
+Whenever you modified your `run_star_extras.f90`, remember to clean and recomplie before running:
+```bash
+./clean
+./mk
+```
 ---
 
-**In the next few sections, the task is to identify which parts of `run_star_extras.f90` are needed for the custom penetration scheme, understand what each part does, and then use the supplied solution file as the working implementation.**
+**In the next few sections, the task is to identify which parts of `run_star_extras.f90` are needed for the custom penetration scheme, understand what each part does, and then use the supplied solution file as the working implementation.** 
 
 ### Guided Check 1: Define Extra Variables
 
@@ -1296,14 +1336,6 @@ s% other_mesh_delta_coeff_factor => mesh_delta_coeff_core_boundary
 
 ---
 
-## Task 0. Model Grid
-
-Each student should run only the assigned subset of models and record the result in the shared spreadsheet. A good default is to choose one initial mass, one mixing prescription, and one parameter value. If time allows, students with faster computers can help fill missing entries.
-
-The suggested parameter space to explore is listed in the shared spreadsheet: [Lab 3 grid tracker](https://docs.google.com/spreadsheets/d/1v9Dq4AV1ZGssSdy1lQE3uiXW0afyK1mRk9uvBgGOaGI/edit?usp=sharing).
-
-For each model, evolve from ZAMS to an evolved main-sequence model with centra hydrogen mass fraction of 0.1.
-
 ## Solution Files and Naming Conventions
 
 <!-- >[!Important]
@@ -1318,12 +1350,8 @@ For the penetration-convection runs, remember that the main penetration strength
 ```fortran
 real(dp), parameter :: f = X.Xd0
 ```
-near line 536 to the desired value, then recompile with:
+near line 536 to the desired value, then recompile and run.
 
-```bash
-./clean
-./mk
-```
 In the solution files, we use separate local output directories for the three mixing prescriptions:
 
 ```text
@@ -1339,30 +1367,140 @@ save_model_filename = './LOGS_exp_ov/exp_ov_zams.model'
 ```
 When you run a different parameter value, you may want to change the output directory or saved model filename to avoid overwriting previous runs.
 
-## Example One Run
-For step overshooting, two inlists are needed:
-- `inlist_step_ov_ZAMS_solution`
-- `inlist_step_ov_MS_solution`
-
-Use `inlist_step_ov_ZAMS_solution` for the first-stage run, from the pre-main sequence to ZAMS. This run uses:
-
-```fortran
-stop_near_zams = .true.
-```
-
-and saves the ZAMS model. Then use `inlist_step_ov_MS_solution` for the second-stage run, from the saved ZAMS model to the late main sequence. This run loads the saved ZAMS file and stops when the central hydrogen abundance reaches 0.1:
-
-```fortran
-xa_central_lower_limit_species(1) = 'h1'
-xa_central_lower_limit(1) = 0.1
-```
-The same two stage workflow should be followed for the exponential overshoot and penetration convection cases.
-
 ---
 
 ## Task 1. What to Record
 
 For this lab, you need to record the seismic fit quality for each model. The shared Google Sheet already provides the target g-mode frequencies for `n_pg = -20` to `-10`. For each MESA+GYRE model, use the final MESA model, namely the profile with central hydrogen abundance closest to `Xc(H) = 0.1`.
+
+The easiest way is to start with your `gyre.in` from lab1:
+{{<details title="`gyre.in` from lab1" closed="true">}}
+```fortran
+&constants
+/
+
+&model
+    model_type = 'EVOL'
+    file = './LOGS_zams/profile1.data.FGONG'
+    file_format = 'FGONG'
+/
+
+&mode
+    l = 1
+    m = 0
+    n_pg_min = -50
+    n_pg_max = -1
+/
+
+&osc
+    outer_bound = 'VACUUM'
+/
+
+&scan
+    grid_type = 'INVERSE'
+    freq_min = 0.2
+    freq_max = 10
+    n_freq = 500
+    freq_units = 'CYC_PER_DAY'
+/
+
+&rot
+/
+
+&grid
+/
+
+&num
+    diff_scheme = 'COLLOC_GL2'
+/
+
+&ad_output
+    summary_file = 'summary_zams.h5'
+    summary_item_list = 'l,n_pg,m,freq'
+    summary_file_format = 'HDF'
+    freq_units = 'CYC_PER_DAY'
+/
+
+&nad_output
+/
+```
+
+>[!Caution]
+> You need to add empty line at the end, otherwise GYRE will complain about not seeing the namelist `&ad_output`!
+
+{{</details>}}
+
+{{<details title="Do you know what to change?" closed="true">}}
+Recall that in the `&model` section we provide the information on the stellar model. Here your `model_type` is still `EVOL`, but the `file` and `file_format` have changed. 
+{{</details>}}
+
+
+We will also change the range of modes. For this lab, use the dipole modes with
+
+```text
+l = 1
+m = 0
+n_pg = -20 to -10
+```
+
+{{<details title="The new `gyre.in`" closed="true">}}
+```fortran
+&constants
+/
+
+&model
+    model_type = 'EVOL'
+    file = './LOGS_XXXXX/profileXXX.data.GYRE'
+    file_format = 'MESA'
+/
+
+&mode
+    l = 1
+    m = 0
+    n_pg_min = -20
+    n_pg_max = -10
+/
+
+&osc
+    outer_bound = 'VACUUM'
+/
+
+&scan
+    grid_type = 'INVERSE'
+    freq_min = 0.2
+    freq_max = 10
+    n_freq = 500
+    freq_units = 'CYC_PER_DAY'
+/
+
+&rot
+/
+
+&grid
+/
+
+&num
+    diff_scheme = 'COLLOC_GL2'
+/
+
+&ad_output
+    summary_file = 'summary_XXXXX.h5'
+    summary_item_list = 'l,n_pg,m,freq'
+    summary_file_format = 'HDF'
+    freq_units = 'CYC_PER_DAY'
+/
+
+&nad_output
+/
+
+```
+Replace the XXXXX by the prescriptions that you are using.
+{{</details>}}
+
+Once your `gyre.in` is ready, do:
+```bash
+$GYRE_DIR/bin/gyre gyre.in
+```
 
 ### Where to Find the GYRE Eigenmodes
 
@@ -1381,14 +1519,6 @@ Root Solving
    1    0     -18      0     18  0.69832663E+00  0.00000000E+00 0.1748E-12      6
    ...
    1    0     -10      0     10  0.12513287E+01  0.00000000E+00 0.1019E-12      7
-```
-
-For this lab, use the dipole modes with
-
-```text
-l = 1
-m = 0
-n_pg = -20 to -10
 ```
 
 Equivalently, for these g modes, you can identify them by
