@@ -404,9 +404,11 @@ If your second model also has a negative growth rate, consult the tables above. 
 - Compare the period-luminosity relations between the two codes. Are there any major differences?
 - How do the period-luminosity relations compare to the period-Wesenheit relations?
 
-{{< details title="Reference plots from the full GYRE/RSP comparison" closed="true" >}}
+{{< details title="Solutions (spoilers!)" closed="true" >}}
 
 These plots come from the full model grid used to check the Lab 2 and Lab 3 model choices. They are not required for the manual part of the lab, but they are useful for seeing what changes when the same saved stellar models are analyzed with GYRE and with RSP-LNA. For GYRE, the fundamental mode is the radial mode with `n_pg = 1`; for RSP, the fundamental mode is mode `0`. The HR agreement plots use the full blue-loop model set from the Lab 1 reference solutions. For the GYRE part of the classification, the relevant mode must have positive growth and must be growing faster than the second overtone. The RSP part is classified from the matching RSP-LNA calculation using positive growth for the same mode only.
+
+The plotter used to generate these figures is available [here](https://drive.google.com/file/d/115PrNza8qip5em7uIh3hk1JE6hXoVeQZ/view?usp=share_link).
 
 #### Instability-strip comparison
 
@@ -554,7 +556,7 @@ Below, you'll find an outline of one possible approach to solve this problem. Us
 
 #### Option 3: Take my hand
 
-Start from these [partially complete solutions](https://drive.google.com/file/d/1YXyy03R6unwUVqn8J1Ej9TOM1ZmYnyoz/view?usp=share_link) which use the method described in the hint above. They include a starter `batch_LNA.sh` and output-writing code; all the changes you need to make are marked with `!!!`.
+Start from these [partially complete solutions](https://drive.google.com/file/d/1YXyy03R6unwUVqn8J1Ej9TOM1ZmYnyoz/view?usp=share_link) which use the method described in the hint above. These are replacement files, not a full work directory: copy `batch_LNA.sh` and `inlist_rsp_Cepheid` into your Lab 2 RSP work directory, and copy `run_star_extras.f90` into `src/run_star_extras.f90`. All the changes you need to make are marked with `!!!`.
 
 #### Option 4: Show me how it's done
 

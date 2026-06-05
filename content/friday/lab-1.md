@@ -5,7 +5,11 @@ linkTitle: Lab 1
 lazyAnimation: true
 ---
 
+*Lab written by: Sofia Mesini (lead TA), Lynn Buchele (lead TA), Mathijs Vanrespaille, Ebraheem Farag (lecturer), and Andy Santarelli*
+
 {{< details title="Show Cepheid evolution animation" closed="true" >}}
+
+Adapted from scripts written and shared by Selim.
 
 {{< lazy-animation
   src="../plots/lab1/cepheid_4p5_hr_lightcurve_structure_animation_dark.gif"
@@ -655,7 +659,7 @@ Can you answer the following questions? Share possible hypotheses with the folks
 
 <!-- Mathijs: If these questions will be discussed in the wrap-up lecture, please mention that here! -->
 
-{{< details title="Solution example: GYRE-unstable Cepheid candidates" closed="true" >}}
+{{< details title="Solution example: GYRE-unstable Cepheid candidates (spoilers!)" closed="true" >}}
 
 The plots below show the full Lab 1 grid after running GYRE in MESA. The colored tracks are grouped by initial mass. The overplotted points mark saved models where the GYRE fundamental mode is unstable, and where the second overtone is subdominant to the plotted mode. These are useful structures to compare when choosing Lab 2 RSP-LNA starting models.
 

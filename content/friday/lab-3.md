@@ -5,7 +5,7 @@ linkTitle: Lab 3
 lazyAnimation: true
 ---
 
-*Lab written by: Mathijs Vanrespaille(lead TA), Andy Santarelli (lead TA), Ebraheem Farag (lecturer), Sofia Mesini, and Andy Santarelli*
+*Lab written by: Mathijs Vanrespaille (lead TA), Andy Santarelli (lead TA), Ebraheem Farag (lecturer), and Sofia Mesini*
 
 In this lab you will take one of your saved Cepheid models from Lab 1, use a non-linear pulsation setup to kick it into motion, and inspect the resulting waveform. Your goal is to identify where the bump appears in the cycle and combine your result with the rest of the class to reconstruct the Hertzsprung progression.
 
@@ -35,6 +35,8 @@ The linear nonadiabatic (LNA) plot below shows the overtone period ratios as a f
 As the stellar structure changes across the instability strip, the bump shifts from the descending branch, through the middle of the cycle, and onto the rising branch. In this lab, you will see that progression directly in non-linear MESA models.
 
 {{< details title="Show nonlinear structure animations" closed="true" >}}
+
+Adapted from scripts written and shared by Earl Bellinger.
 
 {{< tabs items="Radius,Log T,Log tau" >}}
 {{< tab >}}
@@ -339,9 +341,11 @@ Use the following simple classification:
 > [!TIP]
 > Do not spend too long debating a borderline case. If the bump is ambiguous, record that uncertainty and move on.
 
-{{< details title="Solution examples: nonlinear light curves across period" closed="true" >}}
+{{< details title="Solution examples: nonlinear light curves across period (spoilers!)" closed="true" >}}
 
 The examples below are selected from the period-limited nonlinear grid and are phased so that minimum V-band light is at phase `0`. The periods are approximately `6`, `8`, `10`, `12`, `14`, and `18` days.
+
+The plotter used to generate these figures is available [here](https://drive.google.com/file/d/1XA2DjTZib92YohcVa8ZuHppGjhtVhX2A/view?usp=share_link).
 
 <figure style="margin: 1rem 0;">
   <img src="../plots/lab3/limit_cycle_example_P006p1d.png" alt="Nonlinear limit-cycle example near 6 days" style="width: 100%; height: auto;">
@@ -509,7 +513,7 @@ If your group still has time after the main lab, try one of these:
 
 If you would like a more coding-focused extension, modify `run_star_extras` so that it measures a cycle-averaged quantity from the non-linear light curve and compares that average with the corresponding static value from the original model.
 
-You can find a complete set of [Lab 3 bonus solutions](https://drive.google.com/file/d/1N8wHaZqfFUV3_ASH4ZhjQyx0V6Y3oplH/view?usp=share_link) with these source changes already made.
+You can find a complete set of [Lab 3 bonus solutions](https://drive.google.com/file/d/1N8wHaZqfFUV3_ASH4ZhjQyx0V6Y3oplH/view?usp=share_link) with these source changes already made. As with the starter, you still need to copy in a `.mod` file and update `load_model_filename`.
 
 One possible version of this task is:
 
