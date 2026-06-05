@@ -41,7 +41,7 @@ $$
 \mathrm{and} \quad
 \nabla_{\mu} = \frac{d\ln \mu}{d\ln p}.
 $$
-The three plots below show the Brunt-Väisälä frequency as a function of stellar radius for three different evolutionary stages: zero-age main sequence, intermediate-age main sequence, and terminal-age main sequence. Notice in particular the blue curves, which show the contribution to the Brunt-Väisälä profiles due to the chemical composition gradient. 
+The three plots below show the Brunt-Väisälä frequency as a function of stellar radius for three different evolutionary stages: zero-age main sequence, intermediate-age main sequence, and terminal-age main sequence. Notice in particular the blue curves, which show the contribution to the Brunt-Väisälä profiles due to the chemical composition gradient, while the green curve shows thermal contributions, and the red curve shows the total Brunt-Väisälä profile.
 
 ![Brunts](img/lab2/brunts.png)
 
@@ -192,7 +192,7 @@ The next section we will need to change is the "mesh" section. This section cont
 
 `MESA` divides a stellar model into concentric shells with radial thickness $\Delta r$. To make sure that important physics are captured, `MESA` also has an adaptive mesh refinement (AMR) algorithm that can change $\Delta r$ as needed. In some cases, however, the default AMR settings may not provide enough resolution for the physics of interest.
 > [!NOTE]
-> `MESA` actually does its mesh in terms of *mass fraction* rather than radial shells. However, since mass fraction and radial coordinate can be related to one-another, our analogy is sufficient to build a mental model. It is important to note that the documentation may also refer to these shells as "zones" or "cells."
+> `MESA` actually does its mesh in terms of *mass fraction* rather than radial shells. However, since mass fraction and radial coordinate can be related to one-another, our analogy is sufficient to build a mental model. Note that the documentation may also refer to these shells as "zones" or "cells."
 
 Asteroseismology is particularly sensitive to spatial resolution, so we will want to increase the default resolution.
 
@@ -1222,7 +1222,7 @@ First, we will point `GYRE` to the first saved model, which should have been sav
     file = './LOGS/profile1.data.FGONG'
 ```
 Our primary change will be in the `&scan` namelist. As our star evolves past the ZAMs, the mode frequencies shift. We will have to alter the scan range to make sure we catch the modes we are interested in. **Replace the lines `freq_min` and `freq_max` with these lines**:
-```
+```fortran
     freq_min = 0.1
     freq_max = 1
 ```
@@ -1250,9 +1250,9 @@ For the TAMS profile, use:
 file = './LOGS/profile3.data.FGONG'
 summary_file = 'TAMS_summary.h5'
 ```
-We will also need to adjust the scan range. **Change `freq_max` to 5.0".**
+We will also need to adjust the scan range. **Change `freq_max` to 5.0.**
 
-**Run `GYRE` after each change**. When finished the directory should contain three summary files:
+**Run `GYRE` for each profile**. When finished the directory should contain three summary files:
 ```bash
 ls *.h5
 ```
