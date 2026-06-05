@@ -19,7 +19,7 @@ This is the non-linear pulsation lab for Friday. That means the details are a li
 
 Many classical Cepheids show a distinctive "bump" in their waveform. The figure below shows a few examples of folded Cepheid light curves observed by the OGLE study.
 
-![OGLE](plots/lab3/OGLE_compilation.png)
+![OGLE](../plots/lab3/OGLE_compilation.png)
 
 The location of that bump changes with the pulsation period. In the standard single-mode picture, this is related to a near `2:1` resonance between the second overtone and the fundamental mode, so a useful quantity to keep in mind is
 
@@ -29,7 +29,7 @@ $$
 
 The linear nonadiabatic (LNA) plot below shows the overtone period ratios as a function of the fundamental-mode period, $P_0$. It shows why this ratio is useful: the second-overtone ratio, $P_2/P_0$, passes through the resonance range near the periods where bump Cepheids become most morphologically interesting.
 
-![Linear period ratios for the selected nonlinear Cepheid grid](plots/lab3/03_period_ratios_step200_lna_test_lmc_z006_o26.png)
+![Linear period ratios for the selected nonlinear Cepheid grid](../plots/lab3/03_period_ratios_step200_lna_test_lmc_z006_o26.png)
 
 As the stellar structure changes across the instability strip, the bump shifts from the descending branch, through the middle of the cycle, and onto the rising branch. In this lab, you will see that progression directly in non-linear MESA models.
 
@@ -38,21 +38,21 @@ As the stellar structure changes across the instability strip, the bump shifts f
 {{< tabs items="Radius,Log T,Log tau" >}}
 {{< tab >}}
 {{< lazy-animation
-  src="plots/lab3/initial_mass_4p5_work_radius_phase_cycle_dark.gif"
+  src="../plots/lab3/initial_mass_4p5_work_radius_phase_cycle_dark.gif"
   alt="Short-period nonlinear Cepheid structure animation in radius coordinates"
   button="Load radius animation"
 >}}
 {{< /tab >}}
 {{< tab >}}
 {{< lazy-animation
-  src="plots/lab3/initial_mass_4p5_work_logT_phase_cycle_dark.gif"
+  src="../plots/lab3/initial_mass_4p5_work_logT_phase_cycle_dark.gif"
   alt="Short-period nonlinear Cepheid structure animation in log-temperature coordinates"
   button="Load log T animation"
 >}}
 {{< /tab >}}
 {{< tab >}}
 {{< lazy-animation
-  src="plots/lab3/initial_mass_4p5_work_logtau_phase_cycle_dark.gif"
+  src="../plots/lab3/initial_mass_4p5_work_logtau_phase_cycle_dark.gif"
   alt="Short-period nonlinear Cepheid structure animation in log-optical-depth coordinates"
   button="Load log tau animation"
 >}}
@@ -82,7 +82,7 @@ cp -r /path/to/your/lab1/mod_dir/ .
 > [!IMPORTANT]
 > Keep your Lab 1 and Lab 3 runs in separate working directories.
 
-Alternatively, you can download the models from the [Lab 1 mod file solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link), which are grouped by mass. If you do not have a useful saved model ready to run, use the [Lab 3 nonlinear-start model bundle](https://drive.google.com/file/d/1bTVVwBIyBsIVBZUVmIxXKwcFWXTSjcUj/view?usp=share_link), which contains the selected `.mod` files used for the shared Lab 3 sample.
+Alternatively, you can download the models from the [Lab 1 mod file solutions](https://drive.google.com/drive/folders/1jBEtn-JCkOq15l9cT3Z_L_jecpIAqeKs?usp=share_link), which are grouped by mass. If you do not have a useful saved model ready to run, use the [Lab 3 nonlinear-start model files](https://drive.google.com/file/d/1bTVVwBIyBsIVBZUVmIxXKwcFWXTSjcUj/view?usp=share_link), which contains the selected `.mod` files used for the shared Lab 3 sample.
 
 > [!IMPORTANT]
 > Lab 3 uses a saved `.mod` file from Lab 1. It does **not** use a `photos/` restart file from Lab 1.
@@ -108,6 +108,8 @@ The filenames are written in the form
 ```text
 modelNumber_currentMass_effectiveTemperature_luminosity.mod
 ```
+
+If you are using the Lab 3 nonlinear-start model files instead of your own Lab 1 `mod_dir/`, the selected files have a longer name with the period and initial mass prepended. In those filenames, the final four underscore-separated fields before `.mod` are still the Lab 1 model number, current mass, effective temperature, and luminosity.
 
 **Question:** What would make an interesting model to simulate in further detail using TDC?
 
@@ -157,7 +159,7 @@ It can take a very long time for a MESA TDC model to start pulsating "naturally"
 
 The closer this kick is to the final pulsational radial velocity, the faster the bump in the light curve will develop. **From the figure below, read off a reasonable initial kick for your chosen model.**
 
-![kicks](plots/lab3/initial_kicks.png)
+![kicks](../plots/lab3/initial_kicks.png)
 
 Now add this value into your `inlist_pulses`. **Question:** Can you find which variable stores the initial kick?
 
@@ -250,7 +252,7 @@ You can see an example of healthy, developed pulsation below.
 {{< details title="Show PGSTAR pulsation example animation" closed="true" >}}
 
 {{< lazy-animation
-  src="plots/lab3/pgstar_example_labeled.gif"
+  src="../plots/lab3/pgstar_example_labeled.gif"
   alt="PGSTAR example of healthy developed nonlinear Cepheid pulsation"
   button="Load PGSTAR example animation"
 >}}
@@ -341,33 +343,33 @@ Use the following simple classification:
 The examples below are selected from the period-limited nonlinear grid and are phased so that minimum V-band light is at phase `0`. The periods are approximately `6`, `8`, `10`, `12`, `14`, and `18` days.
 
 <figure style="margin: 1rem 0;">
-  <img src="plots/lab3/limit_cycle_example_P006p1d.png" alt="Nonlinear limit-cycle example near 6 days" style="width: 100%; height: auto;">
+  <img src="../plots/lab3/limit_cycle_example_P006p1d.png" alt="Nonlinear limit-cycle example near 6 days" style="width: 100%; height: auto;">
 </figure>
 
 <figure style="margin: 1rem 0;">
-  <img src="plots/lab3/limit_cycle_example_P008p0d.png" alt="Nonlinear limit-cycle example near 8 days" style="width: 100%; height: auto;">
+  <img src="../plots/lab3/limit_cycle_example_P008p0d.png" alt="Nonlinear limit-cycle example near 8 days" style="width: 100%; height: auto;">
 </figure>
 
 <figure style="margin: 1rem 0;">
-  <img src="plots/lab3/limit_cycle_example_P010p0d.png" alt="Nonlinear limit-cycle example near 10 days" style="width: 100%; height: auto;">
+  <img src="../plots/lab3/limit_cycle_example_P010p0d.png" alt="Nonlinear limit-cycle example near 10 days" style="width: 100%; height: auto;">
 </figure>
 
 <figure style="margin: 1rem 0;">
-  <img src="plots/lab3/limit_cycle_example_P011p9d.png" alt="Nonlinear limit-cycle example near 12 days" style="width: 100%; height: auto;">
+  <img src="../plots/lab3/limit_cycle_example_P011p9d.png" alt="Nonlinear limit-cycle example near 12 days" style="width: 100%; height: auto;">
 </figure>
 
 <figure style="margin: 1rem 0;">
-  <img src="plots/lab3/limit_cycle_example_P014p1d.png" alt="Nonlinear limit-cycle example near 14 days" style="width: 100%; height: auto;">
+  <img src="../plots/lab3/limit_cycle_example_P014p1d.png" alt="Nonlinear limit-cycle example near 14 days" style="width: 100%; height: auto;">
 </figure>
 
 <figure style="margin: 1rem 0;">
-  <img src="plots/lab3/limit_cycle_example_P017p5d.png" alt="Nonlinear limit-cycle example near 18 days" style="width: 100%; height: auto;">
+  <img src="../plots/lab3/limit_cycle_example_P017p5d.png" alt="Nonlinear limit-cycle example near 18 days" style="width: 100%; height: auto;">
 </figure>
 
 The stacked $\Delta \log L$ plot below shows the same progression for all of the nonlinear models with periods from `4.2` to `19.4` days.
 
 <figure style="margin: 1rem 0;">
-  <img src="plots/lab3/global_phased_logL_periods_less_than_20_days.png" alt="Stacked nonlinear log luminosity light curves for periods from 4.2 to 19.4 days" style="width: 100%; height: auto;">
+  <img src="../plots/lab3/global_phased_logL_periods_less_than_20_days.png" alt="Stacked nonlinear log luminosity light curves for periods from 4.2 to 19.4 days" style="width: 100%; height: auto;">
 </figure>
 
 {{< /details >}}
@@ -450,7 +452,7 @@ If several people at your table have useful runs, compare them directly:
 
 ### Option 4: Making a movie
 
-Isn't that animated PGSTAR window neat? Unfortunately, it vanishes once you end the run. Luckily, a bunch of `.png` files are output by MESA, which can be used to recreate the animated PGSTAR plots. You could either flick through them in an image viewer or combine them into a proper movie. MESA comes packaged with some tools to make such movies. To do so, run the following in your terminal:
+Isn't that animated PGSTAR window neat? Unfortunately, it vanishes once you end the run. Luckily, a bunch of `.png` files are output by MESA, which can be used to recreate the animated PGSTAR plots. You could either flick through them in an image viewer or combine them into a proper movie. MESA includes tools to make such movies. To do so, run the following in your terminal:
 
 ```bash
 images_to_movie "png_pulsation/*.png" my_Cepheid_movie.mp4

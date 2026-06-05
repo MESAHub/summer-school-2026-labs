@@ -7,7 +7,7 @@ linkTitle: Lab 1
 {{< details title="Show Cepheid evolution animation" closed="true" >}}
 
 {{< lazy-animation
-  src="plots/lab1/cepheid_4p5_hr_lightcurve_structure_animation_dark.gif"
+  src="../plots/lab1/cepheid_4p5_hr_lightcurve_structure_animation_dark.gif"
   alt="Cepheid model moving through the HR diagram and changing pulsation structure"
   button="Load Cepheid evolution animation"
 >}}
@@ -84,7 +84,7 @@ Great, now MESA knows what mass we should _start_ to simulate. However, a MESA r
 
 In this first part of the run, we want to stop the simulation before the star starts pulsating. A good way to do this is to terminate the run at the **onset of core He burning**. When the simulation is completed, your star will be at the base of the Red Giant Branch (RGB), which is a mostly vertical structure on the Hertzsprung-Russell diagram (HRD), as may be seen on the figure below where the RGB is highlighted in red.
 
-![mesa output](plots/lab1/HRD_MS_RGB.png)
+![mesa output](../plots/lab1/HRD_MS_RGB.png)
 
 MESA has built-in stopping conditions for many common cases, but for practice we will implement this one ourselves in ```run_star_extras.f90```!
 
@@ -578,7 +578,7 @@ show_HR_classical_instability_strip = .true.
 
 In the next step of the evolution, you will see the two lines appear on the HRD on your screen. At some point during the run you should see something like this:
 
-![mesa output](plots/lab1/is_hrd.png)
+![mesa output](../plots/lab1/is_hrd.png)
 
 > [!NOTE]
 > This instability strip is approximate; meant to guide the eye. As such, it may not correspond exactly to where the models in these labs do and don't pulsate.
@@ -606,7 +606,7 @@ Now let's take a look at the other panels, which contain some very interesting i
 
 During the evolution you should see something like this:
 
-![grid](plots/lab1/grid_lab1.png)
+![grid](../plots/lab1/grid_lab1.png)
 There is a text summary plus 5 science panels:
 
 1. **HRD**: This is the Hertzsprung-Russell diagram. The two additional lines are the edges of the Instability Strip, a region of the HRD where stars pulsate. What is your model doing right now? Is it entering the strip or not?
@@ -661,15 +661,15 @@ The plots below show the full Lab 1 grid after running GYRE in MESA. The colored
 The first plot shows the full HR diagram. The two plots underneath restrict the tracks to the blue-loop phase, first in the HR diagram and then in the $V-I$ color-magnitude plane.
 
 <figure style="margin: 1rem 0;">
-  <img src="plots/lab1/01_hr_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Full HR diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
+  <img src="../plots/lab1/01_hr_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Full HR diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
 </figure>
 
 <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); margin: 1rem 0;">
   <figure style="margin: 0;">
-    <img src="plots/lab1/01_hr_blue_loop_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Blue-loop HR diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
+    <img src="../plots/lab1/01_hr_blue_loop_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Blue-loop HR diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
   </figure>
   <figure style="margin: 0;">
-    <img src="plots/lab1/01_hr_blue_loop_vi_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Blue-loop V minus I color-magnitude diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
+    <img src="../plots/lab1/01_hr_blue_loop_vi_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Blue-loop V minus I color-magnitude diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
   </figure>
 </div>
 
