@@ -76,7 +76,7 @@ cd ~/Downloads              #or wherever the zip file is
 
 unzip Lab3_start.zip        #unzip it
 
-cd Lab3_start/Lab3          #Change Directories to it.
+cd Lab3_start/Lab3          #Change directories to it.
 
 ls                          #to see whats here
 
@@ -290,16 +290,6 @@ The `distance = 3.0857d19` sets the distance to 10 parsecs (expressed in cm), wh
 ```
 
 
-
-{{< details title="What is this spell to make MESA run?" closed="true" >}}
-```./clean``` cleans the running directory and removed compiled binaries, this isnt really neccesary as we have not changed the binaries (such as run_star_extras.f90 or the MESA code). But, it is good practice and does not cost money
-
-```./mk``` remakes the binaries. We dont need to do this if we did not clean but again, its worth doing a ```./clean``` & ```./mk```.
-
-```./rn``` runs it. 
-{{< /details >}}
-
-
 {{< details title="What your pgstar window should look like" closed="true" >}}
 ![Example Lab 3 pgstar grid for a 1.0 solar-mass run near TAMS](lab3_pgstar_example.png)
 
@@ -360,7 +350,7 @@ Once the run has enough history data, use `mesa_reader` to reproduce the four ke
 {{< details title="Python tips" closed="true" >}}
 You have options with how to run these. The easiest route is to probably launch python in live mode in your working directory.
 ```bash
-#make sure you are in the working labs module. runing an 'ls' or 'pwd' should tell you where oyu are. 
+#make sure you are in the working labs module. running an 'ls' or 'pwd' should tell you where you are. 
 cd Lab3                     # or Lab3_start/Lab3 or wherever your labs are
 
 python                      #open python live and paste the below code into it one by one to see the plots.
