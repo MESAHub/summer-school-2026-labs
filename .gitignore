@@ -23,3 +23,6 @@ photos/
 
 # Undefined/junk
 undefined
+
+# Friday lab archives are distributed from Drive; keep source dirs tracked.
+content/friday/MESA_models/**/*.zip
