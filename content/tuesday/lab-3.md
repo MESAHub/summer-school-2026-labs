@@ -1,6 +1,6 @@
 ---
 title: "Lab 3: Beyond the Core: Echoes of Overshoot"
-author: Meng Sun (Lead), Caleb Eastlund, Ducheng Lu, Daniel Lecoanet 
+author: Meng Sun (Lead), Caleb Eastlund, Ducheng Lu, Daniel Lecoanet (Lecturer)
 weight: 3
 math: true
 toc: true
@@ -22,15 +22,15 @@ We use a two-step evolution. Taking the step overshooting case as an example:
 1. `inlist_step_ov_ZAMS` evolves the model from the pre-main sequence to the ZAMS and saves the ZAMS model for the next step.
 2. `inlist_step_ov_MS` starts from the saved ZAMS model and evolves the star to a later main-sequence phase. During this step, MESA also outputs `.GYRE` files for the asteroseismic analysis.
 
-Before running the models, remember to replace all placeholder values such as
+<!-- Before running the models, remember to replace all placeholder values such as
 
 ```fortran
 X.X
-```
+``` -->
 
-with the parameter values assigned in the [spreadsheet](https://docs.google.com/spreadsheets/d/1v9Dq4AV1ZGssSdy1lQE3uiXW0afyK1mRk9uvBgGOaGI/edit?usp=sharing).
+<!-- with the parameter values assigned in the [spreadsheet](https://docs.google.com/spreadsheets/d/1v9Dq4AV1ZGssSdy1lQE3uiXW0afyK1mRk9uvBgGOaGI/edit?usp=sharing). -->
 
-For the current grid, use:
+<!-- For the current grid, use:
 
 ```text
 Step overshooting:
@@ -38,11 +38,14 @@ Step overshooting:
 
 Exponential overshooting:
 0.002, 0.014, 0.028
-```
+``` -->
 
 In the first part of the lab, we will build MESA models using different mixing prescriptions. Next, we will inspect their internal structures at an intermediate main-sequence stage. Finally, we will use GYRE to compute g-mode frequencies, compare them with a reference set of modes, and identify the best-fit model.
 
-We have prepared two incomplete inlists
+**[Here](/tuesday/downloads/lab3/day2_lab3.zip) is the working directory to get you started.**
+
+<a id="skeleton_inlists"></a>
+Additionally, we have prepared the **incomplete** inlists for the two-step evolution:
 <!-- - [`inlist_XXXXX_ZAMS`](/tuesday/downloads/lab3/inlist_XXXXX_ZAMS), which you will modify to compute the ZAMS models;
 - [`inlist_XXXXX_MS`](/tuesday/downloads/lab3/inlist_XXXXX_MS), which you will modify to compute the MS models. -->
 {{<details title="`inlist_XXXXX_ZAMS`, for evolution up to ZAMS" closed="true">}}
@@ -58,7 +61,7 @@ We have prepared two incomplete inlists
     ! save a model at the end of the run
     save_model_when_terminate = .true.
     ! Filename of the saved ZAMS model. This will be used as the initial model for the next evolutionary run.
-    save_model_filename = './LOGS_XXXXX/XXXXX_zams.model'	 !!! To-do
+    save_model_filename = './LOGS_XXXXX/XXXXX_ZAMS.model'	 !!! To-do
 
     ! will be changed on the fly post C depletion
     new_net_name =  'cno_extras_o18_to_mg26_plus_fe56.net'	! 'mesa_45.net'
@@ -106,14 +109,15 @@ We have prepared two incomplete inlists
     predictive_bdy_loc(1) = 'top'	! Apply this predictive-mixing setting to the top boundary of the convective core.
 
 ! Overshooting
-    overshoot_zone_type(1) =        !!! To-do
-    overshoot_zone_loc(1) =         !!! To-do
-    overshoot_bdy_loc(1) =          !!! To-do
+    overshoot_zone_type(1) =                !!! To-do
+    overshoot_zone_loc(1) =                 !!! To-do
+    overshoot_bdy_loc(1) =                  !!! To-do
 
-    overshoot_scheme(1) =           !!! To-do
+    ! options: 'exponential', 'step', 'other'
+    overshoot_scheme(1) =                   !!! To-do
 
-    overshoot_f(1) = X.X            !!! To-do
-    overshoot_f0(1) =               !!! To-do
+    overshoot_f(1) = X.X                    !!! To-do
+    overshoot_f0(1) =                       !!! To-do
     overshoot_D_min = 1d-2
 
 ! add superadiabatic reduction for massive stars
@@ -157,6 +161,9 @@ We have prepared two incomplete inlists
 
     stop_near_zams = .true.
 
+! Output
+    log_directory = 'LOGS_XXXXX'            !!! To-do
+
 / ! end of controls namelist
 
 
@@ -165,6 +172,7 @@ We have prepared two incomplete inlists
 
 ```
 {{</details>}}
+
 {{<details title="`inlist_XXXXX_MS`, for evolution on the MS" closed="true">}}
 ```fortran
 &star_job
@@ -175,7 +183,7 @@ We have prepared two incomplete inlists
   ! begin with a pre-main sequence model
     create_pre_main_sequence_model = .false.
     load_saved_model = .true.
-    load_model_filename =           !!! To-do
+    load_model_filename =                                  !!! To-do
 
 
   ! save a model at the end of the run
@@ -213,10 +221,6 @@ We have prepared two incomplete inlists
 
 &controls
 
-    initial_mass = X.Xd0 ! in Msun units
-    initial_z = 0.02000d0
-
-
 ! Mixing
     ! set_min_D_mix = .true.
     ! min_D_mix = 1000.0000d0
@@ -236,7 +240,8 @@ We have prepared two incomplete inlists
     overshoot_zone_loc(1) =         !!! To-do
     overshoot_bdy_loc(1) =          !!! To-do
     
-    overshoot_scheme(1) =           !!! To-do
+    ! options: 'exponential', 'step', 'other'
+    overshoot_scheme(1) =           !!! To-do 
 
     overshoot_f(1) =                !!! To-do
     overshoot_f0(1) =               !!! To-do
@@ -288,11 +293,11 @@ We have prepared two incomplete inlists
 ! Output
 
     photo_interval = 50000
-    log_directory = './LOGS_PC/'
+    log_directory = 'LOGS_XXXXX'                !!! To-do
     terminal_interval = 100
     do_history_file = .true.
     history_interval = 1
-    star_history_name = 'PC_MS.history'
+    star_history_name = 'XXXXX_MS.history'      !!! To-do
 
     write_profiles_flag = .true.
     max_num_profile_models = 99999
@@ -330,7 +335,7 @@ We have prepared two incomplete inlists
 ```
 {{</details>}}
 
-You will create different inlists the models with step overshoot, exponential overshoot, and penetrative convection by replacing the `XXXXX` by `step_ov`, `exp_ov`, and `PC`, respectively. In the next sections, we will modify the `!Overshoot` section of the `&control` namelist to tell MESA to run the model with different convective boundary mixing schemes.
+You will create different inlists for the models with step overshoot, exponential overshoot, and penetrative convection by replacing the `XXXXX` by `step_ov`, `exp_ov`, and `PC`, respectively. In the next sections, we will modify the `!Overshoot` section of the `&control` namelist to tell MESA to run the model with different convective boundary mixing schemes.
 
 >[!Tip]
 > The lines to be modified in the inlists to be modified are marked with `!!! To-do`.
@@ -338,7 +343,7 @@ You will create different inlists the models with step overshoot, exponential ov
 
 ## Background: Standard Overshooting Prescriptions
 
-In MESA, step and exponential overshooting are built-in prescriptions that can be controlled from the inlist. For both prescriptions, we apply overshooting at the top boundary of the convective core. In the inlists for overshooting models, add the following lines below the comment `!Overshoot`:
+In MESA, step and exponential overshooting are built-in prescriptions that can be controlled from the inlist. For both prescriptions, we apply overshooting at the top boundary of the convective core. In the inlists for overshooting models, fill the following lines below the comment `!Overshoot`:
 
 ```fortran
     overshoot_zone_type(1) = 'any'
@@ -383,7 +388,7 @@ Exponential overshooting assumes that the mixing coefficient decreases smoothly 
 A typical setup is
 
 ```fortran
-    overshoot_scheme(1) = 'exponential' ! options: 'exponential', 'step', 'other'
+    overshoot_scheme(1) = 'exponential' 
 
     overshoot_f(1) = X.XXd0
     overshoot_f0(1) = 0.005d0
@@ -403,7 +408,6 @@ Convective penetration is different from standard MESA overshooting, where mater
 In the inlists for the convective penetration runs, use
 
 ```fortran
-! Overshooting
     overshoot_scheme(1) = 'other'
 
     overshoot_f(1) = 0.00
@@ -1157,7 +1161,7 @@ and replace `X.Xd0` with the value specified for your run (0.98, 0.86 or 0.72).
 
 ---
 
-**For this lab, the task is to identify which parts of `run_star_extras.f90` are needed for the custom penetration scheme, understand what each part does, and then use the supplied solution file as the working implementation.**
+**In the next few sections, the task is to identify which parts of `run_star_extras.f90` are needed for the custom penetration scheme, understand what each part does, and then use the supplied solution file as the working implementation.**
 
 ### Guided Check 1: Define Extra Variables
 
@@ -1302,11 +1306,14 @@ For each model, evolve from ZAMS to an evolved main-sequence model with centra h
 
 ## Solution Files and Naming Conventions
 
-The solution files are available here: [inlists and run_star_extras solutions](https://github.com/astroscien/2026MESA-school-day2-lab3/tree/main).
+<!-- >[!Important]
+> At this point, in your working directory, you should have created in total six different based on the [two incomplete inlists]((#skeleton_inlists)) that we provided at the beginning. -->
+
+If you want to check what you did, the solution files are available here: [inlists and run_star_extras solutions](https://github.com/astroscien/2026MESA-school-day2-lab3/tree/main).
 
 Files contain placeholders such as `X.X`. Please replace these placeholders with your desired mixing parameters and initial stellar mass before running the models.
 
-For the penetration-convection runs, remember that the main penetration strength parameter is coded in `run_star_extras_solution.f90`. You should change
+For the penetration-convection runs, remember that the main penetration strength parameter is coded in `run_star_extras.f90`. You should change
 
 ```fortran
 real(dp), parameter :: f = X.Xd0
@@ -1426,9 +1433,29 @@ LOGS_exp_ov
 LOGS_PC
 ```
 
-Run the plotting script from the directory that contains these three folders. 
+We have prepared a [Google Colab](https://colab.research.google.com/drive/15R6yXp027FNXOFXXpGG38xCHVap0nPp1#scrollTo=wkZW-0xDuxI3) to visualize the differences in the abundance profiles and the propagation diagrams. **However, in this case you need to zip your log directories and upload them, which can take some time since the file is quite large.**
 
-{{<details title="plotting script" closed="true">}}
+{{<details title="Zipping the folders" closed="true">}}
+```shell
+zip -r LOGS_XXXXX.zip LOGS_XXXXX
+```
+
+Replace the placeholder XXXXX by the prescription(s) that you have run. 
+
+This will print a lot of lines since you have a lot of profiles in the folder, if you want to suppress the terminal output, do:
+
+```shell
+zip -qr LOGS_XXXXX.zip LOGS_XXXXX
+```
+{{</details>}}
+
+<!-- **If you have the package required (`numpy`, `pandas` and `matplotlib`) by the script, we strongly recommand you use the [python script](/tuesday/downloads/lab3/diff_mixing_profiles_in_mass.py) directly.**  -->
+**If you have the package required (`numpy`, `pandas` and `matplotlib`) by the script, we strongly recommand you use the python script directly.** In this case, create a new file `diff_mixing_profiles_in_mass.py` in your working directory, copy the script there, save and do:
+```shell
+python3 diff_mixing_profiles_in_mass.py
+```
+
+{{<details title="Plotting script" closed="true">}}
 ```python
 import numpy as np
 import pandas as pd
@@ -1449,9 +1476,13 @@ DAY = 86400.0  # day to sec
 TARGET_XC = 0.5
 
 runs = {
-    "step ov": Path("LOGS_step_ov"),
-    "exp ov":  Path("LOGS_exp_ov"),
-    "PC":      Path("LOGS_PC"),
+    name: path
+    for name, path in {
+        "step ov": Path("LOGS_step_ov"),
+        "exp ov": Path("LOGS_exp_ov"),
+        "PC": Path("LOGS_PC"),
+    }.items()
+    if path.exists()
 }
 
 styles = {
@@ -1672,7 +1703,13 @@ if __name__ == "__main__":
 ```
 {{</details>}}
 
-The workflow is:
+The program will automatically save `compare_XcH050_structure_mass_fraction.png` in the directory.
+
+<!-- <a href="/tuesday/downloads/lab3/diff_mixing_profiles_in_mass.py" download>python script</a> -->
+
+Run the plotting script from the directory that contains these three folders. 
+
+The workflow in the plotting script is:
 - For each LOGS_* directory, find the main sequence history file, such as `step_ov_MS.history`, `exp_ov_MS.history`, or `PC_MS.history`. 
 - In that history file, find the `model_number` with `center_h1` is closest to 0.5. 
 - Use `profiles.index` to map that model_number to the corresponding profile_number. 
@@ -1699,9 +1736,13 @@ DAY = 86400.0
 TARGET_XC = 0.5
 
 runs = {
-    "step ov": Path("LOGS_step_ov"),
-    "exp ov":  Path("LOGS_exp_ov"),
-    "PC":      Path("LOGS_PC"),
+    name: path
+    for name, path in {
+        "step ov": Path("LOGS_step_ov"),
+        "exp ov": Path("LOGS_exp_ov"),
+        "PC": Path("LOGS_PC"),
+    }.items()
+    if path.exists()
 }
 
 styles = {
@@ -1962,7 +2003,8 @@ fig.savefig("compare_XcH050_structure.png", dpi=300, bbox_inches="tight")
 
 ### Example Output
 
-The figure below shows an example comparison at approximately `Xc(H) = 0.5`. The upper panel compares the hydrogen and helium abundance profiles, while the lower panel shows the corresponding propagation diagram for the three mixing prescriptions. The complete solution script for Task 8 is provided as `diff_mixing_profiles_in_mass.py`.
+The figure below shows an example comparison at approximately `Xc(H) = 0.5`. The upper panel compares the hydrogen and helium abundance profiles, while the lower panel shows the corresponding propagation diagram for the three mixing prescriptions.
+<!-- The complete solution script for Task 8 is provided as `diff_mixing_profiles_in_mass.py`. -->
 
 <img src="https://github.com/astroscien/2026MESA-school-day2-lab3/blob/main/compare_XcH050_structure_mass_fraction_f0p86.png?raw=true" width="750">
 

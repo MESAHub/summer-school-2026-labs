@@ -1,6 +1,6 @@
 ---
 title: "Lab 1: Finding the Beat"
-author: Ducheng Lu (Lead), Caleb Eastlund, Meng Sun, Daniel Lecoanet 
+author: Ducheng Lu (Lead), Caleb Eastlund, Meng Sun, Daniel Lecoanet (Lecturer)
 weight: 1
 math: true
 toc: true
