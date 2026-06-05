@@ -72,7 +72,11 @@ This is a change from Lab 2. There, a small top-level `inlist` acted as a header
 
 Have a look around the directory before running anything:
 ```bash
-cd Lab3                      #the Lab 3 working directory (content/monday/Lab3 if you cloned the repo)
+cd ~/Downloads              #or wherever the zip file is
+
+unzip Lab3_start.zip        #unzip it
+
+cd Lab3_start/Lab3          #Change Directories to it.
 
 ls                          #to see whats here
 
@@ -93,6 +97,8 @@ Once you have chosen a mass, open `inlist_run` and set it:
 ```fortran
 initial_mass = X.X   ! set to your assigned value
 ```
+
+you'll see it set to a default of 0.4 — replace that number with your assigned mass.
 
 > [!NOTE]
 > Always edit `inlist_run`, never `inlist` directly -- `inlist` is overwritten by `rn` every time you run.
@@ -116,7 +122,7 @@ The namelist below configures five panels:
 - Interior abundance profile
 - 2MASS magnitude track
 
-Copy this into the &pgstar section of your inlist_run:
+Copy this into the your inlist_run, making the &pgstar section:
 
 ```fortran
 
@@ -274,9 +280,25 @@ The `distance = 3.0857d19` sets the distance to 10 parsecs (expressed in cm), wh
 
 ## Step 3 -- Run the model
 
+
+
+
 ```bash
+./clean 
+./mk
 ./rn
 ```
+
+
+
+{{< details title="What is this spell to make MESA run?" closed="true" >}}
+```./clean``` cleans the running directory and removed compiled binaries, this isnt really neccesary as we have not changed the binaries (such as run_star_extras.f90 or the MESA code). But, it is good practice and does not cost money
+
+```./mk``` remakes the binaries. We dont need to do this if we did not clean but again, its worth doing a ```./clean``` & ```./mk```.
+
+```./rn``` runs it. 
+{{< /details >}}
+
 
 {{< details title="What your pgstar window should look like" closed="true" >}}
 ![Example Lab 3 pgstar grid for a 1.0 solar-mass run near TAMS](lab3_pgstar_example.png)
@@ -338,7 +360,8 @@ Once the run has enough history data, use `mesa_reader` to reproduce the four ke
 {{< details title="Python tips" closed="true" >}}
 You have options with how to run these. The easiest route is to probably launch python in live mode in your working directory.
 ```bash
-cd Lab3                      #move to your Lab 3 working directory
+#make sure you are in the working labs module. runing an 'ls' or 'pwd' should tell you where oyu are. 
+cd Lab3                     # or Lab3_start/Lab3 or wherever your labs are
 
 python                      #open python live and paste the below code into it one by one to see the plots.
 ```
@@ -499,7 +522,7 @@ grep initial_mass inlist
 ```
 {{< /details >}}
 
-Add the results to the google sheets file.
+Add the results to the google sheets file (Lab3 tab).
 This link : [google sheets](https://docs.google.com/spreadsheets/d/1C88C5V2siCAaK8-3qgAZoNc9-9IH-RTIqFVetXQc3EM/edit?usp=sharing)
 
 > [!NOTE]
