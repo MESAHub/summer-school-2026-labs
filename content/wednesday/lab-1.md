@@ -378,18 +378,11 @@ add_reactions(
 
 ### Step 5: History/Profile Columns
 
-The provided `history_columns.list` and `profile_columns.list` have both already been updated for this lab. In particular, the following values have been added to the history columns output in place of their shortform defaults (where center is abbreviated to cntr):
-- `log_center_T`
-- `log_center_Rho`
-- `log_center_P`
-
-The following profile column outputs have been added to provide information about our net:
+The provided `history_columns.list` and `profile_columns.list` have both already been updated for this lab. Most importantly, the following profile column outputs have been added to provide information about our net:
 - `add_eps_nuc_rates` : Nuclear energy minus neutrino losses for each reaction in network
 - `add_eps_neu_rates` : Neutrino losses for each reaction in network
 - `add_log_abundances` : Log of abundances for each isotope in network
 
-> [!NOTE]
-> There is no task for this step! 
 
 
 ### Step 6: Inlist Pgstar
