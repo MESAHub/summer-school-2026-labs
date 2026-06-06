@@ -387,9 +387,9 @@ The provided `history_columns.list` and `profile_columns.list` have both already
 
 ### Step 6: Inlist Pgstar
 
-Within the white dwarf interior, there should be some preference for electron capture (EC) over electron emission ($\beta^-$) as the "free" electron levels fill up with increasing density. Therefore, the rate of Ne-20 -> F-20 ($\lambda_{^{20}Ne->^{20}F}$) should be higher than the rate of F-20 -> Ne-20 ($\lambda_{^{20}F->^{20}Ne}$) at high densities.
+Within the white dwarf interior, there should be some preference for electron capture (EC) over electron emission ($\beta^-$) as the "free" electron levels fill up with increasing density. Therefore, the rate of Ne-20 -> F-20 reactions ($\lambda_{^{20}Ne->^{20}F}$) should be higher than the rate of F-20 -> Ne-20 reactions ($\lambda_{^{20}F->^{20}Ne}$) at high densities.
 
-The provided `inlist_pgstar` has been pre-formatted to show exactly this, given some values (`lambda_ne20_f20` and `lambda_f20_ne20`) to be created in `run_star_extras.f90`. 
+The provided `inlist_pgstar` has been preformatted to show exactly this, given some values (`lambda_ne20_f20` and `lambda_f20_ne20`) to be created in `run_star_extras.f90`. 
 
 > [!IMPORTANT]
 > With these inclusions, the provided `inlist_pgstar` will now be expecting two new profile columns: `lambda_ne20_f20`, `lambda_f20_ne20`
@@ -400,7 +400,7 @@ The provided `inlist_pgstar` has been pre-formatted to show exactly this, given 
 
 Now that `inlist_pgstar` is expecting these two new profile columns, let's try making them with `run_star_extras.f90`! 
 
-Thankfully, most of the work has already been done for this lambda computation using a variety of prebuilt functions available in MESA. In particular, the script makes use a new data type, `Coulomb_Info`, and four functions: `get_weak_rate_id`, `eosDT_get`, `coulomb_set_context`, `eval_weak_reaction_info`. These are all defined within modules found in `$MESA_DIR/rates/public/` and `$MESA_DIR/eos/public/`. Generally, these public subdirectories provide swaths of tools used throughout MESA that may be called within `run_star_extras`. In order to use these functions, we must first add them to the local scope of `run_star_extras`. 
+`run_star_extras.f90` is a script that allows us add any custom code to a MESA run. Thankfully, most of the work has already been done for this lambda computation using a variety of prebuilt functions available in MESA. In particular, the script makes use a new data type, `Coulomb_Info`, and four functions: `get_weak_rate_id`, `eosDT_get`, `coulomb_set_context`, `eval_weak_reaction_info`. These are all defined within modules found in `$MESA_DIR/rates/public/` and `$MESA_DIR/eos/public/`. Generally, these public subdirectories provide swaths of tools used throughout MESA that may be called within `run_star_extras`. In order to use these functions, we must first add them to the local scope of `run_star_extras`. This can either been done through bulk imports where all the public structures (functions, variables, subroutines, etc) in a module are added to the local scope, or through selective imports where only designated pieces of a module are added. Typically, the use of selective imports would be preferred to avoid namespace collisions and ease code traceability. 
 
 | 📋 TASK 10 |
 |:--------|
@@ -458,7 +458,8 @@ integer function how_many_extra_profile_columns(id)
 
 Now, we can add new data to these profile columns in `data_for_extra_profile_columns`. 
 
-Starting at the top of the subroutine, the set of necessary pointers, arrays, doubles, and integers are defined for use following the standard boilerplate seen in other MESA subroutines. Next, the names of the new profile columns need to be set to match the values expected in `inlist_pgstar` and the names of the product/reactant species for each of the reactions need to be identified explicitly. 
+Starting at the top of the subroutine, the set of necessary pointers, arrays, doubles, and integers are defined for use following the standard boilerplate seen in other MESA subroutines. Next, the names of the new profile columns need to be set to match the values expected in `inlist_pgstar` and the names of the product/reactant species for each of the reactions need to be identified explicitly. This weak_lhs/weak_rhs structure is meant to be trivially extensible, so that more reaction profiles can be added by simply listing more product/reactant pairs.
+
 
 | 📋 TASK 12 |
 |:--------|
@@ -492,7 +493,7 @@ weak_rhs(2) = 'ne20' !!!!!
 ```
 {{< /details >}}
 
-Using these values, the script then will allocate the necessary arrays and gather the relevant id for each reaction. Next, for each zone within the model, the script solves for lambda (click the aside below for more information when you have time after the lab). Within this loop, save the lambda value into the vals array for each reaction.
+Using these values, the script then will allocate the necessary arrays and gather the relevant id for each reaction. Next, for each zone within the model, the script solves for lambda (click the aside below for more information when you have time after the lab). Look over the comments in the file for context behind the script structure. 
 
 {{< details title="Aside: How is this loop getting lambda?" closed="true" >}}
 
@@ -500,9 +501,11 @@ In a fairly broad description, the code is looping through every zone of the sta
 
 {{< /details >}}
 
+With the lambda values calculated, we need to add them into the `vals` structure to create our profiles. This should be done in a `do` loop so that we can easily add more reactions later. 
+
 | 📋 TASK 13 |
 |:--------|
-| In `src/run_star_extras.f90`, **fill** `vals` with the value of lambda for each reaction within a `do` loop|
+| In `src/run_star_extras.f90`, **fill** `vals` with the value of lambda for each reaction within a `do` loop. The place where this should be done is bracketed by `!!!!!` and the variable `i` is already declared for you to index through. |
 
 > [!NOTE]
 > This new `do` loop should be created *within* the loop over zones. 
