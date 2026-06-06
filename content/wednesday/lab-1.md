@@ -9,18 +9,18 @@ disableKinds: "rss"
 
 ## Introduction
 
-Urca processes describe sets of reactions whereby isobars cyclically experience electron capture and $\beta$ decay (i.e. electron emission), both releasing neutrinos which stream freely away. [^GamowSchoenberg41] The net effect can lead to more efficient cooling that decreases thermal support to the point of collapse ("bankrupting" the star, hence the eponymous Casino de Urca in Rio de Jainero![^Haensel95]). 
-Due to the varying dependencies of these reaction rates on temperature and density, the locations whereby the Urca process dominate can be described by distinct shells. [^MartinezPinedo14]
-<!-- Within these shells, $\beta$ decay produces local heating, while electron capture can either heat or cool the surrounding medium (dependent on density).-->
 
-In the temperatures and densities characteristic of an accreting oxygen-neon (ONe) white dwarf, it is expected that these Urca processes are critical to accurately modeling the expected end state of the star (implosion versus explosion).[^Hola26] To account for these processes, it is essential to carefully consider the nuclear network used throughout our models. 
+Electron-capture supernova (ECSN) either result in collapse (cECSN) or thermonuclear explosion (tECSN). Thinking of the core of these 8-10 M<sub>&#9737;</sub> supernova progenitors as an accreting 1.1 M<sub>&#9737;</sub> white dwarf, we can try to map the cutoff between these regimes (implosion versus explosion) using the density and radius of oxygen ignition within the white dwarf.[^Hola26] To account for the role of Urca processes in this balance, it is essential to carefully consider the nuclear network used throughout our models.   
 
 In this lab, we will model the accretion stage of an ONe white dwarf, beginning from a precomputed starting point and evolving to oxygen ignition. To accomplish this, we will build a custom nuclear network and measure the rate balance between electron capture/$\beta^-$ decay rates. In the end, we will map the density at oxygen ignition to answer the question: Will this star explode or implode?
 
 For more discussion on accretion-induced collapse in accreting white dwarfs, see also Schwab&Rocha19[^Schwab19], Schwab+15[^Schwab15], and Piersanti+22[^Piersanti22].
 
+For more discussion on Urca processes, see also Gamow&Schoenberg41[^GamowSchoenberg41], Haensel95[^Haensel95], and Pinedo+14[^MartinezPinedo14].
+
 
 ### Helpful Links
+
 
 The Google drive for Lab 1 can be found [HERE](https://drive.google.com/drive/folders/1Pht6YvypYnXKGyDYzHVphCF7SZQ7MYAL?usp=drive_link). This drive contains the starting point, partial solutions (separated by task), and a full solution. You do **not** need to download the entire drive! 
 
@@ -93,13 +93,11 @@ If you have extra time after the lab, feel free to take away some of the smoothi
 
 {{< /details >}}
 
-Throughout these labs, we will be loading in precomputed white dwarf models as starting points to avoid dealing with earlier stages of evolution. To improve the relevant accounting of our simulated accretion stages, the initial age and initial model number of these models will be reset once read, making our runs look like fresh runs.
-
-Next, we want to record the point of oxygen ignition in the white dwarf, but **DO NOT** want to try running through explosion/implosion during these labs. Beyond that point, the relevant timescale will shrink rapidly to that of the deflagration/detonation front, massively increasing the computation required. Stop the evolution when the maximum temperature within the model is 10<sup>9.1</sup> K (when the white dwarf begins to ignite oxygen).
+Next, we want to record the point of oxygen ignition in the white dwarf, but **DO NOT** want to try running through explosion/implosion during these labs. Beyond that point, the relevant timescale will shrink rapidly to that of the deflagration/detonation front, massively increasing the computation required.
 
 | 📋 TASK 3 |
 |:--------|
-| In `&controls`, **update `inlist_common`** to stop the model once temperature reaches 10<sup>9.1</sup> K. Available stopping parameters can be found [here](https://docs.mesastar.org/en/latest/reference/controls.html#when-to-stop). |
+| In `&controls`, **update `inlist_common`** to stop the model once temperature reaches 10<sup>9.1</sup> K (when the white dwarf begins to ignite oxygen). Available stopping parameters can be found [here](https://docs.mesastar.org/en/latest/reference/controls.html#when-to-stop). |
 
 {{< details title="Hint: What variables need to be changed?" closed="true" >}}
 The parameter that should be added is:
@@ -118,17 +116,17 @@ The parameter that should be added is:
 
 ### Step 3: Inlist Accrete
 
-With the common variables set, now we can focus on the fun part: throwing material on the surface. We will control which reaction network is used and the material accreted within `inlist_accrete`. Unlike our previous inlist, this file has been provided mostly empty. 
+With the common variables set, now we can focus on the fun part: throwing material on the surface. We will define what this surface is, how it can react, and what the thrown material is within `inlist_accrete`. Unlike our previous inlists, this file has been provided mostly empty. 
 
-Starting in `&star_jobs`, load in the downloaded model (`1.1Msun_ONe.mod`), change the initial network to a file we will later create called `ONe.net`, and set the weak rates to those of Suzuki+2016[^Suzuki16]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the Urca process. Without these rates, the weak reaction rates A=17 through A=28 isotopes would be interpolated with earlier weaklib tables that will not sufficiently resolve the cooling/heating features at the core of this lab. 
+Throughout the day, we will be loading in precomputed white dwarf models as starting points to avoid dealing with earlier stages of evolution. The precomputed model for this lab has already been provided in the starting directory as `1.1Msun_ONe.mod`. 
+
+The reaction network will be defined by a file we will create later called `ONe.net` and the rates of reactions in that network will need to use the weak rates of Suzuki+2016[^Suzuki16]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the Urca process. These Suzuki rates are not only tabulated on a much finer scale than earlier tables, but account for additional transitions critical to our test regime. Without these rates, the weak reaction rates of isotopes with mass number (A) 17 through 28 would be interpolated with earlier weaklib tables that will not sufficiently resolve the cooling/heating features at the core of this lab. 
 
 
 | 📋 TASK 4 |
 |:--------|
-| In `&star_jobs`, **update `inlist_accrete`** to load the `1.1Msun_ONe` model, change the initial nuclear network to `ONe.net`, and use the Suzuki rates.|
+| In `&star_jobs`, **update `inlist_accrete`** to: <ul><li>Load the `1.1Msun_ONe` model </li><li> Change the initial nuclear network to `ONe.net`</li><li> Use the Suzuki rates.</li></ul> The relevant `&star_jobs` variables can be found in the [starting model](https://docs.mesastar.org/en/latest/reference/star_job.html#starting-model) and [nuclear reactions](https://docs.mesastar.org/en/latest/reference/star_job.html#nuclear-reactions) sections of the MESA documentation. |
 
-> [!NOTE]
-> Remember, paths provided in the inlists are relative to the relevant `rn` executable. 
 
 {{< details title="Hint: What variables need to be changed?" closed="true" >}}
 The parameters that should be added are:
@@ -137,6 +135,12 @@ The parameters that should be added are:
 - `change_initial_net`
 - `new_net_name`
 - `use_suzuki_weak_rates`
+
+{{< details title="Hint: What about `change_net`?" closed="true" >}}
+We are only seeking to change the reaction network at the beginning of the run. `change_net` would be used in more complicated inlist arrangements where you want to trigger the reaction network change any time there is a restart (`./re`). 
+
+This is helpful when simulating multiple regimes wherein "inlistA" uses "networkA" until stopping condition A. Then, "inlistB" picks up the run (upon restart) with "networkB" until stopping condition B. 
+{{< /details >}}
 {{< /details >}}
 
 {{< details title="Partial Solution" closed="true" >}}
@@ -154,14 +158,12 @@ The parameters that should be added are:
 ```
 {{< /details >}}
 
-Next, we want to accrete material of a given composition at a given rate. This material need not be the same composition as the surface star and may be defined as mass fractions of a variety of species. 
-
-In `&controls`, set the accretion rate to 10<sup>-6</sup> M<sub>&#9737;</sub> / year of equal mass fractions of Oxygen-16 and Neon-20. Also, set the log output directory to a more descriptive name, `LOGS_ONe_1d-6`.
+Next, we want to accrete material of a given composition at a given rate. Generally, this material need not be the same composition as the surface star and may be defined as mass fractions of a variety of species. In this lab, we want the ONe white dwarf "core" to slowly accrete ash from shell carbon-burning which we will take to be equal mass fractions of Oxygen-16 and Neon-20.
 
 
 | 📋 TASK 5 |
 |:--------|
-| In `&controls`, **update `inlist_accrete`** to rename the LOGS directory to `LOGS_ONe_1d-6` and set the accretion rate to 10<sup>-6</sup> M<sub>&#9737;</sub> / year of equal mass fractions of Oxygen-16 and Neon-20. |
+| In `&controls`, **update `inlist_accrete`** to: <ul><li>set the accretion rate to 10<sup>-6</sup> M<sub>&#9737;</sub> / year of equal mass fractions of Oxygen-16 and Neon-20 </li><li> Rename the LOGS directory to a more descriptive name, `LOGS_ONe_1d-6`. </li></ul> The relevant `&controls` variables can be found in the [mass gain or loss](https://docs.mesastar.org/en/latest/reference/controls.html#mass-gain-or-loss), [composition controls](https://docs.mesastar.org/en/latest/reference/controls.html#composition-controls), and [controls for output](https://docs.mesastar.org/en/latest/reference/controls.html#controls-for-output) sections of the MESA documentation. |
 
 > [!NOTE]
 > You will need to both explicitly stop MESA from accreting the same composition as the surface and flag that the new accretion composition will be given as mass fractions.
@@ -176,11 +178,12 @@ The parameters that should be added are:
 - `accrete_given_mass_fractions`
 - `num_accretion_species`
 - `accretion_species_id`
-- `accretion_specia_xa`
+- `accretion_species_xa`
+- `log_directory`
 {{< /details >}}
 
 {{< details title="Hint: How is accreting material defined?" closed="true" >}}
-The accretion of various species is primarily governed by two arrays: `accretion_species_id` and `accretion_specia_xa`. Additionally, `num_accretion_species` provides MESA with an expectation value for the lengths of these two arrays. 
+The accretion of various species is primarily governed by two arrays: `accretion_species_id` and `accretion_species_xa`. Additionally, `num_accretion_species` provides MESA with an expectation value for the lengths of these two arrays. 
 
 The `id` of a particular species is defined through abbreviated isotopic hyphen notation (minus the hyphen) as [Chemical Symbol][Mass Number]. For example, Selenium-80 is se80 and Nickel-56 is ni56. More information on the variety of isotopes available in MESA can be found in `$MESA_DIR/chem/public/chem_def.f90`.
 
@@ -406,7 +409,7 @@ The provided `inlist_pgstar` has been mostly pre-formatted to show exactly this,
 
 | 📋 TASK 9 |
 |:--------|
-| In `inlist_pgstar`, **Set** `profile_panels1_yaxis_name(1)` to `lambda_ne20_f20` and `profile_panels1_other_yaxis_name(1)` to `lambda_f20_ne20`   |
+| In `inlist_pgstar`, **Set** <ul><li>`profile_panels1_yaxis_name(1)` to `lambda_ne20_f20` </li><li> `profile_panels1_other_yaxis_name(1)` to `lambda_f20_ne20` </li></ul>|
 
 {{< details title="Partial Solution" closed="true" >}}
 ```fortran
@@ -494,7 +497,7 @@ Starting at the top of the subroutine, the set of necessary pointers, arrays, do
 
 | 📋 TASK 12 |
 |:--------|
-| In `src/run_star_extras.f90`, **set** the new profile names to `lambda_ne20_f20` and `lambda_f20_ne20`. Then, **set** `weak_lhs` and `weak_rhs` to the reactant (left-hand side) species name and product (right-hand side) species name for each reaction. |
+| In `src/run_star_extras.f90`, <ul><li>**set** the new profile names to `lambda_ne20_f20` and `lambda_f20_ne20`. </li><li> **set** `weak_lhs` and `weak_rhs` to the reactant (left-hand side) species name and product (right-hand side) species name for each reaction. </li></ul>|
 
 > [!NOTE]
 > The species name is the abbreviated isotopic name (ie. Helium-4 is he4).
