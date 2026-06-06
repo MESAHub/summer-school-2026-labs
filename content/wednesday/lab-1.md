@@ -227,17 +227,15 @@ Therefore, if we wanted to accrete only Hydrogen-2, we would use:
 
 ### Step 4: Building a Nuclear Network
 
-As you may have guessed from our prior flags to change the initial net, MESA allows for the creation of custom reaction networks. The default net, `basic.net`, is a sufficient case for basic hydrogen and helium burning on the main sequence, but is insufficient outside of that regime or in more detailed nucleosynthesis studies. In general, the use of a particular network should be motivated by the physics that one seeks to explore traded against the additional computational time required on larger nets. Take a look over the format and structure of this default reaction network.
+As you may have guessed from our prior flags to change the initial net, MESA allows for the creation of custom reaction networks. Reaction networks are descriptions of what isotopes and what reactions between those isotopes are included in our model. The default net, `basic.net`, is a stripped case built primarily for speed in the MESA test suite, **NOT** for proper nucleosynthesis or accounts of burning through the main sequence. For any proper science case, this network will need to be replaced. In general, the use of a particular network should be motivated by the physics that one seeks to explore traded against the additional computational time required on larger nets. 
+
+The minimal structure of a reaction network uses two commands to build a set of isotopes and reactions: `add_isos(<isos_list>)` and `add_reactions(<reactions_list>)`. Other possible commands can be found in the [creating a custom net](https://docs.mesastar.org/en/latest/net/nets.html#creating-a-custom-net) section of the MESA documentation.
 
 | 📋 TASK 6 |
 |:--------|
-| **Open `basic.net`**, peruse the included isotopes and reactions, and take note of the format. |
+| **Open `$MESA_DIR/data/net_data/nets/basic.net`**, peruse the included isotopes and reactions, and take note of the format. |
 
-> [!NOTE]
-> The reaction networks included in MESA can be found at `$MESA_DIR/data/net_data/nets/`
-
-
-In pursuit of our central question, "implode or explode", the critical physics is whether our ONe white dwarf enters thermal runaway, producing an thermonuclear electron capture supernova (tECSNe), or collapses under its own gravity as a collapsing ECSNe (cECSNe).  This balance requires a nuclear network that accounts for the critical electron-capture (EC) chain Neon-20 -> Fluorine-20 -> Oxygen-20 and the burning of Oxygen-16 to Silicon-28. An overview of each of these reactions is below:
+In pursuit of our central question, "implode or explode", the critical physics is whether and where our ONe white dwarf enters thermal runaway. This balance requires a nuclear network that accounts for the critical electron-capture (EC) chain Neon-20 -> Fluorine-20 -> Oxygen-20 and the burning of Oxygen-16 to Silicon-28. This electron capture chain follows the logic of an Urca pair, in that it involves cyclic weak reactions between isobars (nuclides with the same mass number, A). However, opposed to traditional Urca pairs, the electron capture reaction on Neon-20 can actually result in local heating! An overview of each of these reactions is below:
 | Reaction                     | Equation                                                         |
 |------------------------------|------------------------------------------------------------------|
 | $EC$ : Ne-20 -> F-20      | $$\ce{^{20}_{10}Ne + e- -> ^{20}_{9}F + \nu_e}$$                 |
@@ -249,20 +247,15 @@ In pursuit of our central question, "implode or explode", the critical physics i
 > [!NOTE]
 > In MESA, "weak" denotes the weak reactions that lower nuclear charge, while "weak_minus" denotes the weak reactions that raise the nuclear charge. The rates we use will include the contributions of electron capture and positron emission or electron emission and positron capture as appropriate. The above table only uses EC and $\beta^-$ as a label for simplicity, as these contributions should be dominant in our degenerate regime. 
 
-To implement this physics into our ONe white dwarf, start by creating the new `ONe.net` file in the working directory and adding the necessary isotopes.
-
-Visually this network looks like:
+This network is visualized in the figure below:
 
 ![basic ONe net](one-net.png)
+*Directed graph, generated with pynucasto, showing the isotopes in the network and the decay processes between them. The compass rose shows the directionality of particular processes in the graph: $\beta$, $\beta^-$, or (projectile, ejectile), where $\alpha$ is an alpha particle, $p$ is a proton, $n$ is a neutron, and  $\gamma$ is a photon. The gray ${}^{31}\mathrm{P}$ nucleus is not explicitly carried in the network, but we include the link ${}^{16}\mathrm{O}({}^{16}\mathrm{O},p){}^{31}\mathrm{P}(p,\alpha){}^{28}\mathrm{Si}$ as an alternate pathway to ${}^{16}\mathrm{O}({}^{16}\mathrm{O},\alpha){}^{28}\mathrm{Si}$ for oxygen burning (this is included in the MESA rate we use).*
 
-The gray ${}^{31}\mathrm{P}$ nucleus is not explicitly carried in the network, but we include the link
-${}^{16}\mathrm{O}({}^{16}\mathrm{O},p){}^{31}\mathrm{P}(p,\alpha){}^{28}\mathrm{Si}$ as an alternate
-pathway to ${}^{16}\mathrm{O}({}^{16}\mathrm{O},\alpha){}^{28}\mathrm{Si}$ for oxygen burning (this
-is included in the MESA rate we use.
 
 | 📋 TASK 7 |
 |:--------|
-| **Create a new file `ONe.net`**, and **add the necessary isotopes** to encompass the reactions in the table above. |
+| **Create a new file, `ONe.net`, in your working directory**, and **add the necessary isotopes** to encompass the reactions in the table above. |
 
 > [!CAUTION]
 > You must also add Hydrogen to the mix! MESA **requires** all nuclear networks to contain both Hydrogen-1 and Helium-4. 
@@ -278,7 +271,7 @@ The isotopes that should be added are:
 - Silicon-28
 {{< /details >}}
 
-{{< details title="Hint: What is the format to add an isotope" closed="true" >}}
+{{< details title="Hint: What is the format to add an isotope?" closed="true" >}}
 To add an a group of isotopes, use 
 ```fortran
 add_isos(
@@ -318,19 +311,17 @@ add_isos(
 {{< /details >}}
 
 
-With the isotopes added, we may now move to add specific reactions. Again, the consideration of reactions should depend on the physics in question. As previously mentioned, we only need to include the four $EC$/$\beta^-$ reactions and oxygen-16 burning, as described in the table. Add these reactions to `ONe.net`.
+With the isotopes added, we may now move to add our specific reactions. Again, the consideration of reactions should depend on the physics in question. In our case, as previously mentioned, we only need to include the four $EC$/$\beta^-$ reactions and oxygen-16 burning, as described in the table.
 
 | 📋 TASK 8 |
 |:--------|
 | In `ONe.net`, **add the reactions from the table above**. |
 
-> [!NOTE]
-> Use the MESA documentation to find the `reaction_handle` (ie. reaction name) format for the standard 1-to-1 weak reactions.
+> [!NOTE] 
+> Use the [desciption of net format](https://docs.mesastar.org/en/latest/net/nets.html#description-of-net-format) in the MESA documentation to find the `reaction_handle` (ie. reaction name) format for the standard 1-to-1 weak reactions.
 > For oxygen burning, the `reaction_handle` can be found in `$MESA_DIR/data/rates_data/reactions.list`.
 
 {{< details title="Hint: What is the format of the standard 1-to-1 weak reactions?" closed="true" >}}
-The following information can be found [here](https://docs.mesastar.org/en/latest/net/nets.html#description-of-net-format) under `reaction_handle`.
-
 1-to-1 Z-decreasing reactions (positron emission or electron capture) between reactant x and product y follow the naming `r_x_wk_y`.
 
 1-to-1 Z-increasing reactons (electron emission or positron capture) between reactant x and product y follow the naming `r_wk-minus_y`.
