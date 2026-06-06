@@ -389,28 +389,9 @@ The provided `history_columns.list` and `profile_columns.list` have both already
 
 Within the white dwarf interior, there should be some preference for electron capture (EC) over electron emission ($\beta^-$) as the "free" electron levels fill up with increasing density. Therefore, the rate of Ne-20 -> F-20 ($\lambda_{^{20}Ne->^{20}F}$) should be higher than the rate of F-20 -> Ne-20 ($\lambda_{^{20}F->^{20}Ne}$) at high densities.
 
-The provided `inlist_pgstar` has been mostly pre-formatted to show exactly this, given some values to be created in `run_star_extras.f90`. Set `profile_panels1_yaxis_name(1)` to `lambda_ne20_f20` and `profile_panels1_other_yaxis_name(1)` to `lambda_f20_ne20`.
+The provided `inlist_pgstar` has been pre-formatted to show exactly this, given some values (`lambda_ne20_f20` and `lambda_f20_ne20`) to be created in `run_star_extras.f90`. 
 
-| 📋 TASK 9 |
-|:--------|
-| In `inlist_pgstar`, **Set** <ul><li>`profile_panels1_yaxis_name(1)` to `lambda_ne20_f20` </li><li> `profile_panels1_other_yaxis_name(1)` to `lambda_f20_ne20` </li></ul>|
-
-{{< details title="Partial Solution" closed="true" >}}
-```fortran
-profile_panels1_yaxis_name(1) = 'lambda_ne20_f20' !!!!!
-profile_panels1_yaxis_log(1) = .true.
-profile_panels1_ymin(1) = -40d0
-profile_panels1_ymax(1) = 5d0
-
-profile_panels1_other_yaxis_name(1) = 'lambda_f20_ne20' !!!!!
-profile_panels1_other_yaxis_log(1) = .true.
-profile_panels1_other_ymin(1) = -40d0
-profile_panels1_other_ymax(1) = 5d0
-```
-{{< /details >}}
-
-
-> [!NOTE]
+> [!IMPORTANT]
 > With these inclusions, the provided `inlist_pgstar` will now be expecting two new profile columns: `lambda_ne20_f20`, `lambda_f20_ne20`
 
 
@@ -605,7 +586,8 @@ Of course, there are a number of caveats in that the MESA models in this lab are
 
 ## BONUS: What about our other weak rate?
 
-If you have time, try to gather the same information about the lambda balance for $\ce{^{20}F<->^{20}O}$. To implement this, try extending the `run_star_extras` code! Don't forget to replace/reformat the `eps_nuc_neu_total` and `non_nuc_neu` plots in `inlist_pgstar`, to see all of them together. Does there appear to be any relation to temperature?
+If you have time, try to gather the same information about the lambda balance for $\ce{^{20}F<->^{20}O}$. To implement this, try extending the `run_star_extras` code! Don't forget to replace/reformat the `eps_nuc_neu_total` and `non_nuc_neu` plots in `inlist_pgstar`, to see all of them together. Look at the naming and y-axis bounds used for lambda_ne20_f20 and lambda_f20_ne20 for an example of formatting. Does there appear to be any relation to temperature?
+
 
 > [!NOTE]
 > The relevant arrays can all be extended trivially for this case, but don't forget to increase the integer value of `nr`!
