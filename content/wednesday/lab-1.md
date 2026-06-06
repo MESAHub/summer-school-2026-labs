@@ -10,7 +10,7 @@ disableKinds: "rss"
 ## Introduction
 
 
-Electron-capture supernova (ECSN) either result in collapse (cECSN) or thermonuclear explosion (tECSN). Thinking of the core of these 8-10 M<sub>&#9737;</sub> supernova progenitors as an accreting 1.1 M<sub>&#9737;</sub> white dwarf, we can try to map the cutoff between these regimes (implosion versus explosion) using the density and radius of oxygen ignition within the white dwarf.[^Hola26] To account for the role of Urca processes in this balance, it is essential to carefully consider the nuclear network used throughout our models.   
+Electron-capture supernova (ECSN) either result in collapse (cECSN) or thermonuclear explosion (tECSN). Thinking of the core of these 8-10 M<sub>&#9737;</sub> supernova progenitors as an accreting 1.1 M<sub>&#9737;</sub> white dwarf, we can try to map the cutoff between these regimes (implosion versus explosion) using the density and radius of oxygen ignition within the white dwarf.[^Holas26] To account for the role of Urca processes in this balance, it is essential to carefully consider the nuclear network used throughout our models.   
 
 In this lab, we will model the accretion stage of an ONe white dwarf, beginning from a precomputed starting point and evolving to oxygen ignition. To accomplish this, we will build a custom nuclear network and measure the rate balance between electron capture/$\beta^-$ decay rates. In the end, we will map the density at oxygen ignition to answer the question: Will this star explode or implode?
 
@@ -605,7 +605,7 @@ Yes, there is a relationship to temperature! At sufficiently high temperature, t
 
 ## References
 [^Suzuki16]: Suzuki, Toshio, Hiroshi Toki, and Ken’ichi Nomoto. "Electron-capture and β-decay rates for sd-shell nuclei in stellar environments relevant to high-density O–Ne–Mg cores." The Astrophysical Journal 817, no. 2 (2016): 163. https://iopscience.iop.org/article/10.3847/0004-637X/817/2/163.
-[^Hola26]: Holas, Alexander, Samuel W. Jones, Friedrich K. Röpke, Rüdiger Pakmor, Christina Fakiola, Giovanni Leidi, Raphael Hirschi, and Ken J. Shen. "Drawing the line between explosion and collapse in electron-capture supernovae." (2026). https://www.aanda.org/articles/aa/pdf/2026/03/aa57910-25.pdf.
+[^Holas26]: Holas, Alexander, Samuel W. Jones, Friedrich K. Röpke, Rüdiger Pakmor, Christina Fakiola, Giovanni Leidi, Raphael Hirschi, and Ken J. Shen. "Drawing the line between explosion and collapse in electron-capture supernovae." (2026). https://www.aanda.org/articles/aa/pdf/2026/03/aa57910-25.pdf.
 [^MartinezPinedo14]: Martínez-Pinedo, G., Y. H. Lam, K. Langanke, R. G. T. Zegers, and C. Sullivan. "Astrophysical weak-interaction rates for selected A= 20 and A= 24 nuclei." Physical Review C 89, no. 4 (2014): 045806. https://journals.aps.org/prc/pdf/10.1103/PhysRevC.89.045806
 [^Jermyn21]: Jermyn, Adam S., Josiah Schwab, Evan Bauer, F. X. Timmes, and Alexander Y. Potekhin. "Skye: A differentiable equation of state." The Astrophysical Journal 913, no. 1 (2021): 72. https://iopscience.iop.org/article/10.3847/1538-4357/abf48e/meta
 [^Timmes00]: Timmes, Frank X., and F. Douglas Swesty. "The accuracy, consistency, and speed of an electron-positron equation of state based on table interpolation of the Helmholtz free energy." The Astrophysical Journal Supplement Series 126, no. 2 (2000): 501-516. https://iopscience.iop.org/article/10.1086/313304/meta
