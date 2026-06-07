@@ -13,6 +13,18 @@ In this lab, you will evolve a star through the instability strip and use GYRE (
 
 The evolutionary feature that gets us there is the blue loop. During core helium burning, some intermediate-mass, LMC-like models move back toward hotter effective temperature before returning redward. If that loop crosses the instability strip, the model becomes unstable to radial mode pulsations and is classified as a classical Cepheid.
 
+{{< details title="Show Cepheid evolution animation" closed="true" >}}
+
+Adapted from scripts written and shared by Selim Kalici.
+
+{{< lazy-animation
+  src="../plots/lab1/cepheid_4p5_hr_lightcurve_structure_animation_dark.mp4"
+  alt="Cepheid model moving through the HR diagram and changing pulsation structure"
+  button="Load Cepheid evolution animation"
+>}}
+
+{{< /details >}}
+
 Getting blue loops right is a known modeling challenge. Their extent depends on input physics such as metallicity, mass loss, nuclear reaction rates, and convective mixing, including core and envelope overshooting. The Friday grid uses $Z = 0.006$ and $Y = 0.2575$, following [Smolec et al. 2026](https://arxiv.org/abs/2603.26111), to represent reasonable LMC-like stellar models.
 
 The model does not visibly pulsate in this lab because MESA-star is taking evolutionary timesteps, not resolving the pulsation cycle. The `history.data` file with GYRE information will be used in Lab 2, and the saved `.mod` files will be used in Lab 3.
@@ -46,18 +58,6 @@ The evolution is divided into two steps:
 While the simulation runs in Step 2 you'll get to watch your star experience a blue loop and move through the instability strip, while GYRE runs automatically during the pulsational phase!
 
 During this second part of the run, you will also save some models (called `.mod` files), that will be reused in the next labs.
-
-{{< details title="Show Cepheid evolution animation" closed="true" >}}
-
-Adapted from scripts written and shared by Selim Kalici.
-
-{{< lazy-animation
-  src="../plots/lab1/cepheid_4p5_hr_lightcurve_structure_animation_dark.gif"
-  alt="Cepheid model moving through the HR diagram and changing pulsation structure"
-  button="Load Cepheid evolution animation"
->}}
-
-{{< /details >}}
 
 ## 1: Let's get it started in here: setting up the work directory
 
