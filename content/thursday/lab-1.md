@@ -426,8 +426,8 @@ This system will continue to evolve, and we'll pick up this thread again in Lab 
 
 If you were short on time, below you can find:
 
-- the [final models](final_models.zip) of Run 1 (case A), as well as of Run 3 with $M_2 = 25 M_\odot$, $\beta = 0$, and $p_i = 20 {\rm d}$ (case B).
-- final [inlists](inlists_caseB.zip) after Run 3.
+- the [final models](lab1/final_models.zip) of Run 1 (case A), as well as of Run 3 with $M_2 = 25 M_\odot$, $\beta = 0$, and $p_i = 20 {\rm d}$ (case B).
+- final [inlists](lab1/inlists_caseB_beta.zip) after Run 3.
 
 ***
 ***
@@ -515,7 +515,7 @@ Remember that $M_{2, \rm init} < M_{1, \rm init}$ because otherwise the secondar
 Settings to change from the Run 3 setup:
 
 - Disable the step overshoot we use for (very) massive stars. The remaining exponential overshoot is plenty for this example.
-- Set the appropriate ZAMS models. Download [this grid](/thursday/lab1/zams_z142m2_y2703.data) as the set of starting models, and move it to `$MESA_DIR/data/star_data/zams_models/`. Don't use the `load_saved_model` functionality, but instead set, in `&controls` of `inlist_star`:
+- Set the appropriate ZAMS models. Download [this grid](zams_z142m2_y2703.data) as the set of starting models, and move it to `$MESA_DIR/data/star_data/zams_models/`. Don't use the `load_saved_model` functionality, but instead set, in `&controls` of `inlist_star`:
 
 ```fortran
 zams_filename = 'zams_z142m2_y2703.data'
