@@ -4,21 +4,27 @@ title: "Lab 2: Linear Analysis in GYRE vs LNA (from RSP)"
 linkTitle: Lab 2
 ---
 
-*Lab written by: Lynn Buchele (lead TA), Ebraheem Farag (lecturer), Mathijs Vanrespaille, Sofia Mesini, and Andy Santarelli*
+*Lab written by: Lynn Buchele (lead TA), Mathijs Vanrespaille, Sofia Mesini, Andy Santarelli, and Ebraheem Farag (lecturer)*
 
 ## Background
 
-In lab 1, we evolved a star through the instability strip and used GYRE (on-the-fly within MESA) to calculate the expected periods and growth rates of the fundamental radial mode $(l = 0, n = 0)$. In the next lab, we'll use MESA to further evolve one model and see the pulsations develop. However, we want to choose a model where the pulsations will actually be excited and then settle into a nonlinear state. We could use the output of GYRE to determine this, but GYRE's non-adiabatic calculations use some approximations that aren't necessarily valid for Cepheid stars.
+In lab 1, we evolved a star through the instability strip and used GYRE (on-the-fly within MESA) to calculate the expected periods and growth rates of the fundamental radial mode $(l = 0, n = 0)$. In the next lab, we'll use MESA to further evolve one model and see the pulsations develop. However, we want to choose a model where the pulsations will actually be excited and then settle into a nonlinear state. We could use the output of GYRE to determine this, but GYRE's nonadiabatic calculations use some approximations that aren't necessarily valid for Cepheid stars.
 
-Specifically, the GYRE setup we used in Lab 1 uses the frozen-convection approximation, which assumes that the oscillations do not perturb the convective flux. This approximation is most reasonable when convection carries little of the local flux, or when the coupling between convection and pulsation is weak. It becomes less reliable near the cool edge of the instability strip and in large-amplitude Cepheid pulsations, where convection can contribute to the driving and damping of the mode.
+Specifically, the GYRE setup we used in Lab 1 uses the frozen convection approximation, which assumes that the oscillations do not perturb the convective flux. This approximation is most reasonable when convection carries little of the local flux, or when the coupling between convection and pulsation is weak. It becomes less reliable near the cool edge of the instability strip and in large amplitude Cepheid pulsations, where convection can contribute to the driving and damping of the mode.
 
-To account for this, we’ll now use a different pulsation tool included in MESA: the Radial Stellar Pulsations (RSP) code. Specifically, we'll use RSP's linear non-adiabatic functionality (LNA, sometimes also called LINA). In an LNA calculation, MESA perturbs a static envelope model with small-amplitude radial oscillations and reports the mode periods and growth rates without evolving the full nonlinear pulsation. This makes RSP-LNA a useful bridge between the GYRE results from Lab 1 and the nonlinear RSP/TDC evolution we will run in Lab 3. We will also be constructing a graph that shows the period-luminosity relationship that makes Cepheid stars so important for measuring astronomical distances.
+To account for this, we’ll now use a different pulsation tool included in MESA: the Radial Stellar Pulsations (RSP) code. Specifically, we'll use RSP's linear nonadiabatic functionality (LNA, sometimes also called LINA). In an LNA calculation, MESA perturbs a static envelope model with small amplitude radial oscillations and reports the mode periods and growth rates without evolving the full nonlinear pulsation. This makes RSP-LNA a useful bridge between the GYRE results from Lab 1 and the nonlinear RSP/TDC evolution we will run in Lab 3. We will also be constructing a graph that shows the period-luminosity relationship that makes Cepheid stars so important for measuring astronomical distances.
 
 ## Science Goals
 
 1. Find a model where pulsations are expected to be excited in the fundamental radial mode.
 2. Determine the period-luminosity relation from our models.
-3. Check the agreement between GYRE non-adiabatic calculations and RSP-LNA.
+3. Check the agreement between GYRE nonadiabatic calculations and RSP-LNA.
+
+## Lab Goals
+
+1. Choose a Lab 1 model using the GYRE period and growth rate output.
+2. Run RSP-LNA for the selected model and enter the comparison values in the class spreadsheet.
+3. Use the comparison to decide which models are good candidates for nonlinear follow up in Lab 3.
 
 ## MESA Goals
 
@@ -33,11 +39,11 @@ For this lab we’ll be using the histories and saved models from Lab 1. If your
 
 The [Lab 1 GYRE file solutions](https://drive.google.com/drive/folders/1woaPSSlIvNQADA5Eg-SGO0N11gXHa-S2?usp=share_link) provide a compact `gyre_in_mesa.data` file for each initial mass. These files can be used instead of searching through the full `history.data` file.
 
-The compact file contains `model_number`, `star_mass`, `X`, `Z`, `Teff`, `L`, and the period and growth information for the fundamental, first-overtone, and second-overtone modes. The `F_period`, `O1_period`, and `O2_period` columns correspond to the same GYRE periods from the full history file, but they are set to `-1` when that mode was not unstable. The `F_logKE_per_cycle`, `O1_logKE_per_cycle`, and `O2_logKE_per_cycle` columns are `2*growth` for unstable modes and `-1` otherwise.
+The compact file contains `model_number`, `star_mass`, `X`, `Z`, `Teff`, `L`, and the period and growth information for the fundamental, first overtone, and second overtone modes. The `F_period`, `O1_period`, and `O2_period` columns correspond to the same GYRE periods from the full history file, but they are set to `-1` when that mode was not unstable. The `F_logKE_per_cycle`, `O1_logKE_per_cycle`, and `O2_logKE_per_cycle` columns are `2*growth` for unstable modes and `-1` otherwise.
 
 If you are using the compact file, use `L`, `F_period`, and `F_logKE_per_cycle` for the spreadsheet. Use `star_mass`, `X`, `Z`, and `Teff` when setting up RSP.
 
-For the fundamental-mode model choice, use `F_logKE_per_cycle > 0` and `F_logKE_per_cycle > O2_logKE_per_cycle`. For a first-overtone comparison, use `O1_logKE_per_cycle > 0` and `O1_logKE_per_cycle > O2_logKE_per_cycle`.
+For the fundamental mode model choice, use `F_logKE_per_cycle > 0` and `F_logKE_per_cycle > O2_logKE_per_cycle`. For a first overtone comparison, use `O1_logKE_per_cycle > 0` and `O1_logKE_per_cycle > O2_logKE_per_cycle`.
 
 {{< /details >}}
 
@@ -45,11 +51,11 @@ For the fundamental-mode model choice, use `F_logKE_per_cycle > 0` and `F_logKE_
 
 Recall that in lab 1 we saved the GYRE results for the fundamental radial mode and the first and second overtones in the history file. We'll now use that information to look for models where we expect pulsations in the fundamental mode to be excited. These are the modes with positive growth rates.
 
-For the fundamental-mode model choice, use a model where the fundamental mode has positive growth and is growing faster than the second overtone: `F_growth > 0` and `F_growth > O2_growth`. For a first-overtone comparison, use the analogous condition `O1_growth > 0` and `O1_growth > O2_growth`. This extra check is useful because the GYRE calculation does not include the same eddy-viscous damping of overtone modes that we will use in RSP. If you are using the compact `gyre_in_mesa.data` table instead, use the equivalent columns listed in the optional drop-down above.
+For the fundamental mode model choice, use a model where the fundamental mode has positive growth and is growing faster than the second overtone: `F_growth > 0` and `F_growth > O2_growth`. For a first overtone comparison, use the analogous condition `O1_growth > 0` and `O1_growth > O2_growth`. This extra check is useful because the GYRE calculation does not include the same eddy viscous damping of overtone modes that we will use in RSP. If you are using the compact `gyre_in_mesa.data` table instead, use the equivalent columns listed in the optional drop-down above.
 
 #### Task: Find a model and add your information to the spreadsheet
 
-Look through your history file from lab 1 to find a model with `F_growth > 0` and `F_growth > O2_growth`. Please add the luminosity, GYRE F period, and GYRE F growth information to [this spreadsheet](https://docs.google.com/spreadsheets/d/1dVK0vpzgsAy0S7OG-qMyJlmwItwbp1JeB8B-xScV8WI/edit?usp=drive_link). From a full `history.data` file, use `luminosity`, `F_period`, and `F_growth`. If you are using the compact `gyre_in_mesa.data` file instead, use the column mapping in the optional drop-down above. Please also add your name or initials in the first column so you can find your data again. Although not necessary for the spreadsheet, you should also make a note of the model number you chose.
+Look through your history file from lab 1 to find a model with `F_growth > 0` and `F_growth > O2_growth`. Please add the luminosity, GYRE F period, and GYRE F growth information to [this spreadsheet](https://docs.google.com/spreadsheets/d/1dVK0vpzgsAy0S7OG-qMyJlmwItwbp1JeB8B-xScV8WI/edit?usp=drive_link). From a full `history.data` file, use `luminosity`, `F_period`, and `F_growth`. If you are using the compact `gyre_in_mesa.data` file instead, use the column mapping in the optional drop-down above. Please also add your name or initials in the first column so you can find your data again. Keep a note of the model number you chose; you will use it for bookkeeping in the RSP inlist.
 
 As more people add their models, we should see a clear relationship between the period and luminosity values.
 
@@ -65,7 +71,7 @@ There are a few inlist parameters you will need to change in `inlist_rsp_Cepheid
 
 #### Task: Set up the `star_job` inlist section
 
-Add the control necessary to use RSP to the `star_job` section of the inlist. RSP does not read in a model and so please also set the starting model number to match the model whose information you added to the spreadsheet. This does not change the run itself, but it makes bookkeeping easier (and could be useful if you attempt the bonus task).
+Add the control necessary to use RSP to the `star_job` section of the inlist. RSP does not read in a model, so please also set the starting model number to match the Lab 1 model number you noted above. This does not change the run itself, but it makes bookkeeping easier (and could be useful if you attempt the bonus task).
 
 {{< details title="`star_job` parameters" closed="true" >}}
 
@@ -104,9 +110,77 @@ Most of the inlist parameters used by RSP are found in the `controls` section of
 
 The first few controls are marked as "must set". This is because, rather than taking a full stellar model as GYRE does, RSP uses the stellar mass, luminosity, effective temperature, and envelope composition to build a static model of the stellar envelope.
 
-The next set of controls change the parameters of the convection model which will be discussed by Eb in the lecture introducing lab 3. Most of these we will leave set to their default values. However, we need to set the mixing length parameter used by RSP (`RSP_alfa`) to match our evolutionary models constructed in lab 1.
+The next set of controls change the parameters of RSP's time dependent convection model. Most of these stay at their standard values so that everyone uses the same pulsation setup. The one value you need to set is the RSP mixing length parameter, `RSP_alfa`, which should match the `mixing_length_alpha` used in your Lab 1 evolutionary model.
 
-The only other RSP control we will change is `RSP_max_num_periods` which we will set to 0. This is because we are only using RSP to perform the LNA analysis and not to evolve the non-linear pulsations.
+For a broader comparison of RSP and MESA-star TDC pulsation controls, see [Pulsations in MESA](../background/pulse-in-mesa/).
+
+{{< details title="RSP Convection Controls Background" closed="true" >}}
+
+RSP evolves the turbulent kinetic energy, $e_t$, with a one-equation convection model:
+
+$$
+\frac{D e_t}{D t}
++ \alpha_{p_t} P_t \frac{D \rho^{-1}}{D t}
+= \epsilon_q + C - \frac{\partial L_t}{\partial m},
+$$
+
+The source/sink term and convective luminosity can be written as
+
+$$
+C =
+\alpha e_t^{1/2}\frac{T P Q}{h\sqrt{6}}\mathcal{Y}
+- \alpha_D\left(\frac{8}{3}\sqrt{\frac{2}{3}}\right)\frac{e_t^{3/2}}{\alpha h}
+- \frac{48\sigma\gamma_r}{\alpha^2}
+\left(\frac{T^3}{\rho^2 c_P \kappa h^2}\right)e_t,
+$$
+
+and
+
+$$
+L_\mathrm{conv} = 4\pi r^2\alpha\rho c_P T\frac{w}{\sqrt{6}}\mathcal{Y},
+\qquad w = e_t^{1/2}.
+$$
+
+The nonlocal turbulent flux is
+
+$$
+L_t = -A \alpha \alpha_t \rho h e_t^{1/2}\frac{\partial e_t}{\partial r},
+\qquad A = 4\pi r^2.
+$$
+
+As you will see in Lab 3, `TDC` in MESA-star adopts the same convection model except without this nonlocal overshooting term.
+
+The source/sink term $C$ is left at the standard RSP setting in this lab. The controls we are adopting are:
+
+```fortran
+! RSP_alfa: MESA label "mixing length"; alpha in the convection terms
+RSP_alfa  = 1.77d0
+
+! RSP_alfac: MESA label "convective flux"; scales L_conv
+RSP_alfac = 1.0d0
+
+! RSP_alfas: MESA label "turbulent source"; source term inside C
+RSP_alfas = 1.0d0
+
+! RSP_alfad: MESA label "turbulent dissipation"; cascade sink inside C
+RSP_alfad = 1.0d0
+
+! RSP_alfap: MESA label "turbulent pressure"; alpha_{p_t} pressure-work term
+RSP_alfap = 0.0d0
+
+! RSP_alfat: MESA label "turbulent flux"; alpha_t in L_t, nonlocal overshoot
+RSP_alfat = 0.0d0
+
+! RSP_alfam: MESA label "eddy viscosity"; alpha_m in epsilon_q
+RSP_alfam = 0.25d0
+
+! RSP_gammar: MESA label "radiative losses"; gamma_r sink inside C
+RSP_gammar = 0.0d0
+```
+
+{{< /details >}}
+
+The only other RSP control we will change is `RSP_max_num_periods` which we will set to 0. This is because we are only using RSP to perform the LNA analysis and not to evolve the nonlinear pulsations.
 
 Using the model you chose from Lab 1, set the parameters in the `controls` section of `inlist_rsp_Cepheid` using the values from the model you added to the spreadsheet. Use the values of `photosphere_X` and `photosphere_Z` to set the composition.
 
@@ -183,19 +257,17 @@ then try following the suggestion made in the error message and increase `RSP_T_
 
 {{< /details >}}
 
-If you have tried two models and have not gotten RSP to converge, consult the tables below. For the main Lab 2 RSP exercise, Table 1 gives one RSP-positive fallback model per available initial mass. For the Lab 3 nonlinear run, Table 2 gives the shared starting model list and shows the RSP-LNA cross-checks for those exact model numbers.
+If you have tried two models and have not gotten RSP to converge, consult the tables below. For the main Lab 2 RSP exercise, Table 1 gives one RSP positive fallback model per available initial mass. For the Lab 3 nonlinear run, Table 2 gives the shared starting model list and shows the RSP-LNA cross checks for those exact model numbers.
 
 {{< details title="Solution examples for each mass (spoilers!)" closed="true" >}}
 
-These tables give two different fallback lists. Table 1 is the Lab 2/RSP-oriented list: one model per available initial mass where RSP-LNA built an envelope and returned a positive fundamental-mode growth rate. Use it if you need a model that should work cleanly for the Lab 2 RSP-LNA exercise.
+These tables give two different fallback lists. Table 1 is the list oriented toward Lab 2 and RSP: one model per available initial mass where RSP-LNA built an envelope and returned a positive fundamental mode growth rate. Use it if you need a model that should work cleanly for the Lab 2 RSP-LNA exercise.
 
-Table 2 is the Lab 3/nonlinear-oriented list: one selected saved model per available initial mass, chosen from the redder side of the instability strip. For the Lab 3 nonlinear runs, a useful starting point is often about 10-30% in from the red edge, where the fundamental mode is favored but the model is not sitting exactly on the edge of stability. These are the models used for the Lab 3 nonlinear sample. The corresponding `.mod` files are available in the [Lab 3 nonlinear-start model files](https://drive.google.com/file/d/1bTVVwBIyBsIVBZUVmIxXKwcFWXTSjcUj/view?usp=share_link). The RSP columns show what happened when those exact model numbers were run through the Lab 2 RSP-LNA workflow, so the RSP growth rate is not positive for every listed model.
+Table 2 is the list for Lab 3 nonlinear runs: one selected saved model per available initial mass, chosen from the redder side of the instability strip. For the Lab 3 nonlinear runs, a useful starting point is often visually about 10-30% of the plotted instability strip width in from the red edge; this is a qualitative HR diagram guide, not a formal temperature criterion. These are the models used for the Lab 3 nonlinear sample. The corresponding `.mod` files are available in the [Lab 3 nonlinear start model files](https://drive.google.com/file/d/1bTVVwBIyBsIVBZUVmIxXKwcFWXTSjcUj/view?usp=share_link). The RSP columns show what happened when those exact model numbers were run through the Lab 2 RSP-LNA workflow, so the RSP growth rate is not positive for every listed model.
 
-That difference is part of the point: different linear checks can classify the same saved stellar model differently, especially near the red edge where convection matters. RSP builds an envelope model with its own surface optical depth, outer boundary condition, and convection/pulsation parameters, so its envelope is not identical to the full MESA star used for the GYRE calculation. RSP also includes eddy-viscous damping, while the GYRE calculation used in Lab 1 does not. If `RSP_alfam` were set to `0d0`, the RSP instability strip might widen and look more like the GYRE result, but differences are still expected because the envelope models and boundary conditions are not identical.
+That difference is part of the point: different linear checks can classify the same saved stellar model differently, especially near the red edge where convection matters. RSP builds an envelope model with its own surface optical depth, outer boundary condition, and convection/pulsation parameters, so its envelope is not identical to the full MESA star used for the GYRE calculation. RSP also includes eddy viscous damping, while the GYRE calculation used in Lab 1 does not. If `RSP_alfam` were set to `0d0`, the RSP instability strip might widen and look more like the GYRE result, but differences are still expected because the envelope models and boundary conditions are not identical.
 
-No selected model was found under these filters for initial masses 3.0-3.8 or 9.5-10.0 Msun. If your group has one of those masses, ask a TA whether to use the nearest listed mass or a different model from the Lab 1 solution set.
-
-#### Table 1: Lab 2 RSP-positive fallback model choices
+{{< details title="Show Table 1: Lab 2 RSP positive fallback model choices" closed="true" >}}
 
 | Minit | model | M | Teff | L | GYRE P0 | GYRE growth | RSP P0 | RSP growth | classification |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -256,7 +328,9 @@ No selected model was found under these filters for initial masses 3.0-3.8 or 9.
 | 9.3 | 272 | 9.0904 | 5394 | 19628 | 32.93 | 0.058459 | 36.082 | 0.14188 | GYRE and RSP unstable |
 | 9.4 | 264 | 9.1896 | 5399 | 20300 | 33.533 | 0.058646 | 36.799 | 0.14391 | GYRE and RSP unstable |
 
-#### Table 2: Lab 3 nonlinear-start model choices with RSP-LNA cross-checks
+{{< /details >}}
+
+{{< details title="Show Table 2: Lab 3 nonlinear start model choices with RSP-LNA cross checks" closed="true" >}}
 
 | Minit | model | M | Teff | L | selected P0 | selected growth | GYRE P0 | GYRE growth | RSP P0 | RSP growth | classification |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -317,13 +391,15 @@ No selected model was found under these filters for initial masses 3.0-3.8 or 9.
 | 9.3 | 267 | 9.0907 | 4827 | 19394 | 51.824 | 0.39692 | 51.055 | 0.2069 | -- | -- | GYRE unstable only |
 | 9.4 | 330 | 9.1655 | 4871 | 19250 | 49.314 | 0.31887 | 48.503 | 0.19029 | 53.701 | 0.0098855 | GYRE and RSP unstable |
 
+{{< /details >}}
+
 #### HR diagram comparison
 
-The HR diagram below shows both table lists on top of the full saved-model grid. Circles are Table 1 and diamonds are Table 2. Point color shows the fundamental-mode instability classification for the exact saved model.
+The HR diagram below shows both table lists on top of the full saved model grid. Circles are Table 1 and diamonds are Table 2. Point color shows the fundamental mode instability classification for the exact saved model.
 
 <figure style="margin: 1rem 0;">
   <a href="../plots/lab2/13_hr_table1_vs_table2_lab2_lab3_selected_models.pdf">
-    <img src="../plots/lab2/13_hr_table1_vs_table2_lab2_lab3_selected_models.png" alt="Lab 2 and Lab 3 model-choice tables on the HR diagram" style="width: 100%; height: auto;">
+    <img src="../plots/lab2/13_hr_table1_vs_table2_lab2_lab3_selected_models.png" alt="Lab 2 and Lab 3 model choice tables on the HR diagram" style="width: 100%; height: auto;">
   </a>
 </figure>
 
@@ -383,7 +459,7 @@ Of this information, the part we are most interested in is the period and growth
 
 ### Wesenheit Index - Period Relationship
 
-As you will see in the shared spreadsheet, the period luminosity relationship has some scatter. This is because the underlying relationship is actually between period, luminosity and *color*. We can collapse the color dependence by using the Wesenheit index:
+As you will see in the shared spreadsheet, the period-luminosity relationship has some scatter. This is because the underlying relationship is actually between period, luminosity and *color*. We can collapse the color dependence by using the Wesenheit index:
 
 $ W_{VI} = I - R(V-I), $
 
@@ -405,52 +481,52 @@ You should aim to run 2-3 models. For lab 3, when we'll evolve the pulsations, i
 >[!TIP]
 > You can use the png output saved from lab 1 to easily check which models are in the instability strip.
 
-If your second model also has a negative growth rate, consult the tables above. Table 1 lists RSP-positive fallback choices for Lab 2, while Table 2 shows the selected red-edge model set that connects cleanly to the nonlinear Lab 3 sample.
+If your second model also has a negative growth rate, consult the tables above. Table 1 lists RSP positive fallback choices for Lab 2, while Table 2 shows the selected red edge model set that connects cleanly to the nonlinear Lab 3 sample.
 
 ### As the spreadsheet fills in discuss the following questions at your table
 
 - How similar are the periods returned by GYRE and RSP for the same model?
 - How similar are the growth rates returned by GYRE and RSP for the same model?
 - Compare the period-luminosity relations between the two codes. Are there any major differences?
-- How do the period-luminosity relations compare to the period-Wesenheit relations?
+- How do the period-luminosity relations compare to the period Wesenheit relations?
 
 {{< details title="Solutions (spoilers!)" closed="true" >}}
 
-These plots come from the full model grid used to check the Lab 2 and Lab 3 model choices. They are not required for the manual part of the lab, but they are useful for seeing what changes when the same saved stellar models are analyzed with GYRE and with RSP-LNA. For GYRE, the fundamental mode is the radial mode with `n_pg = 1`; for RSP, the fundamental mode is mode `0`. The HR agreement plots use the full blue-loop model set from the Lab 1 reference solutions. For the GYRE part of the classification, the relevant mode must have positive growth and must be growing faster than the second overtone. The RSP part is classified from the matching RSP-LNA calculation using positive growth for the same mode only.
+These plots come from the full model grid used to check the Lab 2 and Lab 3 model choices. They are not required for the manual part of the lab, but they are useful for seeing what changes when the same saved stellar models are analyzed with GYRE and with RSP-LNA. For GYRE, the fundamental mode is the radial mode with `n_pg = 1`; for RSP, the fundamental mode is mode `0`. The HR agreement plots use the full blue loop model set from the Lab 1 reference solutions. For the GYRE part of the classification, the relevant mode must have positive growth and must be growing faster than the second overtone. The RSP part is classified from the matching RSP-LNA calculation using positive growth for the same mode only.
 
 The plotter used to generate these figures is available [here](https://drive.google.com/file/d/115PrNza8qip5em7uIh3hk1JE6hXoVeQZ/view?usp=share_link).
 
-#### Instability-strip comparison
+#### Instability strip comparison
 
 <figure style="margin: 1rem 0;">
   <a href="../plots/lab2/09_hr_instability_agreement_all_grid.pdf">
-    <img src="../plots/lab2/09_hr_instability_agreement_all_grid.png" alt="Fundamental-mode GYRE/RSP instability agreement across the full grid" style="width: 100%; height: auto;">
+    <img src="../plots/lab2/09_hr_instability_agreement_all_grid.png" alt="Fundamental mode GYRE/RSP instability agreement across the full grid" style="width: 100%; height: auto;">
   </a>
 </figure>
 
-The fundamental-mode plot shows the full blue-loop history grid. The green and orange points together are the GYRE fundamental-mode selection from Lab 1, split by whether the matching RSP-LNA model is also unstable. The blue points are models where only RSP-LNA finds positive fundamental-mode growth. The gray points are the stable/background grid points. RSP is stricter for some of the cooler selected models and extends differently on the hot side, which is why Table 1 is the better fallback list for finishing Lab 2 and Table 2 is the better handoff list for Lab 3.
+The fundamental mode plot shows the full blue loop history grid. The green and orange points together are the GYRE fundamental mode selection from Lab 1, split by whether the matching RSP-LNA model is also unstable. The blue points are models where only RSP-LNA finds positive fundamental mode growth. The gray points are the stable/background grid points. RSP is stricter for some of the cooler selected models and extends differently on the hot side, which is why Table 1 is the better fallback list for finishing Lab 2 and Table 2 is the better handoff list for Lab 3.
 
 <figure style="margin: 1rem 0;">
   <a href="../plots/lab2/10_hr_first_overtone_instability_agreement_all_grid.pdf">
-    <img src="../plots/lab2/10_hr_first_overtone_instability_agreement_all_grid.png" alt="First-overtone GYRE/RSP instability agreement across the full grid" style="width: 100%; height: auto;">
+    <img src="../plots/lab2/10_hr_first_overtone_instability_agreement_all_grid.png" alt="First overtone GYRE/RSP instability agreement across the full grid" style="width: 100%; height: auto;">
   </a>
 </figure>
 
-The first-overtone comparison is noisier for our purposes. It is useful context, but the nonlinear Lab 3 sample is chosen for fundamental-mode behavior, so the fundamental-mode agreement is the plot to use when choosing models for the next lab.
+The first overtone comparison is noisier for our purposes. It is useful context, but the nonlinear Lab 3 sample is chosen for fundamental mode behavior, so the fundamental mode agreement is the plot to use when choosing models for the next lab.
 
-#### Period-radius relations
+#### Period radius relations
 
 <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); margin: 1rem 0;">
   <figure style="margin: 0;">
     <figcaption><strong>Fundamental mode</strong></figcaption>
     <a href="../plots/lab2/03_fundamental_period_radius_unstable_gyre_rsp.pdf">
-      <img src="../plots/lab2/03_fundamental_period_radius_unstable_gyre_rsp.png" alt="Fundamental-mode period-radius relation for unstable GYRE and RSP models" style="width: 100%; height: auto;">
+      <img src="../plots/lab2/03_fundamental_period_radius_unstable_gyre_rsp.png" alt="Fundamental mode period radius relation for unstable GYRE and RSP models" style="width: 100%; height: auto;">
     </a>
   </figure>
   <figure style="margin: 0;">
     <figcaption><strong>First overtone</strong></figcaption>
     <a href="../plots/lab2/04_first_overtone_period_radius_unstable_gyre_rsp.pdf">
-      <img src="../plots/lab2/04_first_overtone_period_radius_unstable_gyre_rsp.png" alt="First-overtone period-radius relation for unstable GYRE and RSP models" style="width: 100%; height: auto;">
+      <img src="../plots/lab2/04_first_overtone_period_radius_unstable_gyre_rsp.png" alt="First overtone period radius relation for unstable GYRE and RSP models" style="width: 100%; height: auto;">
     </a>
   </figure>
 </div>
@@ -463,68 +539,68 @@ Both codes recover the expected trend that larger Cepheids have longer pulsation
   <figure style="margin: 0;">
     <figcaption><strong>Fundamental mode</strong></figcaption>
     <a href="../plots/lab2/14_fundamental_period_luminosity_unstable_gyre_rsp.pdf">
-      <img src="../plots/lab2/14_fundamental_period_luminosity_unstable_gyre_rsp.png" alt="Fundamental-mode period-luminosity relation for unstable GYRE and RSP models" style="width: 100%; height: auto;">
+      <img src="../plots/lab2/14_fundamental_period_luminosity_unstable_gyre_rsp.png" alt="Fundamental mode period-luminosity relation for unstable GYRE and RSP models" style="width: 100%; height: auto;">
     </a>
   </figure>
   <figure style="margin: 0;">
     <figcaption><strong>First overtone</strong></figcaption>
     <a href="../plots/lab2/15_first_overtone_period_luminosity_unstable_gyre_rsp.pdf">
-      <img src="../plots/lab2/15_first_overtone_period_luminosity_unstable_gyre_rsp.png" alt="First-overtone period-luminosity relation for unstable GYRE and RSP models" style="width: 100%; height: auto;">
+      <img src="../plots/lab2/15_first_overtone_period_luminosity_unstable_gyre_rsp.png" alt="First overtone period-luminosity relation for unstable GYRE and RSP models" style="width: 100%; height: auto;">
     </a>
   </figure>
 </div>
 
 The period-luminosity plots have visible width because temperature matters. The remaining GYRE/RSP offset is mostly a period offset, not a luminosity offset.
 
-#### Period-Wesenheit relations with OGLE
+#### Period Wesenheit relations with OGLE
 
 <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); margin: 1rem 0;">
   <figure style="margin: 0;">
     <figcaption><strong>Fundamental mode</strong></figcaption>
     <a href="../plots/lab2/18_fundamental_period_wesenheit_unstable_gyre_rsp_ogle_overlay.pdf">
-      <img src="../plots/lab2/18_fundamental_period_wesenheit_unstable_gyre_rsp_ogle_overlay.png" alt="Fundamental-mode period-Wesenheit relation with OGLE comparison" style="width: 100%; height: auto;">
+      <img src="../plots/lab2/18_fundamental_period_wesenheit_unstable_gyre_rsp_ogle_overlay.png" alt="Fundamental mode period Wesenheit relation with OGLE comparison" style="width: 100%; height: auto;">
     </a>
   </figure>
   <figure style="margin: 0;">
     <figcaption><strong>First overtone</strong></figcaption>
     <a href="../plots/lab2/19_first_overtone_period_wesenheit_unstable_gyre_rsp_ogle_overlay.pdf">
-      <img src="../plots/lab2/19_first_overtone_period_wesenheit_unstable_gyre_rsp_ogle_overlay.png" alt="First-overtone period-Wesenheit relation with OGLE comparison" style="width: 100%; height: auto;">
+      <img src="../plots/lab2/19_first_overtone_period_wesenheit_unstable_gyre_rsp_ogle_overlay.png" alt="First overtone period Wesenheit relation with OGLE comparison" style="width: 100%; height: auto;">
     </a>
   </figure>
 </div>
 
-These are the main plots to use for the period-Wesenheit comparison. The Wesenheit index folds in color information, so the relation is tighter than the period-luminosity relation and is easier to compare with observed Cepheids. The model sequence is shifted onto the observed plane for comparison, so the vertical offset should not be interpreted as a distance measurement. The useful point is that the slopes and overall trends line up reasonably well.
+These are the main plots to use for the period Wesenheit comparison. The Wesenheit index folds in color information, so the relation is tighter than the period-luminosity relation and is easier to compare with observed Cepheids. The model sequence is shifted onto the observed plane for comparison, so the vertical offset should not be interpreted as a distance measurement. The useful point is that the slopes and overall trends line up reasonably well.
 
 #### Direct GYRE/RSP ratios
 
 <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); margin: 1rem 0;">
   <figure style="margin: 0;">
-    <figcaption><strong>Fundamental-mode period ratio</strong></figcaption>
+    <figcaption><strong>Fundamental mode period ratio</strong></figcaption>
     <a href="../plots/lab2/20_period_ratio_F0_gyre_over_rsp_vs_gyre_logP.pdf">
-      <img src="../plots/lab2/20_period_ratio_F0_gyre_over_rsp_vs_gyre_logP.png" alt="Fundamental-mode GYRE-over-RSP period ratio as a function of GYRE period" style="width: 100%; height: auto;">
+      <img src="../plots/lab2/20_period_ratio_F0_gyre_over_rsp_vs_gyre_logP.png" alt="Fundamental mode GYRE over RSP period ratio as a function of GYRE period" style="width: 100%; height: auto;">
     </a>
   </figure>
   <figure style="margin: 0;">
-    <figcaption><strong>Fundamental-mode radius ratio</strong></figcaption>
+    <figcaption><strong>Fundamental mode radius ratio</strong></figcaption>
     <a href="../plots/lab2/22_radius_ratio_F0_lab1_over_rsp_Rphot_vs_gyre_logP.pdf">
-      <img src="../plots/lab2/22_radius_ratio_F0_lab1_over_rsp_Rphot_vs_gyre_logP.png" alt="Fundamental-mode Lab 1 radius over RSP Rphot ratio as a function of GYRE period" style="width: 100%; height: auto;">
+      <img src="../plots/lab2/22_radius_ratio_F0_lab1_over_rsp_Rphot_vs_gyre_logP.png" alt="Fundamental mode Lab 1 radius over RSP Rphot ratio as a function of GYRE period" style="width: 100%; height: auto;">
     </a>
   </figure>
   <figure style="margin: 0;">
-    <figcaption><strong>First-overtone period ratio</strong></figcaption>
+    <figcaption><strong>First overtone period ratio</strong></figcaption>
     <a href="../plots/lab2/21_period_ratio_F1_gyre_over_rsp_vs_gyre_logP.pdf">
-      <img src="../plots/lab2/21_period_ratio_F1_gyre_over_rsp_vs_gyre_logP.png" alt="First-overtone GYRE-over-RSP period ratio as a function of GYRE period" style="width: 100%; height: auto;">
+      <img src="../plots/lab2/21_period_ratio_F1_gyre_over_rsp_vs_gyre_logP.png" alt="First overtone GYRE over RSP period ratio as a function of GYRE period" style="width: 100%; height: auto;">
     </a>
   </figure>
   <figure style="margin: 0;">
-    <figcaption><strong>First-overtone radius ratio</strong></figcaption>
+    <figcaption><strong>First overtone radius ratio</strong></figcaption>
     <a href="../plots/lab2/23_radius_ratio_F1_lab1_over_rsp_Rphot_vs_gyre_logP.pdf">
-      <img src="../plots/lab2/23_radius_ratio_F1_lab1_over_rsp_Rphot_vs_gyre_logP.png" alt="First-overtone Lab 1 radius over RSP Rphot ratio as a function of GYRE period" style="width: 100%; height: auto;">
+      <img src="../plots/lab2/23_radius_ratio_F1_lab1_over_rsp_Rphot_vs_gyre_logP.png" alt="First overtone Lab 1 radius over RSP Rphot ratio as a function of GYRE period" style="width: 100%; height: auto;">
     </a>
   </figure>
 </div>
 
-The period-ratio plots show the main systematic difference directly: for many of these models, `P_GYRE / P_RSP` is below one, so RSP gives a longer period for the same saved model. The radius-ratio plots stay very close to one, so the period difference is not mostly caused by using inconsistent radii. It is more likely coming from the different pulsation calculations and the way the RSP envelope model is constructed from the stellar model.
+The period ratio plots show the main systematic difference directly: for many of these models, `P_GYRE / P_RSP` is below one, so RSP gives a longer period for the same saved model. The radius ratio plots stay very close to one, so the period difference is not mostly caused by using inconsistent radii. It is more likely coming from the different pulsation calculations and the way the RSP envelope model is constructed from the stellar model.
 
 {{< /details >}}
 
@@ -579,7 +655,7 @@ If you use these solutions files directly, you still need to pass the correct pa
 {{< /details >}}
 
 > [!TIP]
-> For options 2-4, your output will be a whitespace-separated table. Most spreadsheet programs (Excel, LibreOffice Calc, GoogleSheets) can import this kind of text file. Then, the columns of this new spreadsheet can easily be copied into the class spreadsheet.
+> For options 2-4, your output will be a table separated by whitespace. Most spreadsheet programs (Excel, LibreOffice Calc, GoogleSheets) can import this kind of text file. Then, the columns of this new spreadsheet can easily be copied into the class spreadsheet.
 
 ### Bonus task part 2
 
@@ -591,7 +667,7 @@ When we did these runs to generate the data for the plots in the lecture slides,
 
 {{< details title="Set up used for fully automated batch runs" closed="true" >}}
 
-The [extended full-solution archive](https://drive.google.com/file/d/1BP5cMCpX6v8kInb3DPGKuNtqABhG-5Oo/view?usp=share_link) shows a more automated version of the batch workflow. It follows the same basic idea as the bonus task, but is set up to run through many saved Lab 1 `.mod` files with less manual editing.
+The [extended full solution archive](https://drive.google.com/file/d/1BP5cMCpX6v8kInb3DPGKuNtqABhG-5Oo/view?usp=share_link) shows a more automated version of the batch workflow. It follows the same basic idea as the bonus task, but is set up to run through many saved Lab 1 `.mod` files with less manual editing.
 
 The extended script loops over the saved model files, reads the model number, current mass, effective temperature, and luminosity from each filename, updates the corresponding RSP inlist controls with `shmesa change`, runs RSP-LNA, and appends one output record per successful model. That makes the output easier to join to the Lab 1 GYRE tables and use for comparison plots. You do not need this extended version to complete the lab; it is included as reference code for anyone who wants to see a more automated implementation.
 
@@ -603,7 +679,7 @@ Method references:
 
 - [Townsend and Teitler 2013, GYRE](https://ui.adsabs.harvard.edu/abs/2013MNRAS.435.3406T/abstract)
 - [Paxton et al. 2019, MESA V](https://ui.adsabs.harvard.edu/abs/2019ApJS..243...10P/abstract)
-- [Anderson et al. 2016, pulsation-convection coupling and Cepheid instability-strip edges](https://www.aanda.org/articles/aa/full_html/2016/07/aa28031-15/aa28031-15.html)
+- [Anderson et al. 2016, pulsation-convection coupling and Cepheid instability strip edges](https://www.aanda.org/articles/aa/full_html/2016/07/aa28031-15/aa28031-15.html)
 
 Pulsation and P-L references:
 

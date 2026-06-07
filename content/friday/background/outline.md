@@ -8,7 +8,7 @@ weight: 1
 Friday is built around one connected Cepheid workflow. The models are LMC-like, with `Z = 0.006`, `Y = 0.2575`, and initial masses in the $3.9-9.4\,M_\odot$ range.
 
 - Lab 1 evolves the stellar models, runs GYRE inside MESA-star during the Cepheid phase, and saves `.mod` files.
-- Lab 2 uses those same saved models to compare GYRE-in-MESA with RSP linear nonadiabatic analysis and to build period-luminosity and period-Wesenheit relations.
+- Lab 2 uses those same saved models to compare GYRE-in-MESA with RSP linear nonadiabatic analysis and to build period-luminosity and period Wesenheit relations.
 - Lab 3 uses selected saved models as starting points for nonlinear TDC pulsation runs and reconstructs the Hertzsprung progression.
 
 ## Lab 1 - Evolving a Cepheid into the Instability Strip
@@ -32,7 +32,7 @@ Source: Figure 3 in [Smolec et al. 2026, MESA Cepheid grid III](https://arxiv.or
 3. Restart with `./re`, switch to an inlist stopping condition, and run to core helium depletion.
 4. Fix the GYRE-in-MESA setup in `run_star_extras` so GYRE receives the MESA model through `set_model`.
 5. Let GYRE run during the dense-output Cepheid part of the evolution.
-6. Save period and growth information for the fundamental, first-overtone, and second-overtone radial modes.
+6. Save period and growth information for the fundamental, first overtone, and second overtone radial modes.
 7. Save `.mod` files in `mod_dir/` for later labs.
 8. Add the instability strip to PGSTAR and compare the blue-loop behavior across the class.
 
@@ -62,7 +62,7 @@ Use the saved Lab 1 models to compare two linear pulsation calculations:
 - GYRE-in-MESA, which uses the full MESA stellar structure
 - RSP-LNA, which builds a static radial envelope model from the model's mass, luminosity, effective temperature, and composition
 
-The class then uses the resulting periods, growth rates, luminosities, and Wesenheit values to compare period-luminosity and period-Wesenheit behavior.
+The class then uses the resulting periods, growth rates, luminosities, and Wesenheit values to compare period-luminosity and period Wesenheit behavior.
 
 **Observed Cepheids inside the instability strip**
 
@@ -74,7 +74,7 @@ Source: Figure 2 in [Smolec et al. 2026, MESA Cepheid grid III](https://arxiv.or
 
 ![Lab 2 paper figure showing the Cepheid period-luminosity relation in Wesenheit index](paper_refs/lab2_fig8_smolec_2026.png)
 
-Source: Figure 8 in [Smolec et al. 2026, MESA Cepheid grid III](https://arxiv.org/abs/2603.26111). The Friday lab starts with a simple period-luminosity relation and then uses the RSP color output to build a period-Wesenheit relation.
+Source: Figure 8 in [Smolec et al. 2026, MESA Cepheid grid III](https://arxiv.org/abs/2603.26111). The Friday lab starts with a simple period-luminosity relation and then uses the RSP color output to build a period Wesenheit relation.
 
 $$
 W_{VI} = I - R_{VI}(V-I)
@@ -84,24 +84,24 @@ The Wesenheit index folds color information into the vertical axis, so it is clo
 
 **What happens**
 
-1. Choose a saved Lab 1 model with useful fundamental-mode information.
+1. Choose a saved Lab 1 model with useful fundamental mode information.
 2. Add the GYRE period, growth rate, and luminosity to the shared spreadsheet.
 3. Set up the RSP work directory and build an RSP envelope using `RSP_mass`, `RSP_Teff`, `RSP_L`, `RSP_X`, and `RSP_Z`.
 4. Use `initial_model_number` for bookkeeping so RSP output can be matched back to the Lab 1 model number.
 5. Run RSP-LNA with `RSP_max_num_periods = 0`.
 6. Add the RSP fundamental period, growth rate, and Wesenheit value to the same spreadsheet row.
-7. Use Table 1 if you need a clean RSP-positive fallback for Lab 2.
-8. Use Table 2 if you need the selected red-edge starting models for Lab 3.
-9. Compare the full-grid reference plots for instability classification, period-radius, period-luminosity, period-Wesenheit, and direct GYRE/RSP period and radius ratios.
+7. Use Table 1 if you need a clean RSP positive fallback for Lab 2.
+8. Use Table 2 if you need the selected red edge starting models for Lab 3.
+9. Compare the full-grid reference plots for instability classification, period radius, period-luminosity, period Wesenheit, and direct GYRE/RSP period and radius ratios.
 10. Optionally automate the RSP-LNA runs with the batch script.
 
 **Class products**
 
 - a GYRE/RSP comparison table for the same saved model numbers
 - a class period-luminosity relation
-- a class period-Wesenheit relation
+- a class period Wesenheit relation
 - a record of which models are useful Lab 2 fallback models
-- a selected red-edge model list for the Lab 3 nonlinear sample
+- a selected red edge model list for the Lab 3 nonlinear sample
 
 **Reading**
 
@@ -109,7 +109,7 @@ Method references:
 
 - [Townsend and Teitler 2013, GYRE](https://ui.adsabs.harvard.edu/abs/2013MNRAS.435.3406T/abstract)
 - [Paxton et al. 2019, MESA V](https://ui.adsabs.harvard.edu/abs/2019ApJS..243...10P/abstract)
-- [Anderson et al. 2016, pulsation-convection coupling and Cepheid instability-strip edges](https://www.aanda.org/articles/aa/full_html/2016/07/aa28031-15/aa28031-15.html)
+- [Anderson et al. 2016, pulsation-convection coupling and Cepheid instability strip edges](https://www.aanda.org/articles/aa/full_html/2016/07/aa28031-15/aa28031-15.html)
 
 Pulsation and P-L references:
 
@@ -128,7 +128,7 @@ Observational context:
 
 **Goal**
 
-Use nonlinear time-dependent convection (TDC) runs to see how a finite-amplitude Cepheid waveform develops, classify the bump location, and reconstruct the Hertzsprung progression across the class sample.
+Use nonlinear time dependent convection (TDC) runs to see how a finite amplitude Cepheid waveform develops, classify the bump location, and reconstruct the Hertzsprung progression across the class sample.
 
 **Bump morphology across the Hertzsprung progression**
 
@@ -136,21 +136,21 @@ Use nonlinear time-dependent convection (TDC) runs to see how a finite-amplitude
 
 Source: Figure 4 in [Marconi et al. 2024, The Hertzsprung progression of classical Cepheids in the Gaia era](https://ui.adsabs.harvard.edu/abs/2024MNRAS.529.4210M/abstract). The bump shifts across the waveform as period changes.
 
-The usual single-mode interpretation is that the morphology is tied to a near `2:1` resonance between the second overtone and the fundamental mode:
+The usual single mode interpretation is that the morphology is tied to a near `2:1` resonance between the second overtone and the fundamental mode:
 
 $$
 P_2/P_0 \approx 0.5.
 $$
 
-This is a guide to the clean fundamental-mode Hertzsprung progression, not a complete description of every pulsating star. Multiperiodic, mode-switching, period-doubled, and irregular behavior are part of the broader nonlinear mode-selection problem.
+This is a guide to the clean fundamental mode Hertzsprung progression, not a complete description of every pulsating star. Multiperiodic, mode switching, period doubled, and irregular behavior are part of the broader nonlinear mode selection problem.
 
 **What happens**
 
-1. Start from a saved Lab 1 `.mod` file, preferably one of the Table 2 red-edge models from Lab 2.
+1. Start from a saved Lab 1 `.mod` file, preferably one of the Table 2 red edge models from Lab 2.
 2. Set `load_model_filename` in `inlist_pulses`.
 3. Choose an initial kick for the fundamental radial mode.
 4. Compile and run the TDC setup.
-5. Watch PGSTAR and the saved outputs until the model develops a coherent finite-amplitude pulsation.
+5. Watch PGSTAR and the saved outputs until the model develops a coherent finite amplitude pulsation.
 6. Use the lab standard, not a full science-run standard: the waveform only needs to be developed enough to classify the bump.
 7. Record the nonlinear period and whether the bump is on the descending branch, middle of the cycle, rising branch, or unclear.
 8. Compare the class results by period.
@@ -161,7 +161,7 @@ This is a guide to the clean fundamental-mode Hertzsprung progression, not a com
 - a set of nonlinear Cepheid light curves
 - a class table with model, period, and bump classification
 - a bump-progression sequence
-- notes on any models that do not behave as clean single-mode pulsators
+- notes on any models that do not behave as clean single mode pulsators
 
 **Reading**
 

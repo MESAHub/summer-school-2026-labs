@@ -5,7 +5,47 @@ linkTitle: Lab 1
 lazyAnimation: true
 ---
 
-*Lab written by: Sofia Mesini (lead TA), Lynn Buchele (lead TA), Mathijs Vanrespaille, Ebraheem Farag (lecturer), and Andy Santarelli*
+*Lab written by: Sofia Mesini (lead TA), Lynn Buchele (lead TA), Mathijs Vanrespaille, Andy Santarelli, and Ebraheem Farag (lecturer)*
+
+## Background
+
+In this lab, you will evolve a star through the instability strip and use GYRE (on-the-fly within MESA) to calculate the expected periods and growth rates of the fundamental radial mode $(l = 0, n = 0)$.
+
+The evolutionary feature that gets us there is the blue loop. During core helium burning, some intermediate-mass, LMC-like models move back toward hotter effective temperature before returning redward. If that loop crosses the instability strip, the model becomes unstable to radial mode pulsations and is classified as a classical Cepheid.
+
+Getting blue loops right is a known modeling challenge. Their extent depends on input physics such as metallicity, mass loss, nuclear reaction rates, and convective mixing, including core and envelope overshooting. The Friday grid uses $Z = 0.006$ and $Y = 0.2575$, following [Smolec et al. 2026](https://arxiv.org/abs/2603.26111), to represent reasonable LMC-like stellar models.
+
+The model does not visibly pulsate in this lab because MESA-star is taking evolutionary timesteps, not resolving the pulsation cycle. The `history.data` file with GYRE information will be used in Lab 2, and the saved `.mod` files will be used in Lab 3.
+
+## Science Goals
+
+1. Evolve a classical Cepheid candidate with an initial mass in the $3.9-9.4\,M_\odot$ range.
+2. Track how the model enters, crosses, and leaves the instability strip during the blue loop.
+3. Save models and linear pulsation information that can be used to choose nonlinear Cepheid models later.
+
+## Lab Goals
+
+1. Complete the two-part evolution from the ZAMS to core He burning, then from core He burning to He depletion.
+2. Identify the Cepheid part of the blue loop and keep track of the saved model files.
+3. Finish with `history.data`, GYRE output, and `.mod` files ready for Labs 2 and 3.
+
+## MESA Goals
+
+1. Use stopping conditions to stop near the onset of core He burning, then restart and stop at core He depletion.
+2. Edit `run_star_extras.f90` so MESA calls GYRE during the Cepheid part of the evolution.
+3. Save `.mod` files and add history/PGSTAR diagnostics for the later pulsation labs.
+
+## Lab Directions
+
+The evolution is divided into two steps:
+
+1. **Step 1**: you will start from the Zero Age Main Sequence (ZAMS) and stop near the onset of core He burning.
+
+2. **Step 2**: you will resume the previous run and simulate the evolution all the way through He burning, until reaching He depletion in the core.
+
+While the simulation runs in Step 2 you'll get to watch your star experience a blue loop and move through the instability strip, while GYRE runs automatically during the pulsational phase!
+
+During this second part of the run, you will also save some models (called `.mod` files), that will be reused in the next labs.
 
 {{< details title="Show Cepheid evolution animation" closed="true" >}}
 
@@ -18,18 +58,6 @@ Adapted from scripts written and shared by Selim Kalici.
 >}}
 
 {{< /details >}}
-
-## Summary
-
-In this lab you will learn how to evolve a classical Cepheid model, with an initial mass in the $3.9-9.4\,M_\odot$ range. The evolution will be divided in two steps:
-
-1. **Step 1**: you will start from the Zero Age Main Sequence (ZAMS) and stop near the onset of core He burning.
-
-2. **Step 2**: you will resume the previous run and simulate the evolution all the way through He burning, until reaching He depletion in the core.
-
-While the simulation runs in Step 2 you'll get to watch your star experience a blue loop and move through the instability strip, while GYRE runs automatically during the pulsational phase!
-
-During this second part of the run, you will also save some models (called `.mod` files), that will be reused in the next labs.
 
 ## 1: Let's get it started in here: setting up the work directory
 
@@ -55,6 +83,8 @@ re
 rn
 ```
 
+The `run_star_extras.f90` file you will edit later is inside the `src/` directory.
+
 <!-- But it's not a Cepheid yet  -->
 ## 2: Star goes brrr: stopping conditions in ```run_star_extras.f90```
 
@@ -65,7 +95,7 @@ Pick an initial mass in the range $3.9-9.4\,M_\odot$ from the options available 
 > [!IMPORTANT]
 > Make sure that each person at your table has chosen a significantly different initial mass value: this will make later comparisons more interesting!
 
-Next, instruct MESA about initial mass you just chose. To do so, open the ```inlist_project``` file with your favourite text editor, and find the correct spot to define the initial mass!
+Next, instruct MESA about initial mass you just chose. To do so, open the ```inlist_project``` file with your favorite text editor, and find the correct spot to define the initial mass!
 
 {{< details title="Answer 2.1" closed="true" >}}
 
@@ -121,7 +151,7 @@ Now try to code up that stopping condition! You can find some useful bits of cod
 
 > [!TIP]
 > A reasonable value to make sure that all H is depleted in the core is to consider the hydrogen abundance to be $< 10^{-12}$.
-> To be sure that helium burning has indeed started, a good approach is to take the logarithm of the power generated by helium burning and require it to be larger than `1d0`. The reason for this choice is that we want the power produced by the $3\alpha$ reaction to be contributing significantly to the total energy generation.
+> To be sure that helium burning has indeed started, a good approach is to take the logarithm of the power generated by helium burning, in solar luminosity units, and require it to be larger than `1d0`. The reason for this choice is that we want the power produced by the $3\alpha$ reaction to be contributing significantly to the total energy generation.
 
 While coding in the ```run_star_extras``` you will be using quantities and variables that are contained in the structure of the star.
 
@@ -133,7 +163,7 @@ The variables you are looking for are
 
 ```fortran
 s% center_h1      ! central H abundance
-s% power_he_burn  ! power from He burning
+s% power_he_burn  ! power from He burning, in Lsun units
 ```
 
 This only works if the pointer ```s``` is already initialized, which is already done by the line
@@ -210,9 +240,7 @@ If no errors pop up, you are all set! Now run the model using
 ./rn
 ```
 
-During this first run you will see the star evolving through the main sequence and across the Hertzsprung gap to the base of the RGB, and will be the base on which we will be building the second part of the simulation!
-
-## Ah yes, the remix: stopping condition in the ```inlist_project```
+During this first run you will see the star evolving through the main sequence and across the Hertzsprung gap to the base of the RGB. The second part of the simulation will start from this point.
 
 ## 3. Ah yes, the remix: stopping condition in the ```inlist_project```
 
@@ -237,15 +265,18 @@ Since you changed ```run_star_extras.f90```, you also need to update the executa
 
 In this second part of the run, we want to stop the simulation when He is depleted in the core of the star. Luckily, in this case MESA provides a pre-made stopping condition for when the mass fraction of an isotope goes below a user-set value. Can you find it in the documentation?
 
-> [!TIP]
-> Have a look at the [`xa_central_lower_limit_species` controls section](https://docs.mesastar.org/en/latest/reference/controls.html#xa-central-lower-limit-species).
+{{< details title="Hint: where to look" closed="true" >}}
+
+Have a look at the [`xa_central_lower_limit_species` controls section](https://docs.mesastar.org/en/latest/reference/controls.html#xa-central-lower-limit-species).
+
+{{< /details >}}
 
 > [!TIP]
 > Alternatively you can take a look in the ```$MESA_DIR/star/defaults/controls.defaults``` file.
 
 Once you have found the right command, implement the stopping condition in your inlist.
 
-In this case, we want to stop the simulation when the mass fraction of leftover Helium in the core goes below ```1d-14```.
+In this case, we want to stop the simulation when the mass fraction of leftover Helium in the core goes below ```1d-4```.
 
 {{< details title="Answer 3.2" closed="true" >}}
 
@@ -264,7 +295,7 @@ Add the following in the `&controls` section of *inlist_project*:
 
 Amazing! Now you are ready to continue your simulation!
 > [!NOTE]
-> Since the changes that we made in the ```inlist_project``` are not introducing new code into MESA, we **don't need** to **make a new executable**!
+> Since the changes that we made in the ```inlist_project``` are not introducing new code into MESA, we **don't need to make a new executable**!
 
 Great, we have the second part of the run set up...but how do we continue without losing what we just computed?
 > [!CAUTION]
@@ -280,7 +311,7 @@ The way to do it is by using ```photos``` files. These are custom binary files w
 
 <!-- Mathijs: Good reminder! I like that you add these bits of practical info -->
 > [!CAUTION]
-> These files are **machine-specific**: so no, you cannot share your photo file with your group mate and expect to obtain the same result!
+> Photos are **machine-specific**: so no, you cannot share your photo file with your group mate and expect to obtain the same result!
 
 Now we want to restart our simulation from the last photo MESA took at the end of the previous simulation.
 
@@ -292,7 +323,7 @@ termination code: extras_finish_step
 ```
 
 > [!NOTE]
-> How often photos are written is set with `photo_interval` in the `controls` section of the inlist. Another important control is `photo_digits`, which sets how many digits from the end of the model number are used in the photo name. We set `photo_interval = 100`, so unless we run more than 100,000,000 models, the photo number will always correspond to the model number.
+> How often photos are written is set with `photo_interval` in the `controls` section of the inlist. Another important control is `photo_digits`, which sets how many digits from the end of the model number are used in the photo name. We set `photo_interval = 100` and `photo_digits = 8`, so unless we run more than 100,000,000 models, the photo number will always correspond to the model number.
 
 If we want to restart from a specific photo we pass it to the `re` script like this:
 
@@ -351,7 +382,7 @@ Although the first line of the error message points to a file in the MESA source
 
 This `run_star_extras` file does two important things: calls GYRE as MESA is running to save data to the history file and saves some `.mod` files with custom names and based on a custom criteria.
 
-We'll focus first on the GYRE portion. In previous labs, you used GYRE as a post-processing code on profile files saved by MESA. There is also a way to run GYRE on-the-fly during the evolution, which is what we will use in this lab. In order to use GYRE in this way we have to load the GYRE library with the statement
+We'll focus first on the GYRE portion. In previous labs, you used GYRE as a post-processing code on stellar structures saved by MESA and converted to a GYRE-readable format. There is also a way to run GYRE on-the-fly during the evolution, which is what we will use in this lab. In order to use GYRE in this way we have to load the GYRE library with the statement
 
 ```fortran
    use gyre_mesa_M
@@ -360,7 +391,10 @@ We'll focus first on the GYRE portion. In previous labs, you used GYRE as a post
 at the top of the `run_star_extras` file. We also added a few variables to pass the values returned by GYRE from one `run_star_extras` routine to another. These variables are
 
 ```fortran
-   real(dp) :: F_period, F_growth, O1_period, O1_growth, O2_period, O2_growth ! GYRE variables to write to history
+   ! GYRE variables to write to history
+   real(dp) :: F_period, F_growth
+   real(dp) :: O1_period, O1_growth
+   real(dp) :: O2_period, O2_growth
 ```
 
 In addition to loading the GYRE library we also need to initialize GYRE and set some constants for GYRE to use. Since we only need to do this once per run, we use the `extras_startup` routine for this. This is mandatory any time you want to use GYRE within MESA. The code for this looks like
@@ -416,7 +450,7 @@ However, these values are not calculated here. Instead, we calculate them in the
 Let's go back to the `extras_finish_step`routine and see how that's done, look specifically for the section marked by
 
 ```none
-! ======= Routines for the core-helium burning part of the evolution ! ======
+! ======= Routines for the core helium burning part of the evolution ! ======
 ```
 
 Right after this comment we set two logical variables, `call_gyre` and `need_to_save_model`, to `.false.` This is because we want to decide at run time when GYRE will be called and when we will save models. The logical variable `in_gyre_region` is used for the part of the evolution where we want denser output.
@@ -622,17 +656,15 @@ There is a text summary plus 5 science panels:
 3. **Combined panel**: In this panel you can see 3 figures stacked on top of each other. From top to bottom, they show the chemical abundances in the interior of the star, the energy generation, and the internal mixing processes, all as a function of the mass coordinate. Where are the convective zones? Can you see any changes while the model is evolving?
 <!-- Mathijs: Perhaps it's more interesting to ask the student to look at the convective zones? -->
 
-4. **opacity**: In this plot you can see the value of opacity throughout the interior of the star. Note that the x-axis is a function of the logarithm of the optical depth. How is opacity changing in the star during the evolution? Can you link it to the energy transport mechanism? What happens to your opacity profile as your model enters the instability strip? 
+4. **opacity**: In this plot you can see the value of opacity throughout the interior of the star. Note that the x-axis is a function of the logarithm of the optical depth. How is opacity changing in the star during the evolution? Can you link it to the energy transport mechanism? What happens to your opacity profile as your model enters the instability strip?
 <!-- Mathijs: Nice that you look for connections between different panels -->
 
 5. **radius, temperature, and luminosity**: Finally in this panel you can see how `log_R`, `log_Teff`, and `log_L` evolve with model number during the evolution of the star.
 
-You might notice that even once your star has crossed into the instability strip, it doesn't pulsate. For a first order explanation of why this is the case, the fundamental period of a Cepheid star can be approximated as $P_F \approx 0.37 t_{dyn}$ where $t_{dyn} = 2 \pi \sqrt{R_{\ast}^3/(GM_{\ast})}$ is the dynamical time scale. This value in seconds and the timestep in seconds are shown in your pgplot text summary. How do the two compare? (The solution to getting Cepheids to pulsate as MESA evolves is a bit more complicated than just dropping the timestep, but that will be explored in lab 3.)
-
 You might notice that even once your star has crossed into the instability strip, it doesn't pulsate. **Question:** Why not?
 
 {{< details title="Hint" closed="true" >}}
-For a first order explanation of why this is the case, the fundamental period of a Cepheid star can be approximated as $P_F \approx 0.37 t_{dym}$ where $t_{dyn} = 2 \pi \sqrt{R_{\ast}^3/(GM_{\ast})}$ is the dynamical time scale. This value (in sec) and time step in seconds are shown in your pgplot text summary. How do the two compare?
+For a first order explanation of why this is the case, the fundamental period of a Cepheid star can be approximated as $P_F \approx 0.37 t_{dyn}$ where $t_{dyn} = 2 \pi \sqrt{R_{\ast}^3/(GM_{\ast})}$ is the dynamical time scale. This value in seconds and the timestep in seconds are shown in your pgplot text summary. How do the two compare?
 
 {{< /details >}}
 
@@ -657,25 +689,14 @@ Can you answer the following questions? Share possible hypotheses with the folks
 * How does the Cepheid candidate phase depend on mass?
 * Which saved structures are the best starting points for Lab 2?
 
-<!-- Mathijs: If these questions will be discussed in the wrap-up lecture, please mention that here! -->
+<!-- Mathijs: If these questions will be discussed in the wrap up lecture, please mention that here! -->
 
 {{< details title="Solution example: GYRE-unstable Cepheid candidates (spoilers!)" closed="true" >}}
 
-The plots below show the full Lab 1 grid after running GYRE in MESA. The colored tracks are grouped by initial mass. The overplotted points mark saved models where the GYRE fundamental mode is unstable, and where the second overtone is subdominant to the plotted mode. These are useful structures to compare when choosing Lab 2 RSP-LNA starting models.
-
-The first plot shows the full HR diagram. The two plots underneath restrict the tracks to the blue-loop phase, first in the HR diagram and then in the $V-I$ color-magnitude plane.
+The plot below shows the full Lab 1 grid after running GYRE in MESA. The colored tracks are grouped by initial mass. The overplotted points mark saved models where the GYRE fundamental mode is unstable, and where the second overtone is subdominant to the plotted mode. These are useful structures to compare when choosing Lab 2 RSP-LNA starting models.
 
 <figure style="margin: 1rem 0;">
-  <img src="../plots/lab1/01_hr_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Full HR diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
+  <img src="../plots/lab1/01_hr_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Full HR diagram with GYRE fundamental mode unstable points" style="width: 100%; height: auto;">
 </figure>
-
-<div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); margin: 1rem 0;">
-  <figure style="margin: 0;">
-    <img src="../plots/lab1/01_hr_blue_loop_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Blue-loop HR diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
-  </figure>
-  <figure style="margin: 0;">
-    <img src="../plots/lab1/01_hr_blue_loop_vi_gyre_f0_all_unstable_f2_subdominant_test_lmc_z006_o26.png" alt="Blue-loop V minus I color-magnitude diagram with GYRE fundamental-mode unstable points" style="width: 100%; height: auto;">
-  </figure>
-</div>
 
 {{< /details >}}
