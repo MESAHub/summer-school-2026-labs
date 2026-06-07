@@ -1,0 +1,48 @@
+{{- if .Params.lazyAnimation -}}
+<script>
+  (function () {
+    if (window.mesaLazyAnimationReady) return;
+    window.mesaLazyAnimationReady = true;
+
+    document.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-lazy-animation-button]");
+      if (!button) return;
+
+      const container = button.closest("[data-lazy-animation]");
+      const target = container.querySelector("[data-lazy-animation-target]");
+      const src = button.dataset.src;
+      if (!target.querySelector("img, video")) {
+        const className = "hx-rounded-md hx-border hx-border-gray-200 dark:hx-border-neutral-800";
+        const isVideo = src.toLowerCase().split(/[?#]/)[0].endsWith(".mp4");
+
+        if (isVideo) {
+          const video = document.createElement("video");
+          const source = document.createElement("source");
+          source.src = src;
+          source.type = "video/mp4";
+          video.controls = true;
+          video.loop = true;
+          video.muted = true;
+          video.autoplay = true;
+          video.playsInline = true;
+          video.preload = "metadata";
+          video.className = className;
+          video.style.width = "100%";
+          video.style.height = "auto";
+          video.appendChild(source);
+          target.appendChild(video);
+        } else {
+          const image = document.createElement("img");
+          image.src = src;
+          image.alt = button.dataset.alt || "";
+          image.loading = "lazy";
+          image.decoding = "async";
+          image.className = className;
+          target.appendChild(image);
+        }
+      }
+      button.hidden = true;
+    });
+  })();
+</script>
+{{- end -}}

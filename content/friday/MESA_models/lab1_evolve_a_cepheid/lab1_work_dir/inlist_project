@@ -35,22 +35,14 @@
 
 &colors
    use_colors = .false.
-   instrument = 'data/colors_data/filters/Generic/Johnson'
-   stellar_atm = 'data/colors_data/stellar_models/Kurucz2003all/'
-   vega_sed = 'data/colors_data/stellar_models/vega_flam.csv'
-   distance = 3.0857d19     ! 10 pc; output magnitudes are absolute
-   mag_system = 'Vega'
-   make_csv = .false.
-   colors_results_directory = 'SED'
-   sed_per_model = .false.
 / ! end of colors namelist
 
 &controls
 
-   ! set the initial mass here
-   initial_mass = 4.5d0
+   ! ======= TODO: set the initial mass here! ======
+   initial_mass =
 
-   ! ====== TODO: add a stopping condition here! ======
+   ! ====== TODO: add a stopping condition for second part of run here! ======
    ! we want the second part of the run to stop when
    ! the mass fraction of he4 drops below 1d-4
    !xa_central_lower_limit_species(1) = 'he4'
