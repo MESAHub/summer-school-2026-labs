@@ -250,7 +250,7 @@ Here we tell GYRE what stellar model to use for computing oscillation frequencie
 
 #####  <span class="task"> 📋 Task: tell GYRE the type of model to use and lead the path</span>
 
-Here’s the model section of the inlist with a few things missing. Use the documentation on the [Model Namelist Group](https://gyre.readthedocs.io/en/v8.1/ref-guide/input-files/model-group.html) to determine the correct values for `<MODEL_TYPE>` and `<PARAM>`.
+Here’s the model section of the inlist with a few things missing. Use the documentation on the [Model Namelist Group](https://gyre.readthedocs.io/en/v8.1/ref-guide/input-files/model-params.html) to determine the correct values for `<MODEL_TYPE>` and `<PARAM>`.
 
 ```fortran
 &model
@@ -302,7 +302,7 @@ This is simply a labeling convention used in asteroseismology. Gravity (g) modes
 
 {{</details>}}
 
-#### Numerical paramters (`&num`)
+#### Numerical parameters (`&num`)
 This is where the controls for numerical aspects of calculations are set. For our simple calculation, the default settings are sufficient.
 
 ```fortran
@@ -316,7 +316,7 @@ For most applications, you will not need to modify these settings. However, for 
 
 In this namelist group, we can configure the treatment of the stellar oscillation equations. This includes options such as the boundary conditions and the scaling factors of different physical terms in the equations.
 
-GYRE provides many options for controlling the underlying physics of the oscillation calculations. A full list of available parameters and their default values can be found in the GYRE oscillation group documentation [here](https://gyre.readthedocs.io/en/v8.1/ref-guide/input-files/osc-group.html).
+GYRE provides many options for controlling the underlying physics of the oscillation calculations. A full list of available parameters and their default values can be found in the GYRE oscillation group documentation [here](https://gyre.readthedocs.io/en/v8.1/ref-guide/input-files/osc-params.html).
 
 To keep things simple, we will use the default outer boundary condition, which assumes that the density vanishes at the stellar surface:
 
