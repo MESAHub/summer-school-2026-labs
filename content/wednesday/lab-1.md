@@ -79,7 +79,7 @@ Throughout today's runs, we will be varying the accretion behavior of our system
 
 Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances. This will help the model converge at later times by loosening what counts as an "ok" step. Check the aside below **after** the lab for more details on particular choices in this file. [^Potekhin09] [^Itoh02] [^Jermyn21] [^Timmes00]
 
-{{< details title="Aside on miscellaneous variable choices in `inlist_common`" closed="true" >}}
+{{< details title="Aside on miscellaneous variable choices in `inlist_common`" closed="true" id="misc-common">}}
 
 The work that will be done throughout this lab requires careful consideration of input physics for real science cases. Much of this has been smoothed over for the sake of brevity, as many of the necessary inputs would also scale up runtimes, but some important eos and coulomb correction details have been retained.
 
@@ -552,10 +552,10 @@ With all the inlists complete, we can finally answer the age old question: **Wil
 | 📋 TASK 14 |
 |:--------|
 | **Run** the model! Do not forget to `./clean`, then `./mk`, then `./rn`. 
-|Observe the behavior and evolution of the star up to oxygen ignition. Does the balance of lambda values make sense? Does the crossing point agree with Figure 4 from Pinedo+14[^MartinezPinedo14] (below)? |
+|Observe the behavior and evolution of the star up to oxygen ignition. Does the balance of lambda values make sense? 
+Does the crossing point agree with Figure 4 from Pinedo+14[^MartinezPinedo14] (below)? |
 ![landscape](/wednesday/Pinedo+14_Fig4.png)
-*Figure 4, from Pinedo+14: Electron capture and beta decay rates on $\ce{^{20}Ne<->^{20}F}$ with and without screening. Top panel log(T[K]) = 8.6. Bottom panel log(T[K]) = 9.0* [^MartinezPinedo14]
-
+*Figure 4, from Pinedo+14: Electron capture and beta decay rates on $\ce{^{20}Ne<->^{20}F}$ with and without screening. Top panel log(T[K]) = 8.6. Bottom panel log(T[K]) = 9.0.[^MartinezPinedo14]. The x-axis in this plot is density, $\rho$, multiplied by the electron fraction, $Y_e$. For our ONe white dwarf, $Y_e$ is 0.5. Additionally, as briefly mentioned in [this](#misc-common) aside on the miscellaneous variable choices in `inlist_common`, the rates we are using **are** accounting for screening effects, so you only need to look at the red lines in the plot. The dashed line is our electron capture rate ($\lambda_{^{20}Ne->^{20}F}$), while the solid line is our $\beta$ rate ($\lambda_{^{20}F->^{20}Ne}$).*
 
 {{< details title="Answer: What you should see" closed="true" >}}
 Note: This gif stacks both the pgstar plots, but they will be separate during the run!
@@ -572,14 +572,27 @@ Final lambda plot:
 ![landscape](/wednesday/Lab1_FinalLambda.png)
 {{< /details >}}
 
+
+Upon oxygen ignition, a deflagration front (the "flame") will form within the white dwarf, travelling subsonically (tens of km/s) and creating burn ashes in its wake. The speed with which that flame can consume material (exothermic) compared to the rate at which those ashes can gobble up electrons (endothermic) fundamentally decides whether the star explodes or implodes. Now, the intricacies of flames are **far** beyond the scope of this lab, but suffice to say they are hard to model due to their small width and complicated microphysics. Instead, flame speed models are used! The work of Holas+26[^Holas26] references two such models from Timmes&Woosley92[^Timmes92] (TW92) and Schwab+20.[^Schwab20] (S20). For more information about flames, see also Jones+19 [^Jones19].
+
+
 | 📋 TASK 15 |
 |:--------|
-| **Review** the central density of the model at ignition by looking at the pgstar plot or in `profile.data`. Using this value and Figure 8 from Holas+26[^Holas26] (below), assuming that ignition is perfectly centered, does your model explode or implode? What if you use the radius of ignition given from the profile? Does the assumption of wave speed or radius of ignition change the result? |
+| **Review** the central density of the model at ignition by looking at the pgstar plot or in `profile.data`. Using this value and Figure 8 from Holas+26[^Holas26] (below), assuming that ignition is perfectly centered, does your model explode or implode? 
+What if you use the radius of ignition given from the profile? You can find the radius of ignition by looking in the `profile.data` for the radius corresponding to the highest temperature in the model. 
+Does the assumption of flame speed or radius of ignition change the result for our model? |
 ![landscape](/wednesday/Holas+26_Fig8.png)
-*Figure 8, from Holas+26: Outcomes of 3D hydrodynamic simulations by ignition location and central density at ignition. The dashed and dotted lines indicate the transition from explosion to collapse for the TW92 and S20 flame speeds, respectively.* [^Holas26]
+*Figure 8, from Holas+26: Outcomes of 3D hydrodynamic simulations by ignition location and central density at ignition. The dashed and dotted lines indicate the transition from explosion to collapse for the TW92 and S20 flame speeds, respectively. [^Holas26]*
+
+{{< details title="Hint: How do I interpret this plot?" closed="true" >}}
+You can think of this plot as saying anything beneath the dotted line is in a purely explosive regime (tECSN), anything above the dashed line is in a purely implosive regime (cECSN), and anything between the lines is flame speed dependent.
+
+Also, note the scale of $log(\rho_c^{ini})$. The separations here are fractions of a dex, meaning small relative changes can make a big impact!
+{{< /details >}}
+
 
 {{< details title="Answer: Does it blow up?" closed="true" >}}
-Yes! The central density at ignition should be ~ $10^{9.924}$ cgs. This is firmly within the purely explosive regime below ~ $10^{9.97}$ cgs for any radius or flame speed. Looking to the profile columns, the peak temperature does not occur in the center, but at a radius of ~ 65 km, making the required densities for collapse much greater. Despite choices of flame speed and the degree to which the ignition location is off-center, these 3D simulations suggest that our model would have exploded. 
+Yes! The central density at ignition should be ~ $10^{9.924}$ cgs. This is firmly within the purely explosive regime (ie. will result in a tECSN) below ~ $10^{9.97}$ cgs for any radius or flame speed. Looking to the profile columns, the peak temperature does not occur in the center, but at a radius of ~ 65 km, making the required densities for collapse greater. Despite choices of flame speed and the degree to which the ignition location is off-center, these 3D simulations suggest that our model would have exploded. 
 
 
 
@@ -616,5 +629,7 @@ Yes, there is a relationship to temperature! At sufficiently high temperature, t
 [^Piersanti22]: Piersanti, Luciano, Eduardo Bravo, Oscar Straniero, Sergio Cristallo, and Inmaculada Domínguez. "Pre-explosive accretion and simmering phases of SNe Ia." The Astrophysical Journal 926, no. 1 (2022): 103. https://iopscience.iop.org/article/10.3847/1538-4357/ac403b/meta
 [^Schwab15]: Schwab, Josiah, Eliot Quataert, and Lars Bildsten. "Thermal runaway during the evolution of ONeMg cores towards accretion-induced collapse." Monthly Notices of the Royal Astronomical Society 453, no. 2 (2015): 1910-1927. https://academic.oup.com/mnras/article/453/2/1910/1153861?guestAccessKey=
 [^Schwab19]: Schwab, Josiah, and Kyle Akira Rocha. "Residual carbon in oxygen–neon white dwarfs and its implications for accretion-induced collapse." The Astrophysical Journal 872, no. 2 (2019): 131. https://iopscience.iop.org/article/10.3847/1538-4357/aaffdc/meta
-
+[^Timmes92]: Timmes, F. X., and S. E. Woosley. "The conductive propagation of nuclear flames. I-Degenerate C+ O and O+ NE+ MG white dwarfs." Astrophysical Journal, Part 1 (ISSN 0004-637X), vol. 396, no. 2, Sept. 10, 1992, p. 649-667. Research supported by California Space Institute. 396 (1992): 649-667. https://ui.adsabs.harvard.edu/scan/manifest/1992ApJ...396..649T.
+[^Schwab20]: Schwab, Josiah, R. Farmer, and F. X. Timmes. "Laminar Flame Speeds in Degenerate Oxygen–Neon Mixtures." The Astrophysical Journal 891, no. 1 (2020): 5. https://iopscience.iop.org/article/10.3847/1538-4357/ab6f03/pdf
+[^Jones19]: Jones, S., F. K. Röpke, C. Fryer, A. J. Ruiter, I. R. Seitenzahl, L. R. Nittler, S. T. Ohlmann, R. Reifarth, M. Pignatari, and K. Belczynski. "Remnants and ejecta of thermonuclear electron-capture supernovae-Constraining oxygen-neon deflagrations in high-density white dwarfs." Astronomy & Astrophysics 622 (2019): A74.
 
