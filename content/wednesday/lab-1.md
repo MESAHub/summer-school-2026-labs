@@ -77,25 +77,11 @@ At this stage, we are now ready to dive into some inlists!
 
 Throughout today's runs, we will be varying the accretion behavior of our system, but expect that some portion of variables will be the same. `inlist_common` holds the set of "defaults" that we want to be common between runs (hence the name), making changes more modular.
 
-Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances. This will help the model converge at later times by loosening what counts as an "ok" step. Check the aside below **after** the lab for more details on particular choices in this file. [^Potekhin09] [^Itoh02] [^Jermyn21] [^Timmes00]
-
-{{< details title="Aside on miscellaneous variable choices in `inlist_common`" closed="true" id="misc-common">}}
-
-The work that will be done throughout this lab requires careful consideration of input physics for real science cases. Much of this has been smoothed over for the sake of brevity, as many of the necessary inputs would also scale up runtimes, but some important eos and coulomb correction details have been retained.
-
-IN `&star_job`, we are using coulomb corrections from Potekhin+09 <sup id="fnref:Potekhin09"><a href="#fn:8" class="footnote-ref">8</a></sup>. for ions and Itoh+02<sup id="fnref:Itoh02"><a href="#fn:9" class="footnote-ref">9</a></sup> for electrons. These provide modifications to the ion and electron chemical potentials due to coulomb coupling and screening, respectively. In the ONe white dwarf regime of the these corrections become essential pieces on the rate and balance of Urca production. 
-
-In `&eos`, the inlist is effectively forcing the use of the proper equation of state, Skye, throughout the core of the white dwarf, while dropping fidelity in the non-degenerate outer shell. The other eos options (PC, FreeEOS, and OPAL/SCVH) are explicitly deactivated, while dropping the mass fraction needed to consider an isotope in the Skye EOS. The means that in the portions of the star where Skye is not appropriate, MESA jumps down the order of precedence for EOS components directly to HELM, reducing runtimes. Note, the backstop eos, HELM, cannot be deactivated and (again) will still be the dominant eos in the outermost layers of non-degenerate accreted material (~5 km or ~0.4%). The explicit details of the Skye EOS and HELM EOS can be found in Jermyn+21 <sup id="fnref:Jermyn21"><a href="#fn:10" class="footnote-ref">10</a></sup> . and Timmes&Swesty00 <sup id="fnref:Timmes00"><a href="#fn:11" class="footnote-ref">11</a></sup>. 
-
-In `&controls`, the inlist first **turns off** convective mixing entirely. This is purely a simplification to focus on where our Urca reactions take place, rather than dealing with the entire picture of convective Urca. Next, various smoothing options are set to 0. As for timesteps, the timestep size is doubled from the default and the tolerance for energy conservation made wider. The inlist also uses a larger mesh with cell sizes that preference refinement by q rather than temperature. For the solver, the use of eps_grav is motivated by the degenerate regime, where our entropy matter more than energy. The inlist also loosens many residual limits by **quite** a bit to ensure that the solver does not quit early or get caught trying to particularly resolve behavior too fine for the lesson in this lab. 
-
-If you have extra time after the lab, feel free to take away some of the smoothing elements and explore which ones most effect the runtime on your device! More information on any particular option can also be found in the [MESA documentation](https://docs.mesastar.org/en/latest/)!
-
-{{< /details >}}
+Now let's look over the file. You will notice that some variables have already been set to more aggressively relax tolerances. This will help the model converge at later times by loosening what counts as an "ok" step. Check [this](#aside-on-miscellaneous-variable-choices-in-inlist_common) aside **after** the lab for more details on particular choices in this file. 
 
 Next, we want to record the point of oxygen ignition in the white dwarf, but **DO NOT** want to try running through explosion/implosion during these labs. Beyond that point, the relevant timescale will shrink rapidly to that of the deflagration/detonation front, massively increasing the computation required.
 
-| 📋 TASK 3 |
+| 📋 TASK 2 |
 |:--------|
 | In `&controls`, **update `inlist_common`** to stop the model once temperature reaches 10<sup>9.1</sup> K (when the white dwarf begins to ignite oxygen). Available stopping parameters can be found [here](https://docs.mesastar.org/en/latest/reference/controls.html#when-to-stop). |
 
@@ -123,7 +109,7 @@ Throughout the day, we will be loading in precomputed white dwarf models as star
 The reaction network will be defined by a file we will create later called `ONe.net` and the rates of reactions in that network will need to use the weak rates of Suzuki+2016[^Suzuki16]. These Suzuki rates are critical for the treatment of degenerate O-Ne-Mg cores as these sd-shell electron capture and β-decay rates drive the Urca process. These Suzuki rates are not only tabulated on a much finer scale than earlier tables, but account for additional transitions critical to our test regime. Without these rates, the weak reaction rates of isotopes with mass number (A) 17 through 28 would be interpolated with earlier weaklib tables that will not sufficiently resolve the cooling/heating features at the core of this lab. 
 
 
-| 📋 TASK 4 |
+| 📋 TASK 3 |
 |:--------|
 | In `&star_jobs`, **update `inlist_accrete`** to: <ul><li>Load the `1.1Msun_ONe` model </li><li> Change the initial nuclear network to `ONe.net`</li><li> Use the Suzuki rates.</li></ul> The relevant `&star_jobs` variables can be found in the [starting model](https://docs.mesastar.org/en/latest/reference/star_job.html#starting-model) and [nuclear reactions](https://docs.mesastar.org/en/latest/reference/star_job.html#nuclear-reactions) sections of the MESA documentation. |
 
@@ -161,7 +147,7 @@ This is helpful when simulating multiple regimes wherein "inlistA" uses "network
 Next, we want to accrete material of a given composition at a given rate. Generally, this material need not be the same composition as the surface star and may be defined as mass fractions of a variety of species. In this lab, we want the ONe white dwarf "core" to slowly accrete ash from shell carbon-burning which we will take to be equal mass fractions of Oxygen-16 and Neon-20.
 
 
-| 📋 TASK 5 |
+| 📋 TASK 4 |
 |:--------|
 | In `&controls`, **update `inlist_accrete`** to: <ul><li>set the accretion rate to 10<sup>-6</sup> M<sub>&#9737;</sub> / year of equal mass fractions of Oxygen-16 and Neon-20 </li><li> Rename the LOGS directory to a more descriptive name, `LOGS_ONe_1d-6`. </li></ul> The relevant `&controls` variables can be found in the [mass gain or loss](https://docs.mesastar.org/en/latest/reference/controls.html#mass-gain-or-loss), [composition controls](https://docs.mesastar.org/en/latest/reference/controls.html#composition-controls), and [controls for output](https://docs.mesastar.org/en/latest/reference/controls.html#controls-for-output) sections of the MESA documentation. |
 
@@ -231,7 +217,7 @@ As you may have guessed from our prior flags to change the initial net, MESA all
 
 The minimal structure of a reaction network uses two commands to build a set of isotopes and reactions: `add_isos(<isos_list>)` and `add_reactions(<reactions_list>)`. Other possible commands can be found in the [creating a custom net](https://docs.mesastar.org/en/latest/net/nets.html#creating-a-custom-net) section of the MESA documentation.
 
-| 📋 TASK 6 |
+| 📋 TASK 5 |
 |:--------|
 | **Open `$MESA_DIR/data/net_data/nets/basic.net`**, peruse the included isotopes and reactions, and take note of the format. |
 
@@ -253,7 +239,7 @@ This network is visualized in the figure below:
 *Directed graph, generated with pynucasto, showing the isotopes in the network and the decay processes between them. The compass rose shows the directionality of particular processes in the graph: $\beta$, $\beta^-$, or (projectile, ejectile), where $\alpha$ is an alpha particle, $p$ is a proton, $n$ is a neutron, and  $\gamma$ is a photon. The gray ${}^{31}\mathrm{P}$ nucleus is not explicitly carried in the network, but we include the link ${}^{16}\mathrm{O}({}^{16}\mathrm{O},p){}^{31}\mathrm{P}(p,\alpha){}^{28}\mathrm{Si}$ as an alternate pathway to ${}^{16}\mathrm{O}({}^{16}\mathrm{O},\alpha){}^{28}\mathrm{Si}$ for oxygen burning (this is included in the MESA rate we use).*
 
 
-| 📋 TASK 7 |
+| 📋 TASK 6 |
 |:--------|
 | **Create a new file, `ONe.net`, in your working directory**, and **add the necessary isotopes** to encompass the reactions in the table above. |
 
@@ -313,7 +299,7 @@ add_isos(
 
 With the isotopes added, we may now move to add our specific reactions. Again, the consideration of reactions should depend on the physics in question. In our case, as previously mentioned, we only need to include the four $EC$/$\beta^-$ reactions and oxygen-16 burning, as described in the table.
 
-| 📋 TASK 8 |
+| 📋 TASK 7 |
 |:--------|
 | In `ONe.net`, **add the reactions from the table above**. |
 
@@ -402,7 +388,7 @@ Now that `inlist_pgstar` is expecting these two new profile columns, let's try m
 
 `run_star_extras.f90` is a script that allows us add any custom code to a MESA run. Thankfully, most of the work has already been done for this lambda computation using a variety of prebuilt functions available in MESA. In particular, the script makes use a new data type, `Coulomb_Info`, and four functions: `get_weak_rate_id`, `eosDT_get`, `coulomb_set_context`, `eval_weak_reaction_info`. These are all defined within modules found in `$MESA_DIR/rates/public/` and `$MESA_DIR/eos/public/`. Generally, these public subdirectories provide swaths of tools used throughout MESA that may be called within `run_star_extras`. In order to use these functions, we must first add them to the local scope of `run_star_extras`. This can either been done through bulk imports where all the public structures (functions, variables, subroutines, etc) in a module are added to the local scope, or through selective imports where only designated pieces of a module are added. Typically, the use of selective imports would be preferred to avoid namespace collisions and ease code traceability. 
 
-| 📋 TASK 10 |
+| 📋 TASK 8 |
 |:--------|
 | In `src/run_star_extras.f90`, **bulk import** the new submodules (`rates_lib`, `eos_lib`, and `eos_def`) and **selectively import** `Coulomb_Info` from `rates_def`.  |
 
@@ -434,7 +420,7 @@ use eos_def
 
 With the needed functions in scope, we now need to set the number of new profile columns. 
 
-| 📋 TASK 11 |
+| 📋 TASK 9 |
 |:--------|
 | In `src/run_star_extras.f90`, **set** number of extra profile columns to 2. |
 
@@ -461,7 +447,7 @@ Now, we can add new data to these profile columns in `data_for_extra_profile_col
 Starting at the top of the subroutine, the set of necessary pointers, arrays, doubles, and integers are defined for use following the standard boilerplate seen in other MESA subroutines. Next, the names of the new profile columns need to be set to match the values expected in `inlist_pgstar` and the names of the product/reactant species for each of the reactions need to be identified explicitly. This weak_lhs/weak_rhs structure is meant to be trivially extensible, so that more reaction profiles can be added by simply listing more product/reactant pairs.
 
 
-| 📋 TASK 12 |
+| 📋 TASK 10 |
 |:--------|
 | In `src/run_star_extras.f90`, <ul><li>**set** the new profile names to `lambda_ne20_f20` and `lambda_f20_ne20`. </li><li> **set** `weak_lhs` and `weak_rhs` to the reactant (left-hand side) species name and product (right-hand side) species name for each reaction. </li></ul>|
 
@@ -493,17 +479,11 @@ weak_rhs(2) = 'ne20' !!!!!
 ```
 {{< /details >}}
 
-Using these values, the script then will allocate the necessary arrays and gather the relevant id for each reaction. Next, for each zone within the model, the script solves for lambda (click the aside below for more information when you have time after the lab). Look over the comments in the file for context behind the script structure. 
-
-{{< details title="Aside: How is this loop getting lambda?" closed="true" >}}
-
-In a fairly broad description, the code is looping through every zone of the star starting at the outermost portion (k = 1). At each step, we first make a call to explicitly evaluate the equation of state at that zone. This includes local values of things like temperature, pressure, and electron chemical potential along with their derivatives. Next, a relevant `Coulomb_Info` structure is set to hold the necessary set of local values used in the calculation of coulomb corrections and populated. Finally, the capture rates for each reaction are evaluated. This evaluation populates values at a set of pointers for our use including lambda, Q (total thermal energy), and Qneu (thermal energy going to neutrinos).  Most of these pointers are being ignored in this particular lab.
-
-{{< /details >}}
+Using these values, the script then will allocate the necessary arrays and gather the relevant id for each reaction. Next, for each zone within the model, the script solves for lambda (click [this](#aside-how-is-the-loop-getting-lambda) aside for more information when you have time after the lab). Look over the comments in the file for context behind the script structure. 
 
 With the lambda values calculated, we need to add them into the `vals` structure to create our profiles. This should be done in a `do` loop so that we can easily add more reactions later. 
 
-| 📋 TASK 13 |
+| 📋 TASK 11 |
 |:--------|
 | In `src/run_star_extras.f90`, **fill** `vals` with the value of lambda for each reaction within a `do` loop. The place where this should be done is bracketed by `!!!!!` and the variable `i` is already declared for you to index through. |
 
@@ -549,13 +529,13 @@ end do
 
 With all the inlists complete, we can finally answer the age old question: **Will this thing blow up?**
 
-| 📋 TASK 14 |
+| 📋 TASK 12 |
 |:--------|
-| **Run** the model! Do not forget to `./clean`, then `./mk`, then `./rn`. 
+| **Run** the model! Do not forget to `./clean`, then `./mk`, then `./rn`. Note, the abundance window may take a few steps to update due to the bounds in pgstar. 
 |Observe the behavior and evolution of the star up to oxygen ignition. Does the balance of lambda values make sense? 
 Does the crossing point agree with Figure 4 from Pinedo+14[^MartinezPinedo14] (below)? |
 ![landscape](/wednesday/Pinedo+14_Fig4.png)
-*Figure 4, from Pinedo+14: Electron capture and beta decay rates on $\ce{^{20}Ne<->^{20}F}$ with and without screening. Top panel log(T[K]) = 8.6. Bottom panel log(T[K]) = 9.0.[^MartinezPinedo14]. The x-axis in this plot is density, $\rho$, multiplied by the electron fraction, $Y_e$. For our ONe white dwarf, $Y_e$ is 0.5. Additionally, as briefly mentioned in [this](#misc-common) aside on the miscellaneous variable choices in `inlist_common`, the rates we are using **are** accounting for screening effects, so you only need to look at the red lines in the plot. The dashed line is our electron capture rate ($\lambda_{^{20}Ne->^{20}F}$), while the solid line is our $\beta$ rate ($\lambda_{^{20}F->^{20}Ne}$).*
+*Figure 4, from Pinedo+14: Electron capture and beta decay rates on $\ce{^{20}Ne<->^{20}F}$ with and without screening. Top panel log(T[K]) = 8.6. Bottom panel log(T[K]) = 9.0.[^MartinezPinedo14]. The x-axis in this plot is density, $\rho$, multiplied by the electron fraction, $Y_e$. For our ONe white dwarf, $Y_e$ is 0.5. Additionally, as briefly mentioned in [this](#aside-on-miscellaneous-variable-choices-in-inlist_common) aside on the miscellaneous variable choices in `inlist_common`, the rates we are using **are** accounting for screening effects, so you only need to look at the red lines in the plot. The dashed line is our electron capture rate ($\lambda_{^{20}Ne->^{20}F}$), while the solid line is our $\beta$ rate ($\lambda_{^{20}F->^{20}Ne}$).*
 
 {{< details title="Answer: What you should see" closed="true" >}}
 Note: This gif stacks both the pgstar plots, but they will be separate during the run!
@@ -576,7 +556,7 @@ Final lambda plot:
 Upon oxygen ignition, a deflagration front (the "flame") will form within the white dwarf, travelling subsonically (tens of km/s) and creating burn ashes in its wake. The speed with which that flame can consume material (exothermic) compared to the rate at which those ashes can gobble up electrons (endothermic) fundamentally decides whether the star explodes or implodes. Now, the intricacies of flames are **far** beyond the scope of this lab, but suffice to say they are hard to model due to their small width and complicated microphysics. Instead, flame speed models are used! The work of Holas+26[^Holas26] references two such models from Timmes&Woosley92[^Timmes92] (TW92) and Schwab+20.[^Schwab20] (S20). For more information about flames, see also Jones+19 [^Jones19].
 
 
-| 📋 TASK 15 |
+| 📋 TASK 13 |
 |:--------|
 | **Review** the central density of the model at ignition by looking at the pgstar plot or in `profile.data`. Using this value and Figure 8 from Holas+26[^Holas26] (below), assuming that ignition is perfectly centered, does your model explode or implode? 
 What if you use the radius of ignition given from the profile? You can find the radius of ignition by looking in the `profile.data` for the radius corresponding to the highest temperature in the model. 
@@ -614,6 +594,23 @@ Yes, there is a relationship to temperature! At sufficiently high temperature, t
 ![landscape](/wednesday/Lab1_BONUS1.gif)
 {{< /details >}}
 
+
+## Aside on miscellaneous variable choices in `inlist_common`
+
+The work that will be done throughout this lab requires careful consideration of input physics for real science cases. Much of this has been smoothed over for the sake of brevity, as many of the necessary inputs would also scale up runtimes, but some important eos and coulomb correction details have been retained.
+
+IN `&star_job`, we are using coulomb corrections from Potekhin+09[^Potekhin09] for ions and Itoh+02[^Itoh02] for electrons. These provide modifications to the ion and electron chemical potentials due to coulomb coupling and screening, respectively. In the ONe white dwarf regime of the these corrections become essential pieces on the rate and balance of Urca production. 
+
+In `&eos`, the inlist is effectively forcing the use of the proper equation of state, Skye, throughout the core of the white dwarf, while dropping fidelity in the non-degenerate outer shell. The other eos options (PC, FreeEOS, and OPAL/SCVH) are explicitly deactivated, while dropping the mass fraction needed to consider an isotope in the Skye EOS. The means that in the portions of the star where Skye is not appropriate, MESA jumps down the order of precedence for EOS components directly to HELM, reducing runtimes. Note, the backstop eos, HELM, cannot be deactivated and (again) will still be the dominant eos in the outermost layers of non-degenerate accreted material (~5 km or ~0.4%). The explicit details of the Skye EOS and HELM EOS can be found in Jermyn+21[^Jermyn21] and Timmes&Swesty00[^Timmes00]. 
+
+In `&controls`, the inlist first **turns off** convective mixing entirely. This is purely a simplification to focus on where our Urca reactions take place, rather than dealing with the entire picture of convective Urca. Next, various smoothing options are set to 0. As for timesteps, the timestep size is doubled from the default and the tolerance for energy conservation made wider. The inlist also uses a larger mesh with cell sizes that preference refinement by q rather than temperature. For the solver, the use of eps_grav is motivated by the degenerate regime, where our entropy matter more than energy. The inlist also loosens many residual limits by **quite** a bit to ensure that the solver does not quit early or get caught trying to particularly resolve behavior too fine for the lesson in this lab. 
+
+If you have extra time after the lab, feel free to take away some of the smoothing elements and explore which ones most effect the runtime on your device! More information on any particular option can also be found in the [MESA documentation](https://docs.mesastar.org/en/latest/)!
+
+
+## Aside: How is the loop getting lambda?
+
+In a fairly broad description, the code is looping through every zone of the star starting at the outermost portion (k = 1). At each step, we first make a call to explicitly evaluate the equation of state at that zone. This includes local values of things like temperature, pressure, and electron chemical potential along with their derivatives. Next, a relevant `Coulomb_Info` structure is set to hold the necessary set of local values used in the calculation of coulomb corrections and populated. Finally, the capture rates for each reaction are evaluated. This evaluation populates values at a set of pointers for our use including lambda, Q (total thermal energy), and Qneu (thermal energy going to neutrinos).  Most of these pointers are being ignored in this particular lab.
 
 
 ## References
