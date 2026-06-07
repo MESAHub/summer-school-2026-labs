@@ -3,15 +3,15 @@
 
 &model
     model_type = 'EVOL'
-    file = './LOGS_zams/profile1.data.FGONG'
-    file_format = 'FGONG'
+    file = './LOGS_step_ov/profileXXX.data.GYRE'
+    file_format = 'MESA'
 /
 
 &mode
     l = 1
     m = 0
-    n_pg_min = -50
-    n_pg_max = -1
+    n_pg_min = -20
+    n_pg_max = -10
 /
 
 &osc
@@ -20,9 +20,9 @@
 
 &scan
     grid_type = 'INVERSE'
-    freq_min = 0.1
+    freq_min = 0.2
     freq_max = 10
-    n_freq = 5000
+    n_freq = 500
     freq_units = 'CYC_PER_DAY'
 /
 
@@ -38,12 +38,9 @@
 
 &ad_output
     summary_file = 'summary_zams.h5'
-    summary_item_list = 'l,n_pg,m,freq,period'
+    summary_item_list = 'l,n_pg,m,freq'
     summary_file_format = 'HDF'
     freq_units = 'CYC_PER_DAY'
-
-    detail_template = 'detail_zams/detail.l%l.n%n.h5'
-    detail_item_list = 'l,n_pg,omega,freq,x,xi_r,xi_h,c_1,As,V_2,Delta_g,Gamma_1,rho'
 /
 
 &nad_output
