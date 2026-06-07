@@ -10,7 +10,7 @@ disableKinds: "rss"
 
 Recap of lab 2: So far we have changed the nuclear net to include more reactions, and looked at the effect of Urca cooling from the $^{23}\rm{Na}$-$^{23}\rm{Ne}$ and $^{25}\rm{Mg}$-$^{25}\rm{Na}$-$^{25}\rm{Ne}$ pairs on the stellar structure. 
 
-<!-- Now we will expand on lab 2, and .  -->
+Now we will expand on lab 2, add more reactions, change their rates, and see how this all affects the final thermal profile of the white dwarf. 
 
 <!-- Now we will vary the reactions -->
 
@@ -30,7 +30,7 @@ Recap of lab 2: So far we have changed the nuclear net to include more reactions
 > - More in the bonus labs. 
 
 >[!Warning]  <span style="font-size: 25px;">**Disclaimers**</span> 
-> Our labs are designed to do the *bare minimum* and run as quickly as possible, just to get the general message across. The bonus labs contain some suggested improvements. 
+> Our labs are designed to do the *bare minimum* and run as quickly as possible. The bonus labs contain some suggested improvements. 
 
 ## Crowdsourcing
 
@@ -38,7 +38,7 @@ Recap of lab 2: So far we have changed the nuclear net to include more reactions
 
 | 📋 TASK 0 |
 |:--------|
-| **Download** the starting point from the [Google Drive](https://drive.google.com/file/d/16T5gc-PN2N1EKkASdwv671WNKbQW6BBw/view?usp=drive_link) to a local working directory. |
+| **Download** the starting point from the [Google Drive](https://drive.google.com/file/d/1_yVXvlbhL-2_DpoGERqPQbPJSgGH1MJS/view?usp=drive_link) to a local working directory. |
 
 <!-- The starting point is a very simple setup. It should look like:
 
@@ -505,7 +505,7 @@ These two lists tell MESA the reaction names and the corresponding file names.
 
 | 📋 TASK 4b |
 |:--------|
-| **Add** the following four reactions to  **`weak_rate_list.txt`**. Take a look at `weak_rate_list.txt` to see what is needed. Use the files with the header `on-the-fly*` in the title. |
+| **Add** the following four reactions to  **`tables_custom/weak_rate_list.txt`**. Take a look at `weak_rate_list.txt` to see what is needed. Use the files with the header `on-the-fly*` in the title. |
 - ${^{20}\rm{Ne}} + e^{-} \to {^{20}\rm{F}} + \nu_{e}$
 - ${^{20}\rm{F}} \to {^{20}\rm{Ne}} + e^{-} + \bar{\nu}_{e}$
 - ${^{20}\rm{F}} + e^{-} \to {^{20}\rm{O}} + \nu_{e}$
@@ -529,7 +529,7 @@ For beta decay reactions ($Y \to X + e^{-} + \bar{\nu}_{e}$), the format is `r_x
 You need to add the following to `weak_rate_list.txt`: 
 ```fortran
 r_ne20_wk_f20 'on-the-fly_r_ne20_wk_f20.h5'
-r_f20_wk-minus_ne20 'on-the-fly_r_f20_wk-minus_o20.h5'
+r_f20_wk-minus_ne20 'on-the-fly_r_f20_wk-minus_ne20.h5'
 r_f20_wk_o20 'on-the-fly_r_f20_wk_o20.h5'
 r_o20_wk-minus_f20 'on-the-fly_r_o20_wk-minus_f20.h5'
 ```
@@ -650,13 +650,13 @@ Now you're ready to go!
 > Then do ``./rn`` and let MESA run for a few steps. MESA will first print out the species and reactions in the net. 
 
 > [!TIP]
-> If you're using **custom rates**, when MESA first runs, you should see messages like ``reading user weak rate file tables_custom/on-the-fly_r_mg24_wk_na24.h5``. 
+> If you're using **custom rates**, when MESA first runs, you should see messages like ``reading user weak rate file tables_custom/on-the-fly_r_ne20_wk_f20.h5``. 
 
 > [!WARNING]
 > If you haven't yet, do ``./clean && ./mk`` first.
 
 >[!Note]
-> An example solution is provided [here](https://drive.google.com/file/d/13LTiBZxAee_4rQ6w2utercfGI7VEib2b/view?usp=drive_link), for $\dot{M}=10^{-6}\,M_{\odot}\,\rm{yr}^{-1}$,`ONeMg2Na.net`, and Suzuki weak rates. `inlist_rates` contains the solutions for custom rates and special (on-the-fly) rates too in the comments. 
+> An example solution is provided [here](https://drive.google.com/file/d/1RQiVGEzHokCpAW7ph5aI2CFvd1R4wIu5/view?usp=drive_link), for $\dot{M}=10^{-6}\,M_{\odot}\,\rm{yr}^{-1}$,`ONeMg2Na.net`, and Suzuki weak rates. `inlist_rates` contains the solutions for custom rates and special (on-the-fly) rates too in the comments. 
 
 ## Review reaction flow with pynucastro
 
@@ -794,7 +794,7 @@ We have done many things in this lab to ensure short runtimes. Here are a few su
 
 | 📋 TASK |
 |:--------|
-| **Download the Lab 3 solutions [here](https://drive.google.com/file/d/13LTiBZxAee_4rQ6w2utercfGI7VEib2b/view?usp=drive_link)**, for $\dot{M}=10^{-6}\,M_{\odot}\,\rm{yr}^{-1}$,`ONeMg2Na.net`, and Suzuki weak rates. **Clean and compile.** |
+| **Download the Lab 3 solutions [here](https://drive.google.com/file/d/1RQiVGEzHokCpAW7ph5aI2CFvd1R4wIu5/view?usp=drive_link)**, for $\dot{M}=10^{-6}\,M_{\odot}\,\rm{yr}^{-1}$,`ONeMg2Na.net`, and Suzuki weak rates. **Clean and compile.** |
 
 
 Do **not** attempt these all at once! Your run will be unbearably slow. 
@@ -805,6 +805,7 @@ Here we briefly describe what skills you'll learn with each task:
 - *Time resolution*: using run_star_extras. Takes longer than the others to implement. 
 - *Spatial resolution*: modifying inlist options. 
 - *Skye EOS*: modifying inlist options. The run may be long. 
+- *Convection*: modifying inlist options. 
 
 {{< tabs items="Bigger Net,Soft-wired Net,Time Resolution,Spatial Resolution,Skye EOS,Convection,Name Your Bison" >}}
 
@@ -858,6 +859,42 @@ What other important reactions have we missed? Here we will use ``pynucastro`` t
 
 >[!Note]
 > We recommend that you just add the reactions from the ``filtered_rates`` list, for the sake of time. However, if you really want to, try implementing the missing isotopes and reactions from the ``possibly_important`` list. 
+
+{{< details title="Partial solutions" closed="true" >}}
+
+Here we will build on `ONeMg2Na.net` add the following reactions:
+- ${^{20}\rm{Ne}} + \alpha \to {^{23}\rm{Na}} + p$
+- ${^{20}\rm{O}} + \alpha \to {^{24}\rm{Ne}} + \gamma$
+- ${^{20}\rm{F}} + \alpha \to {^{23}\rm{Ne}} + p$
+- ${^{16}\rm{O}} + \alpha \to {^{20}\rm{Ne}} + \gamma$
+- ${^{20}\rm{Ne}} + \alpha \to {^{24}\rm{Mg}} + \gamma$
+- ${^{20}\rm{F}} + \alpha \to {^{24}\rm{Na}} + \gamma$
+
+Copy `ONeMg2Na.net` to `new.net`, and add the following to `new.net`, within the `add_reactions( )` section:
+```fortran
+r_ne20_ap_na23
+r_o20_ag_ne24
+r_f20_ap_ne23
+r_o16_ag_ne20
+r_ne20_ag_mg24
+r_f20_ag_na24
+```
+
+The general rules is that reactions that take in a ${^{4}\rm{He}}$ ($\alpha$) particle and spit out a proton are named `r_<input>_ap_<output>`, and those that spit out a photon instead are named `r_<input>_ag_<output>`. 
+
+Next, edit `inlist_net` and set 
+```fortran
+new_net_name = 'nets_lab3/new.net'
+```
+
+Now you're ready to run. 
+
+{{< /details >}}
+
+<!--  -->
+{{< details title="What do you see?" closed="true" >}}
+
+{{< /details >}}
 
 
 | 📋 TASK |
