@@ -118,35 +118,43 @@ For a broader comparison of RSP and MESA-star TDC pulsation controls, see [Pulsa
 
 RSP evolves the turbulent kinetic energy, $e_t$, with a one-equation convection model:
 
-$$
+\[
+\begin{aligned}
 \frac{D e_t}{D t}
-+ \alpha_{p_t} P_t \frac{D \rho^{-1}}{D t}
-= \epsilon_q + C - \frac{\partial L_t}{\partial m},
-$$
+&+ \alpha_{p_t} P_t \frac{D \rho^{-1}}{D t} \\
+&= \epsilon_q + C - \frac{\partial L_t}{\partial m},
+\end{aligned}
+\]
 
 The source/sink term and convective luminosity can be written as
 
-$$
-C =
-\alpha e_t^{1/2}\frac{T P Q}{h\sqrt{6}}\mathcal{Y}
-- \alpha_D\left(\frac{8}{3}\sqrt{\frac{2}{3}}\right)\frac{e_t^{3/2}}{\alpha h}
-- \frac{48\sigma\gamma_r}{\alpha^2}
+\[
+\begin{aligned}
+C ={}&
+\alpha e_t^{1/2}\frac{T P Q}{h\sqrt{6}}\mathcal{Y} \\
+&- \alpha_D\left(\frac{8}{3}\sqrt{\frac{2}{3}}\right)\frac{e_t^{3/2}}{\alpha h} \\
+&- \frac{48\sigma\gamma_r}{\alpha^2}
 \left(\frac{T^3}{\rho^2 c_P \kappa h^2}\right)e_t,
-$$
+\end{aligned}
+\]
 
 and
 
-$$
-L_\mathrm{conv} = 4\pi r^2\alpha\rho c_P T\frac{w}{\sqrt{6}}\mathcal{Y},
-\qquad w = e_t^{1/2}.
-$$
+\[
+\begin{aligned}
+L_\mathrm{conv} &= 4\pi r^2\alpha\rho c_P T\frac{w}{\sqrt{6}}\mathcal{Y}, \\
+w &= e_t^{1/2}.
+\end{aligned}
+\]
 
 The nonlocal turbulent flux is
 
-$$
-L_t = -A \alpha \alpha_t \rho h e_t^{1/2}\frac{\partial e_t}{\partial r},
-\qquad A = 4\pi r^2.
-$$
+\[
+\begin{aligned}
+L_t &= -A \alpha \alpha_t \rho h e_t^{1/2}\frac{\partial e_t}{\partial r}, \\
+A &= 4\pi r^2.
+\end{aligned}
+\]
 
 As you will see in Lab 3, `TDC` in MESA-star adopts the same convection model except without this nonlocal overshooting term.
 
