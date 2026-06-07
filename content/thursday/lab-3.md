@@ -13,10 +13,11 @@ toc: true
 
 <span style="color: #e7876c;">Timing: approximately 2 hours divided into 2 x 1 hour blocks </span>
 
+*This lab renders better with the light theme!*
+
 
 ## Introduction
-
-In this last minilab3 we will pick up on the system you evolved in minilab1 and follow its further evolution into a double black hole binary. Remember that at the end of your minilab1 you had two systems: 
+ In this last lab3 we will pick up on the system you evolved in lab1 and follow its further evolution into a double black hole binary. Remember that at the end of your lab1 you had two systems: 
 - One system underwent mass transfer during the Main Sequence (Case A mass transfer), with final properties listed in the below [Table 1](#table-binary).
 - The other underwent mass transfer after the Main Sequence (Case B mass transfer), with final properties as in [Table 2](#table-caseB).
 
@@ -32,11 +33,11 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
     <td>16.8 M☉</td>
     <td>39.6 M☉</td>
   </tr>
-  <tr>
+  <!-- <tr>
     <td>Ω / Ωcrit</td>
     <td>0.02</td>
     <td>0.15</td>
-  </tr>
+  </tr> -->
   <tr style="background: rgba(246, 171, 59, 0.22);">
     <td>Orbital Period</td>
     <td colspan="2" style="text-align:center;">4.5 days</td>
@@ -57,7 +58,7 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
     </a>
   </td>
 </tr>
-<caption><strong>Table 1:</strong> CASE A binary at the end of minilab1.</caption>
+<caption><strong>Table 1:</strong> CASE A binary at the end of lab1.</caption>
 </table>
 </div>
 
@@ -73,11 +74,11 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
     <td>17.14 M☉</td>
     <td>40.8 M☉</td>
   </tr>
-  <tr>
+  <!-- <tr>
     <td>Ω / Ωcrit</td>
     <td>?</td>
     <td>?</td>
-  </tr>
+  </tr> -->
   <tr style="background: rgba(246, 171, 59, 0.22);">
     <td>Orbital Period</td>
     <td colspan="2" style="text-align:center;">32.2 days</td>
@@ -98,7 +99,7 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
     </a>
   </td>
 </tr>
-<caption><strong>Table 2:</strong> CASE B binary at the end of minilab1.</caption>
+<caption><strong>Table 2:</strong> CASE B binary at the end of lab1.</caption>
 </table>
 </div>
 
@@ -106,16 +107,34 @@ Both these systems have a rapidly rotating (spun-up) secondary that has accreted
 
 > [!Important]
 > Notice that the Case A system has a much lower orbital period than the Case B. These different post-mass transfer properties determine a different further evolutionary history!
-> In this minilab3, we will understand **how both types of binaries need to evolve in order to form gravitational wave sources** such as merging binary black holes.
-> 
-> **SPOILER**: both systems will evolve with a further stage of mass transfer, which may be 
-> - <u>STABLE</u>: relatively long-lived (on the thermal or even nuclear timescale of the donor) and self regulated, with a quiet detachment afterwards. We will study this in [Section 1](#1-stable-mass-transfer).
-> - <u>UNSTABLE</u>: or "Common envelope", a fast (~dynamical timescale) stage in which the envelope of the donor engulfs the binary. We will study this in [Section 2](#2-common-envelope-evolution).
+> In this lab3, we will understand **how both types of binaries need to evolve in order to form gravitational wave sources** such as merging binary black holes. They will evolve with a further stage of mass transfer, which may be 
+> - <u>STABLE</u>: relatively long-lived (on the thermal or even nuclear timescale of the donor) and self regulated, with a quiet detachment afterwards.
+><ul>
+><li style="list-style-type:none; padding: 0px 0 0px 1rem;">
+>  <strong><a href="#part-a">PART A</a>:</strong>
+>  Stable mass transfer
+>  <span style="color: #f15429;">⏰~20-30 minutes⏰</span>
+></li>
+><li style="list-style-type:none; padding: 0px 0 0px 1rem;">
+>  <strong><a href="#part-b">PART B</a>:</strong>
+>  Stable mass transfer 2.0
+>  <span style="color: #f15429;">⏰~45-60 minutes⏰</span>
+></li>
+></ul>
+>
+> - <u>UNSTABLE</u>: or "Common envelope", a fast (~dynamical timescale) stage in which the envelope of the donor engulfs the binary.
+><ul>
+><li style="list-style-type:none; padding: 0px 0 0px 1rem;">
+>  <strong><a href="#common-envelope-evolution">PART C</a>:</strong>
+>  Common envelope evolution
+>  <span style="color: #f15429;">⏰~20-30 minutes⏰</span>
+></li>
+></ul>
 
 
-## 1. Stable mass transfer
+## PART A: Stable mass transfer {#part-a}
 
-Let's start by copying the standard work directory from ```$MESA_DIR``` to your preferred local folder:
+Let's copy the standard work directory from ```$MESA_DIR``` to your preferred local folder:
 
 ```bash
 cp -r $MESA_DIR/binary/work stable_MT
@@ -124,17 +143,20 @@ cd stable_MT
 
 Inspect your ```inlist_project``` and pay attention to the following two controls:
 
-- **`evolve_both_stars`** When false, MESA will model just one star, and keep the other as a point mass, while solving for the full orbital evolution of the binary. This is convenient for binaries with compact objects, like black holes (BH). You can find more info in here: `$MESA_DIR/binary/defaults/binary_job.defaults`
+- **`evolve_both_stars`** When false, MESA will model just one star, and keep the other as a point mass. This is convenient for binaries with compact objects, like black holes (BH). You can find more info here: `$MESA_DIR/binary/defaults/binary_job.defaults`
 
-- **`limit_retention_by_mdot_edd`** When true, the accretion rate of material onto the point-mass companion will be capped to a physical limit, called "Eddington limit". This is because the infall of hot stellar material onto a compact object creates radiation pressure that may halt the accretion process. In this case, the excess transferred mass is ejected from the binary with the specific angular momentum of the point mass. You can find more info in here: `$MESA_DIR/binary/defaults/binary_controls.defaults`
+- **`limit_retention_by_mdot_edd`** When true, the accretion rate of material onto the point-mass companion will be capped to a physical limit, called "Eddington limit". This is because the infall of hot stellar material onto a compact object creates radiation pressure that may halt the accretion process. In this case, the excess transferred mass is ejected from the binary with the specific angular momentum of the point mass. You can find more info here: `$MESA_DIR/binary/defaults/binary_controls.defaults`
 
-As you can see, our simulation is already set up to model one of the components as a point mass with Eddington limited accretion. Ideal starting point for us to model a binary with a BH.
+Our simulation is already set up to model one of the components as a point mass with Eddington limited accretion. Ideal starting point for us to model a binary with a BH.
 
-### Building the setup
+### SETUP: Eddington-limited accretion
 
 Now we will perform some adjustments to the template. A significant number of these are meant to make the simulation faster in order to be efficiently computed in the duration of this lab.
 
-#### Modify `history_columns.list` 
+<p style="font-weight:600; font-size:1.2em; margin-top:1.7em; ; margin-bottom:1em">
+Modify <code>history_columns.list</code>
+</p>
+
 Grab the `history_columns.list` file from `$MESA_DIR/star/defaults` and copy it into your work folder:
 
 ```bash
@@ -148,9 +170,11 @@ mixing_regions 10
 
 ```
 
-#### Modify `binary_controls` in `inlist_project`
+<p style="font-weight:600; font-size:1.2em; margin-top:1.7em; margin-bottom:1em">
+Modify <code>binary_controls</code> in <code>inlist_project</code>
+</p>
 
-By default MESA also includes the effect of magnetic braking for angular momentum loss. This implementation is meant for late type stars and should be removed when working with massive binaries. Additionally, by default MESA reduces the growth of the BH mass to account for the rest-mass energy radiated away during accretion, determined by a radiative efficiency parameter. For simplicity, in this lab we will switch this control off. For these purposes, you can include:
+By default MESA also includes the effect of magnetic braking for angular momentum loss. This implementation is meant for late type stars (see the Monday lab1, where you've seen the Kraft break 😌) and should be removed when working with massive binaries. Additionally, by default MESA reduces the growth of the BH mass to account for the rest-mass energy radiated away during accretion, determined by a radiative efficiency parameter. For simplicity, in this lab we will switch this control off. For these purposes, you can include:
 
 ```fortran
 ! be 100% sure magnetic braking is always off
@@ -170,7 +194,8 @@ fr = 0.5d0
 fj = 0.01d0
 fj_hard = 0.02d0
 ```
-The exact purpose of each of these controls can be checked in the defaults file `$MESA_DIR/binary/defaults/binary_controls.defaults`. Contrary to the `star` module, there is not a single `time_delta_coeff` control to easily scale all timesteps, so each of these controls relax the solver conditions based on the binary properties (orbital separation, Roche Lobe radius, ecc.).
+The exact purpose of each of these controls can be checked in the defaults file `$MESA_DIR/binary/defaults/binary_controls.defaults`, but in general `fm`, `fa`, `fr` and `fj` control the fractional change of envelope mass, binary separation, Roche lobe overfilling factor, and orbital angular momentum. 
+<!-- Contrary to the `star` module, there is not a single `time_delta_coeff` control to easily scale all timesteps, so each of these controls relax the solver conditions based on the binary properties (orbital separation, Roche Lobe radius, ecc.). -->
 
 Finally, let's add some options for the output of our simulation:
 ```fortran
@@ -179,7 +204,11 @@ photo_interval = 50
 history_interval = 1
 ```
 
-#### Modify `controls` in `inlist1`
+<!-- #### Modify `controls` in `inlist1` -->
+<p style="font-weight:600; font-size:1.2em; margin-top:1.7em; margin-bottom:1em">
+Modify <code>controls</code> in <code>inlist1</code>
+</p>
+
 We will add a lot of options here that involve the individual stripped star model. Most of them are purely to make the run faster; we add also a prescription for the convective overshooting and a terminating condition at core-Helium depletion. Going through everything is beyond the scope of this lab (we are focusing on binaries here 🙃 and you have seen many of these already in the previous days), but feel free to dig into them later if you have time! Remember that the exact purpose of each of these controls can be checked in the defaults file `$MESA_DIR/star/defaults/controls.defaults`.
 
 {{< details title="Modified `controls` for `inlist1`" closed="true" >}}
@@ -246,7 +275,10 @@ We will add a lot of options here that involve the individual stripped star mode
 ```
 {{< /details>}}
 
-#### Modify `pgstar` in `inlist1`
+<!-- #### Modify `pgstar` in `inlist1` -->
+<p style="font-weight:600; font-size:1.2em; margin-top:1.7em; margin-bottom:1em">
+Modify <code>pgstar</code> in <code>inlist1</code>
+</p>
 
 Playing with `pgstar` can be very entertaining, but for this lab we will use a pre-made window. You can copy all this content and replace the default entirely:
 
@@ -406,8 +438,14 @@ Playing with `pgstar` can be very entertaining, but for this lab we will use a p
 
 {{< /details>}}
 
-#### Get `final1_caseA.mod` and `final2_caseA.mod`
-Grab the final models `final1_caseA.mod` and `final2_caseA.mod` from your minilab1 (or download them from [Table 1](#table-binary)) and copy them into your work folder.
+Also add `pause_before_terminate = .true.` to `&star_job` just below `pgstar_flag = .true.` if you'd like to take a moment to admire your final pgstar window after every run.
+
+<!-- #### Get `final1_caseA.mod` and `final2_caseA.mod` -->
+<p style="font-weight:600; font-size:1.2em; margin-top:1.7em; margin-bottom:1em">
+Get <code>final1_caseA.mod</code> and <code>final2_caseA.mod</code>
+</p>
+
+Grab the final models `final1_caseA.mod` and `final2_caseA.mod` from [Table 1](#table-binary) and copy them into your work folder.
 
 <!-- #### Get `history_columns.list` and `binary_history_columns.list`
 Grab the <a href="/files/binary_history_columns.list" download>`history_columns.list`</a> and <a href="/files/binary_history_columns.list" download>`history_columns.list`</a> and copy them into your work folder. -->
@@ -418,6 +456,7 @@ Grab the <a href="/files/binary_history_columns.list" download>`history_columns.
 ### The stripped star becomes a BH companion
 After He depletion in its core, the stripped star has a very short remaining lifetime: for a star of total mass ~ 20 $M_{\odot}$ (and He-core mass of ~ 10 $M_{\odot}$), you can expect it to live only another ~ 300 years! For simplicity, we will just assume that the properties at core He depletion can be representative of those at the end of the star's life. Additionally, we will assume that all the mass contained in the primary directly collapses to form a BH.
 
+<br>
 <div style="
   margin:1rem 0;
   padding:0.8rem 1rem;
@@ -429,7 +468,7 @@ After He depletion in its core, the stripped star has a very short remaining lif
     🧪 Task: Modify <code>inlist_project</code>
   </div>
 
-Find the mass of the stripped star at core He depletion from your <code>minilab1</code> and make it directly collapse into a BH. Set the period of your binary to be the one you found at the end of <code>minilab1</code>.
+Find the mass of the stripped star at core He depletion from your lab1 and, assuming it directly collapses into a BH, set its mass in `inlist_project`. Set also the period of your binary to be the one you found at the end of lab1.
 </div>
 
 
@@ -473,7 +512,7 @@ Find the mass of the stripped star at core He depletion from your <code>minilab1
     border-left:4px solid rgba(246, 171, 59, 0.22)
   ">
 
-  Remember which one was stripped in Minilab1 (the primary, <code>final1_caseA.mod</code>), and which one was accreted (the secondary, <code>final2_caseA.mod</code>). The stripped star will become the BH (<code>m2</code>), and the accreted star will become your new primary (<code>m1</code>).
+  Remember which one was stripped in lab1 (the primary, <code>final1_caseA.mod</code>), and which one was accreted (the secondary, <code>final2_caseA.mod</code>). The stripped star will become the BH (<code>m2</code>), and the accretor will become your new primary (<code>m1</code>).
 
   </div>
 </details>
@@ -483,12 +522,13 @@ Find the mass of the stripped star at core He depletion from your <code>minilab1
 ```fortran
    m1 = 39.6d0 ! primary mass in Msun
    m2 = 16.8d0 ! BH mass in Msun
-   initial_period_in_days = 4.5d0 ! final period from minilab1
+   initial_period_in_days = 4.5d0 ! final period from lab1
 ```
 {{< /details >}}
 
-Now you have set up the properties of your binary system. We are only missing one piece: we need to load the model of the accretor from minilab1 as our new primary star.
+Now you have set up the properties of your binary system. We are only missing one piece: we need to load the model of the accretor from lab1 as our new primary star.
 
+<br>
 <div style="
   margin:1rem 0;
   padding:0.8rem 1rem;
@@ -500,7 +540,7 @@ Now you have set up the properties of your binary system. We are only missing on
     🧪 Task: Modify <code>inlist1</code>
   </div>
 
-Load the right model from your <code>minilab1</code> in your `inlist1`.
+Load the right model from your lab1 in your `inlist1`.
 </div>
 
 <details>
@@ -537,7 +577,7 @@ Inside your `inlist1`:
 {{< /details >}}
 
 > [!NOTE]
-> Did you need to set both masses in `inlist_project`? Nope! Since you loaded a pre-computed model for your new primary (the accretor of minilab1), its mass and properties will be read directly from the model `final2_caseA.mod`.
+> Did you need to set both masses in `inlist_project`? Nope! Since you loaded a pre-computed model for your new primary (the accretor of lab1), its mass and properties will be read directly from the model `final2_caseA.mod`. However, you still need to set the BH mass!
 
 
 ### Computing the time delay
@@ -562,7 +602,7 @@ Notice the strong dependence $t_{\rm delay} \propto a^4$: even modestly wider bi
 In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\rm Gyr} = 10^9$ years, because this makes it easy to compare them to the age of the Universe $\approx 13.8$ Gyr). This comparison tells us whether a compact binary has enough time to merge within cosmic history: binaries with $t_{\rm delay} \lesssim 13.8$ Gyr may merge and be observable today as gravitational-wave sources, while systems with longer delay times are effectively undetectable (technically, they have "not yet happened" anywhere in the Universe 🤓).
 
 > [!Note]
-> Remember that **so far, you have initialized a system with a star + BH**, since you have collapsed all the mass of the stripped star of minilab1 into a point mass <code>m2</code>, and initialized your <code>m1</code> to be the accretor of minilab1. **After evolving your system further**, your <code>m1</code> will reach Helium depletion in its core, and at the point it will very close to become the second BH of your system: that's how **you will achieve a BH + BH binary**! From that point onwards, the $t_{\mathrm{delay}}$ calculation will make sense, as the interaction between the two BHs is expected to be only via gravity.
+> Remember that **so far, you have initialized a system with a star + BH**, since you have collapsed all the mass of the stripped star of lab1 into a point mass <code>m2</code>, and initialized your <code>m1</code> to be the accretor of lab1. **After evolving your system further**, your <code>m1</code> will reach Helium depletion in its core, and at the point it will very close to become the second BH of your system: that's how **you will achieve a BH + BH binary**! From that point onwards, the $t_{\mathrm{delay}}$ calculation will make sense, as the interaction between the two BHs is expected to be only via gravity.
 
 
 > [!Important]
@@ -570,8 +610,9 @@ In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\
 > ```fortran
 > limit_retention_by_mdot_edd = .true.
 > ```
-> will make such that the accretion rate onto the BH is Eddington-limited (we talked about it in [here](#1-stable-mass-transfer)). This is a standard assumption when treating BH accretors, which is observationally motivated by beautiful systems like the galactic microquasar [SS433](https://en.wikipedia.org/wiki/SS_433), where powerful relativistic jets are thought to drive material away from the central binary. However, keep in mind that this is not exact science and **there are other possible ways to treat (and limit) accretion onto BHs**: we will explore one further down in the lab.
+> will make such that the accretion rate onto the BH is Eddington-limited (we talked about it in [here](#part-a-stable-mass-transfer)). This is a standard assumption when treating BH accretors, which is observationally motivated by beautiful systems like the galactic microquasar [SS433](https://en.wikipedia.org/wiki/SS_433), where powerful relativistic jets are thought to drive material away from the central binary. However, keep in mind that this is not exact science and **there are other possible ways to treat (and limit) accretion onto BHs**: we will explore one further down in the lab.
 
+<br>
 <div style="
   margin:1rem 0;
   padding:0.8rem 1rem;
@@ -583,7 +624,10 @@ In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\
     🧪 Task: Modify <code>run_binary_extras.f90</code>
   </div>
 
-Let's compute the $t_{\mathrm{delay}}$ in Gigayears (<a href="#eq-tdelay">Eq. (1)</a>) as an extra binary history column `tdelay(Gyr)` in `run_binary_extras.f90`, and print its value on the `pgstar` window, in the Text Summary part.
+Let's compute the $t_{\mathrm{delay}}$ in Gigayears (<a href="#eq-tdelay">Eq. (1)</a>) as an extra binary history column `tdelay(Gyr)` in `run_binary_extras.f90`, and print its value on the `pgstar` window, in the Text Summary part. Here's a reminder of the formula you need to use:
+
+$$t_{\rm delay} =\frac{5}{256}\frac{c^5 a^4}{G^3 m_1 m_2 (m_1 + m_2)} \,\tag{1}$$
+
 </div>
 
 <details>
@@ -608,7 +652,7 @@ Let's compute the $t_{\mathrm{delay}}$ in Gigayears (<a href="#eq-tdelay">Eq. (1
 
   You may want to use:
   <ul>
-    <li><code>clight</code>, the speed of light in $\mathrm{cm}\:\mathrm{s}^{-1}$
+    <li><code>clight</code>, the speed of light in cm/s
     <li><code>secyer</code>, the conversion between years and seconds</li>
     <li><code>standard_cgrav</code>, the gravitational constant in c.g.s.</li>
   </ul>
@@ -705,6 +749,8 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
 ```
 {{< /details >}}
 
+### RUN 1
+
  You have come a long way, congrats! We are finally ready to start our first run. 
 
 
@@ -749,7 +795,7 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
 
 </div>
 
-Your `pgstar` window should look like something like this (this is the very last model of your run, model 749):
+Your `pgstar` window should look like something like this (this is the very last png, from the last model of your run, model 749):
 
 <!-- ![pgstar_stable_caseA_new](/thursday/lab3/pgstar_stable_caseA_new.png) -->
 <a id="fig-caseA"></a>
@@ -758,9 +804,9 @@ Your `pgstar` window should look like something like this (this is the very last
 **Figure 1.** Stable mass transfer, Case A evolution for a star + BH binary (click to zoom in!).
 
 - Make sure that the **Kippenhahn diagram** shows nice convective zones (filled in light blue) and the Helium core (the solid green line). If it is the case, you did well in putting `mixing_regions 10` in `history_columns.list` (as indicated in this <a href="#modify-history_columnslist">section</a>) ☺️ Otherwise, no problem. Do it now, as we will look into the Kippenhahn diagram for a later run. You can also download the correct file <a href="../lab3/history_columns.list" download> <code>here</code></a>.
-- Check that the **info about the `tdelay(Gyr)`** column is appearing in the Text Summary, as you can see in here. If not, you may have done something wrong with the implementation... You can try again, but if you're short on time, just look at <a href="#fig-caseA">Figure 1</a> (click to zoom in!) to answer to the Analysis of the run questions here below.
+- Check that the **info about the `tdelay(Gyr)`** column is appearing in the Text Summary, as you can see in here. If not, you may have done something wrong with the implementation... You can try again, but if you're short on time, just look at <a href="#fig-caseA">Figure 1</a> (click to zoom in!) to answer to the Discuss the run questions here below.
 
-### Analysis of the run: Case A mass transfer!
+### Discuss the run: Case A mass transfer!
 Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at <a href="#fig-caseA">Figure 1</a> (click to zoom in!). Try to think about it and answer together with your table.
 
 1. Which type of mass transfer do you observe in this star + BH run?  
@@ -771,7 +817,7 @@ Here are some discussion points for you to understand what happened physically t
 
 2. How much mass did the donor star lose?
    {{< details title="Solution" closed="true" >}}
-The donor star started from a mass of $39.8\:M_{\odot}$ (see [Table 1](#table-binary)), and is now $23.95\:M_{\odot}$. You can read this value in the Text Summary (`star_mass`), or look at the Kippenhahn diagram. So it lost $15.85\:M_{\odot}$, which corresponds to 40% of its initial mass!
+The donor star started from a mass of $39.6\:M_{\odot}$ (see [Table 1](#table-binary)), and is now $23.95\:M_{\odot}$. You can read this value in the Text Summary (`star_mass`), or look at the Kippenhahn diagram. So it lost $15.85\:M_{\odot}$, which corresponds to 40% of its initial mass!
 {{< /details >}}
 3. Is the donor star stripped to its core?
       {{< details title="Solution" closed="true" >}}
@@ -794,8 +840,8 @@ You have calculated the `tdelay(Gyr)` yourself 🌝 You see it is equal to 4.28 
 The donor will collapse into a BH of mass $23.95\:M_{\odot}$, and the companion BH has a mass of $16.98\:M_{\odot}$. The mass ratio is then $\sim 0.7$! This number is right about what more detailed population synthesis studies expect for stable mass transfer to produce 😌 
 {{< /details >}}
 
-
-### Orbital tightening from L2 mass loss
+## PART B: Stable mass transfer 2.0 {#part-b}
+### SETUP: Orbital tightening from L2 mass loss
 So far, we have considered an **Eddington-limited** mass-transfer scenario, in which matter that cannot be accreted by the black hole is expelled from the vicinity of the accretor itself. This is the so-called **isotropic re-emission mode**. In this picture, the expelled material removes the **specific angular momentum of the accretor** from the binary system.
 
 However, this is not the only possible way for matter to leave the binary. 3D hydrodynamical simulations [^lu2022] show that when the mass-transfer rate becomes sufficiently high (roughly $\dot{M} \gtrsim 10^{-4}\ M_\odot\,\mathrm{yr}^{-1}$), some of the transferred material can instead be lifted all the way to the **second Lagrangian point**, $L_2$. This is the Lagrangian point located on the far side of the less massive object in the binary (see <a href="#fig-L2">Figure 2</a>).
@@ -813,11 +859,12 @@ $$\dot{J}_{\mathrm{ml}}=\dot{J}_{\mathrm{isotropic}}+\dot{J}_{\mathrm{L2}},$$
 
 where these $\dot{J}$ is the time derivative of the angular momentum component $J$ (and "ml" = mass loss). The angular momentum loss associated with matter expelled through the $L_2$ point can be written as
 
-$$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{MT}}\left[\left(\frac{m_{\mathrm{accretor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,\,\tag{2}$$
+<!-- $$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{MT}}\left[\left(\frac{m_{\mathrm{accretor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,\,\tag{2}$$ -->
+$$ \dot{J}_{\mathrm{L2}}=\colorbox{#e57373}{$\upsilon$}\times\dot{M}_{\mathrm{MT}}\left[\left(\frac{m_{\mathrm{accretor}}}{m_{\mathrm{accretor}} + m_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,\,\tag{2}$$
 
 while the standard isotropic re-emission contribution is
 
-$$\dot{J}_{\mathrm{isotropic}}=\beta\times\dot{M}_{\mathrm{MT}}\left(\frac{m_{\mathrm{donor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .\,\tag{3}$$
+$$\dot{J}_{\mathrm{isotropic}}=\colorbox{#e57373}{$\beta$}\times\dot{M}_{\mathrm{MT}}\left(\frac{m_{\mathrm{donor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .\,\tag{3}$$
 
 Here:
 
@@ -825,19 +872,22 @@ Here:
 - $a$ is the orbital separation,
 - $P$ is the orbital period,
 - $x_{\mathrm{L2}}$ is the position of the $L_2$ point in units of the orbital separation,
-- $\beta$ is the fraction of transferred mass expelled through isotropic re-emission,
-- $\upsilon$ is the fraction expelled through the $L_2$ outflow channel.
+- \(\text{\colorbox{#e57373}{$\beta$}}\) is the fraction of transferred mass expelled through isotropic re-emission,
+- \(\text{\colorbox{#e57373}{$\upsilon$}}\) is the fraction expelled through the $L_2$ outflow channel.
 
 These efficiency factors determine how conservative the mass transfer is:
 
-- $\upsilon + \beta = 1$  → all transferred material is expelled from the system;
+- \(\text{\colorbox{#e57373}{$\upsilon + \beta = 1$}}\)  → all transferred material is expelled from the system → <span style="color:#b00020; font-weight:bold;">THIS WILL BE OUR CASE IN THIS PART B!</span>
 - $\upsilon + \beta = 0$  → fully conservative mass transfer (everything is retained in the system).
-- $\epsilon\equiv\upsilon+\beta$  → this is the same $\epsilon$ that you saw in minilab1 (where $\epsilon=1$ is for conservative mass transfer, and $\epsilon=0$ is fully non-conservative), but this time it is modified to our purpose of having only two types of mass leakage: the isotropic re-emission mode, and $L_2$ overflow.
+- $\epsilon\equiv\upsilon+\beta$  → this plays the same role as $\epsilon = 1 - \alpha - \beta - \delta$ that you saw in lab1 (where $\epsilon=1$ is for conservative mass transfer, and $\epsilon=0$ is fully non-conservative), but this time it is modified to our purpose of having only two types of mass leakage: the isotropic re-emission mode, and $L_2$ overflow.
 
-$L_2$ mass outflow has been associated observationally with **circumbinary outflows** (see the CBO in <a href="#fig-L2">Figure 2</a>) in nearby ($\lesssim 10$ Megaparsecs!) **[ultraluminous X-ray sources](https://en.wikipedia.org/wiki/Ultraluminous_X-ray_source)**. These outflows are thought to absorb and reprocess radiation from the central accreting source, naturally producing the infrared excess observed in the ultraluminous X-ray sources[^lu2022]. An even closer (in our Galaxy!) candidate for this type of mass loss is again [SS433](https://en.wikipedia.org/wiki/SS_433), for which spectroscopic observations have been interpreted as evidence for material escaping through the $L_2$ region and forming a circumbinary structure[^bowler2010]. While **there is no direct smoking gun system where we directly see gas leaving from $L_2$**, we infer it through their required angular-momentum loss, the presence of circumbinary structures, and consistency with extreme mass-transfer regimes.
+
+{{< details title="Curiosity: observational motivation of $L_2$ outflows 🌀" closed="true" >}}
+  $L_2$ mass outflow has been associated observationally with **circumbinary outflows** (see the CBO in <a href="#fig-L2">Figure 2</a>) in nearby ($\lesssim 10$ Megaparsecs!) **[ultraluminous X-ray sources](https://en.wikipedia.org/wiki/Ultraluminous_X-ray_source)**. These outflows are thought to absorb and reprocess radiation from the central accreting source, naturally producing the infrared excess observed in the ultraluminous X-ray sources [(Lu et al. 2022)](https://ui.adsabs.harvard.edu/abs/2023MNRAS.519.1409L). An even closer (in our Galaxy!) candidate for this type of mass loss is again [SS433](https://en.wikipedia.org/wiki/SS_433), for which spectroscopic observations have been interpreted as evidence for material escaping through the $L_2$ region and forming a circumbinary structure[(Bowler 2010)](https://ui.adsabs.harvard.edu/abs/2010A%26A...521A..81B). While **there is no direct smoking gun system where we directly see gas leaving from $L_2$**, we infer it through their required angular-momentum loss, the presence of circumbinary structures, and consistency with extreme mass-transfer regimes.
+{{< /details >}}
 
 > [!IMPORTANT]
->In the context of gravitational wave sources, $L_2$ mass outflow is expected to efficiently tighten star + BH binaries that are residing in quite wide orbits, so that after the detachment, the binary will be already close enough to start chirping at the formation of the second BH! **In this part of the minilab3, we will demonstrate that, in presence of $L_2$ mass outflow, a wide binary, like the Case B system you produced in minilab1, can form a gravitational wave source after stable mass transfer.**
+>In the context of gravitational wave sources, $L_2$ mass outflow is expected to efficiently tighten star + BH binaries that are residing in quite wide orbits, so that after the detachment, the binary will be already close enough to start chirping at the formation of the second BH! **In this part of the lab3, we will demonstrate that, in presence of $L_2$ mass outflow, a wide binary, like the Case B system you produced in lab1, can form a gravitational wave source after stable mass transfer.**
 >
 > You can start from the same setup as you developed so far (also downloadable <a href="../lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
 > ```bash
@@ -865,19 +915,15 @@ $L_2$ mass outflow has been associated observationally with **circumbinary outfl
 >/ ! end of star_job namelist
 >```
 >{{< /details >}}
-
-
-> [!NOTE]
-> 1. Your setup still has the Eddington-limited mass accretion rate switched on, like we wanted to in our first part of the lab. But now we want to introduce our own prescription for how the mass outflows from the system, introducing $L_2$ outflow! Therefore, we will set this to `.false.` now in `inlist_project`
+>
+> Additionally, we still have the Eddington-limited mass accretion rate switched on, like we wanted to in our first part of the lab. But now we want to introduce our own prescription for how the mass outflows from the system, introducing $L_2$ outflow! Therefore, we set this to `.false.` now in `inlist_project`
   > ```fortran
   > limit_retention_by_mdot_edd = .false.
   >```
-> 2. To compute the orbital evolution due to mass losses from the system (`jdot_ml` equation) and the changes in mass due to accretion / leakages (`mdots` equation), MESA uses two default routines: 
->   - **`default_jdot_ml`**, to be found in `$MESA_DIR/binary/private/binary_jdot.f90`. If you want to create your own personalized version of it, the empty hook from where you usually start is: `$MESA_DIR/binary/other/mod_other_binary_jdot.f90`
->  - **`adjust_mdots`**, to be found in `$MESA_DIR/binary/private/binary_mdot.f90`. If you want to create your own personalized version of it, the empty hook from where you usually start is: `$MESA_DIR/binary/other_mod_other_adjust_mdots.f90`
+
 
       
-
+<br>
 <div style="
   margin:1rem 0;
   padding:0.8rem 1rem;
@@ -979,7 +1025,7 @@ end function find_L2
   </div>
 </details>
 
-
+<br>
 
 <details>
   <summary style="
@@ -1061,8 +1107,9 @@ end function find_L2
     background:rgba(246, 171, 59, 0.22);
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
+  In here, I am asking you to understand if your mass transfer is conservative or not. 
 
-  In `$MESA_DIR/binary/defaults/binary_controls.defaults`, give a look at the meaning and the default values of all these controls: <code>mass_transfer_alpha</code>, <code>mass_transfer_delta</code>, <code>mass_transfer_gamma</code>.
+  In `$MESA_DIR/binary/defaults/binary_controls.defaults`, give a look at the meaning and the default values of all these controls: <code>mass_transfer_alpha</code>, <code>mass_transfer_delta</code>, <code>mass_transfer_gamma</code>. What are their default values?
 
   Additionally, remember that you have set this in `inlist_project`
   ```fortran
@@ -1075,7 +1122,7 @@ end function find_L2
 
 {{< details title="Solution: yes 😛" closed="true" >}}
 
-As you saw in minilab1, these fractions $\alpha$, $\gamma$ and $\delta$ describe other possible leakages of mass, which we are not interested in. Luckily, they are all set to zero by default! So the only only that we have set is $\beta=0.65$, as wanted. The remaining 0.35 mass outflow will be calculated by us with our own personalized fraction $\upsilon$ (or `x_ctrl(1)`).
+As you saw in lab1, these fractions $\alpha$, $\gamma$ and $\delta$ describe other possible leakages of mass, which we are not interested in. Luckily, they are all set to zero by default! So the only one that we have set is $\beta=0.65$, as wanted. The remaining 0.35 mass outflow will be calculated by us with our own personalized fraction $\upsilon$ (or `x_ctrl(1)`).
 
 Additionally, the Eddington limit is switched off, so that we are in full control of where 35%+65%=100% of the mass goes!
 
@@ -1158,23 +1205,35 @@ end subroutine extras_binary_controls
 ```
 {{< /details >}}
 
+<br>
+
+Nice, you've completed the easy part! <span style="color:#f44336; font-weight:bold;">The further two steps (in red) are difficult.</span> you will need to create the `run_binary_extras.f90` routines for `my_jdot_ml` and `my_adjust_mdots` from scratch. If you are tired and / or short on time, no problem! Please read the hints and try think about it by yourself for at least a few minutes. But don't feel bad to look at the solutions 😊
+
+
+> [!NOTE]
+> To compute the orbital evolution due to mass losses from the system (`jdot_ml` equation) and the changes in mass due to accretion / leakages (`mdots` equation), MESA uses two default routines: 
+>   - **`default_jdot_ml`**, to be found in `$MESA_DIR/binary/private/binary_jdot.f90`. If you want to create your own personalized version of it, the empty hook from where you usually start is: `$MESA_DIR/binary/other/mod_other_binary_jdot.f90`
+>  - **`adjust_mdots`**, to be found in `$MESA_DIR/binary/private/binary_mdot.f90`. If you want to create your own personalized version of it, the empty hook from where you usually start is: `$MESA_DIR/binary/other/mod_other_adjust_mdots.f90`
+
+<br>
+
 <details>
   <summary style="
     cursor:pointer;
     padding:0.5rem;
-    background:rgba(246, 171, 59, 0.22);
-    border-left:4px solid rgba(246, 171, 59, 0.22);
+    background:rgba(244, 67, 54, 0.18);
+    border-left:4px solid #f44336;
   ">
-    💡 <strong>Creating <code>my_adjust_mdot</code> </strong>
+    💡 <strong>Creating <code>my_adjust_mdots</code><span style="color:#f44336; font-weight:bold;"> → DIFFICULT!</span></strong>
   </summary>
 
   <div style="
     padding:0.75rem;
-    background:rgba(246, 171, 59, 0.22);
-    border-left:4px solid rgba(246, 171, 59, 0.22);
+    background:rgba(244, 67, 54, 0.18);
+    border-left:4px solid #f44336;
   ">
 
-  Start by copying this guided skeleton entirely inside your `run_binary_extras.f90`. This is just a commented version of the classic empty routine `null_other_adjust_mdots` from `$MESA_DIR/binary/other_mod_other_adjust_mdots.f90`! So in the future, you will know where to start. 
+  Start by copying this guided skeleton entirely inside your `run_binary_extras.f90`. This is just a commented version of the classic empty routine `null_other_adjust_mdots` from `$MESA_DIR/binary/other_mod_other_adjust_mdots.f90`! 
 
   {{< details title="Guided skeleton of `my_adjust_mdots`" closed="true" >}}
 ```fortran
@@ -1193,9 +1252,9 @@ subroutine my_adjust_mdots(binary_id, ierr)
     end if
     
     ! THIS IS WHERE YOU CAN IMPOSE THE MASS TRANSFER FRACTION
-    ! In your minilab1, this looked like: 
+    ! In your lab1, this looked like: 
     ! epsilon = 1 - alpha - beta - delta - gamma.
-    ! In this minilab3, we want to only model beta (isotropic re-emission)
+    ! In this lab3, we want to only model beta (isotropic re-emission)
     ! and upsilon (L2 outflow), while all the rest is already set to zero
     ! in the defaults.
     b% fixed_xfer_fraction = 0d0    !!!modify this
@@ -1204,12 +1263,12 @@ subroutine my_adjust_mdots(binary_id, ierr)
     ! EDDINGTON ACCRETION RATE
     ! Usually, one should also eval mdot_edd here by calling the default
     ! functions using the ones provided through binary_lib. 
-    ! But in our minilab3, we want to ignore Eddington limits anyway...
+    ! But in our lab3, we want to ignore Eddington limits anyway...
     b% mdot_edd = 0d0
     b% mdot_edd_eta = 0d0
 
 
-    ! WIND MASS TRASNFER EFFICIENCY
+    ! WIND MASS TRANSFER EFFICIENCY
     ! Usually, one should also eval the wind mass transfer efficiency 
     ! here by calling the default functions provided through binary_lib.
     ! But we want to ignore wind mass transfer for simplicity...
@@ -1217,7 +1276,7 @@ subroutine my_adjust_mdots(binary_id, ierr)
     b% wind_xfer_fraction(:) = 0d0
 
 
-    ! MASS CHANGES IN THE TWO STARTS DUE TO MASS TRANSFER
+    ! MASS CHANGES IN THE TWO STARS DUE TO MASS TRANSFER
     ! Set mdot for the donor
     b% s_donor% mstar_dot = 0d0     !!!modify this
     ! Set mdot for the accretor
@@ -1241,7 +1300,7 @@ subroutine my_adjust_mdots(binary_id, ierr)
     b% mdot_system_transfer(:) = 0d0    !!!modify this
 
     ! mdot_system_cct is mass lost from a circumbinary coplanar toroid.
-    ! we are not interestered in modeling this one :) 
+    ! we are not interested in modeling this one :) 
     b% mdot_system_cct = 0d0 
 
     end subroutine my_adjust_mdots
@@ -1274,9 +1333,9 @@ subroutine my_adjust_mdots(binary_id, ierr)
     end if
     
     ! THIS IS WHERE YOU CAN IMPOSE THE MASS TRANSFER FRACTION
-    ! In your minilab1, this looked like: 
+    ! In your lab1, this looked like: 
     ! epsilon = 1 - alpha - beta - delta - gamma.
-    ! In this minilab3, we want to only model beta (isotropic re-emission)
+    ! In this lab3, we want to only model beta (isotropic re-emission)
     ! and upsilon (L2 outflow), while all the rest is already set to zero
     ! in the defaults.
     b% fixed_xfer_fraction = 1 - b% mass_transfer_beta - b% s_donor% x_ctrl(1)    !!!modify this
@@ -1285,12 +1344,12 @@ subroutine my_adjust_mdots(binary_id, ierr)
     ! EDDINGTON ACCRETION RATE
     ! Usually, one should also eval mdot_edd here by calling the default
     ! functions using the ones provided through binary_lib. 
-    ! But in our minilab3, we want to ignore Eddington limits anyway...
+    ! But in our lab3, we want to ignore Eddington limits anyway...
     b% mdot_edd = 0d0
     b% mdot_edd_eta = 0d0
 
 
-    ! WIND MASS TRASNFER EFFICIENCY
+    ! WIND MASS TRANSFER EFFICIENCY
     ! Usually, one should also eval the wind mass transfer efficiency 
     ! here by calling the default functions provided through binary_lib.
     ! But we want to ignore wind mass transfer for simplicity...
@@ -1298,7 +1357,7 @@ subroutine my_adjust_mdots(binary_id, ierr)
     b% wind_xfer_fraction(:) = 0d0
 
 
-    ! MASS CHANGES IN THE TWO STARTS DUE TO MASS TRANSFER
+    ! MASS CHANGES IN THE TWO STARS DUE TO MASS TRANSFER
     ! Set mdot for the donor
     b% s_donor% mstar_dot = b% mtransfer_rate     !!!modify this
     ! Set mdot for the accretor
@@ -1334,20 +1393,20 @@ end subroutine my_adjust_mdots
   <summary style="
     cursor:pointer;
     padding:0.5rem;
-    background:rgba(246, 171, 59, 0.22);
-    border-left:4px solid rgba(246, 171, 59, 0.22);
+    background:rgba(244, 67, 54, 0.18);
+    border-left:4px solid #f44336;
   ">
-    💡 <strong>Creating <code>my_jdot_ml</code> </strong>
+    💡 <strong>Creating <code>my_jdot_ml</code> <span style="color:#f44336; font-weight:bold;"> → DIFFICULT!</span> </strong>
   </summary>
 
   <div style="
     padding:0.75rem;
-    background:rgba(246, 171, 59, 0.22);
-    border-left:4px solid rgba(246, 171, 59, 0.22);
+    background:rgba(244, 67, 54, 0.18);
+    border-left:4px solid #f44336;
   ">
 
   This is the part in which you will use <a href="#eq-Jdot_iso">Eq. (2)</a> and <a href="#eq-Jdot_iso">Eq. (3)</a>.
-  Start by copying this guided skeleton entirely inside your `run_binary_extras.f90`. This is just a commented version of the classic empty routine `null_other_jdot_ml` from `$MESA_DIR/binary/other/mod_other_binary_jdot.f90`! So in the future, you will know where to start. 
+  Start by copying this guided skeleton entirely inside your `run_binary_extras.f90`. This is just a commented version of the classic empty routine `null_other_jdot_ml` from `$MESA_DIR/binary/other/mod_other_binary_jdot.f90`! 
 
   {{< details title="Guided skeleton of `my_jdot_ml`" closed="true" >}}
 ```fortran
@@ -1413,7 +1472,7 @@ subroutine my_jdot_ml(binary_id, ierr)
     ! $MESA_DIR/binary/private/binary_jdot.f90, and copy the relevant piece.
     ! You can also check the formula that we wrote on the website for Jdot_isotropic, it should correspond :) 
     b% jdot_ml = 0d0
-    b% jdot_ml = b% jdot_ml + (b% mdot_system_transfer(b% a_i) + b% mdot_system_wind(b% a_i))*&
+    b% jdot_ml = b% jdot_ml + b% mdot_system_transfer(b% a_i)*&
     pow2(b% m(b% d_i)/(b% m(b% a_i)+b% m(b% d_i))*b% separation)*2*pi/b% period *&
     sqrt(1 - pow2(b% eccentricity))
 
@@ -1499,7 +1558,7 @@ History_Panels1_other_yaxis_name(2) = 'lg_mdot_L2'
 ```
 {{< /details >}}
 
-
+### RUN 2
 
 > [!WARNING]
 > Don't forget to do `./clean` and `./mk` after modifying the `run_binary_extras.f90` file.
@@ -1542,7 +1601,7 @@ History_Panels1_other_yaxis_name(2) = 'lg_mdot_L2'
 
 </div>
 
-Your `pgstar` window should look like something like this (this is the very last model of your run, model 712):
+Your `pgstar` window should look like something like this (this is the very last png, from the last model of your run, model 712):
 
 <!-- ![pgstar_stable_caseB](/thursday/lab3/pgstar_stable_caseB_new.png) -->
 <a id="fig-caseB"></a>
@@ -1553,7 +1612,7 @@ Your `pgstar` window should look like something like this (this is the very last
 - Make sure the mass loss rate from $L_2$ is appearing in your mass transfer rate plot. If it looks like <a href="#fig-caseB">Figure 3</a>, you must have done everything right 🍻🍻
 
 
-### Analysis of the run: Case B mass transfer!
+### Discuss the run: Case B mass transfer!
 Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at <a href="#fig-caseB">Figure 3</a> (click to zoom in!). Try to think about it and answer together with your table.
 
 1. Which type of mass transfer do you observe in this star + BH run?  
@@ -1583,10 +1642,10 @@ The donor will collapse into a BH of mass $24.77\:M_{\odot}$, and the companion 
 {{< /details >}}
 
 <!-- #### ➕ BONUS: CASE B comparison!
-Only if they had the time in minilab1 to do caseB. -->
+Only if they had the time in lab1 to do caseB. -->
 
 
-## 2. Common envelope evolution
+## PART C: Common envelope evolution {#common-envelope-evolution}
 Common envelope (CE) evolution is a phase during which the envelope of the donor star engulfs the whole binary. The embedded system experiences strong drag forces while orbiting inside the envelope, causing the orbit to shrink and orbital energy to be transferred to the gas. Friction, shocks, and recombination energy are thought to help unbind part of the envelope, often leaving behind circumstellar material around the system. Observationally, CE events are frequently associated with luminous red novae (see [V1309 Sco](https://en.wikipedia.org/wiki/V1309_Scorpii), the “Rosetta stone” of this class of transients 💥).
 
 <a id="eq-MKH"></a>
@@ -1652,6 +1711,7 @@ Here:<a id="eq-ebind"></a>
 > 2. When you want to **pass information between `run_star_extras.f90` and `run_binary_extras.f90`** (for example, if you calculate something in `data_for_extra_history_columns` and you want to use that quantity in `data_for_extra_binary_history_columns`), **you can use the `s% xtra` array!**
 > 3. If you don't know how quantities are called, you can check `$MESA_DIR/star_data/public/star_data_step_work.inc` for the `s%` structure, and `$MESA_DIR/binary/public/binary_data.inc` for the `b%` structure.
 
+<br>
 <div style="
   margin:1rem 0;
   padding:0.8rem 1rem;
@@ -1663,7 +1723,10 @@ Here:<a id="eq-ebind"></a>
     🧪 Task: Modify <code>run_star_extras.f90</code>
   </div>
 
-Calculate an extra history column `Ebind(erg)` for the binding energy $E_{\mathrm{bind}}$ of the hydrogen envelope of our star, in $\mathrm{erg}$ (<a href="#eq-ebind">Eq. (7)</a>). Then save its value into `s% xtra`.
+Calculate an extra history column `Ebind(erg)` for the binding energy $E_{\mathrm{bind}}$ of the hydrogen envelope of our star, in $\mathrm{erg}$ (<a href="#eq-ebind">Eq. (7)</a>). Then save its value into `s% xtra`. Here's a reminder of the formula you need:
+
+$$E_{\mathrm{bind}}=\int_{m_{\mathrm{He\:core}}}^{m_{\mathrm{donor}}}\left(-\frac{Gm}{r}+u-\epsilon_{\mathrm{diss}}\right)\, dm .\,\tag{7}$$
+
 </div>
 
 
@@ -1733,6 +1796,7 @@ end do
 ```
 {{< /details >}}
 
+
 <details>
   <summary style="
     cursor:pointer;
@@ -1768,6 +1832,8 @@ Here $E_{\mathrm{H_2}} = 4.52\,\mathrm{eV}$ is the dissociation energy of molecu
 
   </div>
 </details>
+
+<br>
 
 <details>
   <summary style="
@@ -1837,6 +1903,7 @@ end function how_many_extra_history_columns
 
 {{< /details >}}
 
+<br>
 <div style="
   margin:1rem 0;
   padding:0.8rem 1rem;
@@ -1848,7 +1915,11 @@ end function how_many_extra_history_columns
     🧪 Task: Modify <code>run_binary_extras.f90</code>
   </div>
 
-Let's implement a stopping condition at the onset of the common envelope episode, i.e. when the mass transfer rate exceeds $10\times\dot{M}_{\mathrm{KH}}$ (<a href="#eq-MKH">Eq. (4)</a>), and let's show the Kelvin-Helmholtz mass loss rate on the `pgstar` window together with `lg_mtransfer_rate`.
+Let's implement a stopping condition at the onset of the common envelope episode, i.e. when the mass transfer rate exceeds $10\times\dot{M}_{\mathrm{KH}}$ (<a href="#eq-MKH">Eq. (4)</a>), and let's show the Kelvin-Helmholtz mass loss rate on the `pgstar` window together with `lg_mtransfer_rate`. Here's a reminder of the Equation you need:
+
+
+$$\dot{M}_{\mathrm{MT}}\gtrsim10 \times \frac{m_{\mathrm{donor}}}{t_{\mathrm{KH}}} .\,\tag{4}$$
+
 </div>
 
 <details>
@@ -1982,6 +2053,7 @@ History_Panels1_other_yaxis_name(2) = 'log10(Mdot_KH)'
 ```
 {{< /details >}}
 
+<br>
 <div style="
   margin:1rem 0;
   padding:0.8rem 1rem;
@@ -2064,6 +2136,8 @@ If you have time, try to implement:
 
 </div>
 
+### RUN 3
+
 
 > [!WARNING]
 > Never forget to do `./clean` and `./mk` after modifying the `run_binary_extras.f90` file.
@@ -2108,7 +2182,7 @@ Well done, we're at our third and last run of the day!
 
 </div>
 
-Your `pgstar` window should look like something like this (this is the very last model, right when CE starts according to our implemented criterion of <a href="#eq-MKH">Eq. (4)</a>, model number 560):
+Your `pgstar` window should look like something like this (this is the very last png from the last model, right when CE starts according to our implemented criterion of <a href="#eq-MKH">Eq. (4)</a>, model number 560):
 
 <a id="fig-CEcaseA"></a>
 [![CE case A figure](/thursday/lab3/pgstar_CE_caseA_new.png)](/thursday/lab3/pgstar_CE_caseA_new.png)
@@ -2116,9 +2190,9 @@ Your `pgstar` window should look like something like this (this is the very last
 **Figure 4.** Common envelope evolution at its onset for a star + BH binary (click to zoom in!).
 
 - Make sure that **the Kelvin-Helmholtz rate `log10(Mdot_KH)`** is appearing in the plot of `lg_mtransfer_rate`. You can see that the threshold stays around $10^{-2}\:M_{\odot}\:\mathrm{yr}^{-1}$, which gets easily surpassed by our mass transfer episode after a few models. 
-- Make sure also the new **Text Summary information on $t_{\mathrm{delay\: post-CE}}$ and $P_{\mathrm{post-CE}}$** from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the "Analysis of the run" section and simply look at <a href="#fig-CEcaseA">Figure 4</a> (click to zoom in!) to answer to the conceptual questions.
+- Make sure also the new **Text Summary information on $t_{\mathrm{delay\: post-CE}}$ and $P_{\mathrm{post-CE}}$** from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the "Discuss the run" section and simply look at <a href="#fig-CEcaseA">Figure 4</a> (click to zoom in!) to answer to the conceptual questions.
 
-### Analysis of the run: runaway mass transfer!
+### Discuss the run: runaway mass transfer!
 Here are some discussion points; you will only need to look at <a href="#fig-CEcaseA">Figure 4</a> (click to zoom in!). Try to think about it and answer together with your table.
 
 1. How is the mass transfer rate evolving, and how can you see that you are at CE onset?
@@ -2161,7 +2235,7 @@ The answer is yes again: the mass ratio in this case would be $\sim 0.23$, much 
 
 
 
-## 3. Conclusions
+## Conclusions
 Congratulations for making it till here! 🥳🥳 In this last lab we have completed our overview of binary evolution from Zero Age Main Sequence stars to binary black holes. We have learned three possible ways to form gravitational wave sources from the star + BH configuration: Case A stable mass transfer, Case B stable mass transfer, and common envelope evolution, and all three possibilites have been shown to contribute to the observed sample of gravitational waves detected by LIGO, Virgo and KAGRA interferometers[^GWTC4]. 
 
 >[!IMPORTANT]
@@ -2169,6 +2243,7 @@ Congratulations for making it till here! 🥳🥳 In this last lab we have compl
 
 ## References
 [^peters1964]: [Peters (1964), Gravitational Radiation and the Motion of Two Point Masses](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P)
+
 [^SS433]: [Wikipedia — SS433](https://en.wikipedia.org/wiki/SS_433)
 [^GWTC4]: [The LIGO Scientific Collaboration, the Virgo Collaboration, the KAGRA Collaboration, et al. (2025a), GWTC-4.0: Updating the Gravitational-Wave Transient Catalog with Observations from the First Part of the Fourth LIGO-Virgo-KAGRA Observing Run](https://arxiv.org/abs/2508.18082)
 [^lu2022]: [Lu et al. (2022), Stable mass transfer via L2 outflows in massive binaries](https://ui.adsabs.harvard.edu/abs/2023MNRAS.519.1409L)
@@ -2177,7 +2252,7 @@ Congratulations for making it till here! 🥳🥳 In this last lab we have compl
 [^ivanova2013]: [Ivanova et al. (2013), Common envelope evolution: where we stand and how we can move forward](https://ui.adsabs.harvard.edu/abs/2013A&ARv..21...59I)
 
 <!-- #### ➕ BONUS1: CASE B comparison!
-Only if they had the time in minilab1 to do caseA.
+Only if they had the time in lab1 to do caseA.
 
 #### ➕➕ BONUS2: Delayed mass transfer instability
 Have them look into the timescale of when instability develops, and the shift in properties (mass and orbital separation) from RLOF to CE onset -->
