@@ -10,7 +10,7 @@ disableKinds: "rss"
 
 Recap of lab 2: So far we have changed the nuclear net to include more reactions, and looked at the effect of Urca cooling from the $^{23}\rm{Na}$-$^{23}\rm{Ne}$ and $^{25}\rm{Mg}$-$^{25}\rm{Na}$-$^{25}\rm{Ne}$ pairs on the stellar structure. 
 
-Now we will expand on lab 2, and . 
+<!-- Now we will expand on lab 2, and .  -->
 
 <!-- Now we will vary the reactions -->
 
