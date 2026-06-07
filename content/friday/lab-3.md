@@ -720,50 +720,6 @@ Write down a short conclusion:
 > [!TIP]
 > Keep this as a bonus task. The goal is not to build a perfect analysis pipeline, just to explore whether the nonlinear cycle average differs in an interesting way from the static model value.
 
-## Sample animations of a 4.5Msun Cepheid
-
-{{< details title="Show nonlinear structure animations" closed="true" >}}
-
-Adapted from scripts written and shared by Earl Bellinger.
-
-These animations follow the final limit cycle of one nonlinear Cepheid model from the grid, with a fundamental mode pulsation period of $P_0 \simeq 6.36$ days. This model is on the short period side of the $P_2/P_0 \approx 0.5$ resonance picture, so the bump appears on the descending branch of the light curve, after maximum light and before minimum light.
-
-The left panels show how the same phase maps onto the stellar envelope in radius, log temperature, and log optical depth. They include pressure volume work, net heating, scaled log opacity, and scaled $\mathcal{Y}=\nabla_T-\nabla_L$, with $\mathcal{Y}$ plotted as $0.1\,\mathtt{mlt\_Y\_face}$. The separate radiative and convective heating curves are omitted from this cleaned version. Convection is shown by hatching, and the shaded bands mark the ionization zones.
-
-This is the clean case, not the full pulsation landscape. OGLE classifies many classical Cepheids as fundamental mode or first overtone pulsators, but it also contains rarer second overtone, double mode, and triple mode Cepheids. Nearby in the Cepheid family, Type II Cepheids and RV Tauri stars show still richer behavior, including alternating minima and significant amplitude or period changes.
-
-A single period and a single limit cycle are the right language for a stable single mode pulsator. They are not the right description for every variable star.
-
-In model language, the broader problem is **nonlinear mode selection**: linear growth rates say which modes can grow, while nonlinear saturation and mode coupling decide which mode, or which combination of modes, survives at finite amplitude. Period doubling and irregular behavior between cycles can be observational signatures of more complex dynamics, including chaotic nonlinear dynamics in some pulsating variable classes. We are not trying to model all of that today. We are using the stable fundamental mode case because it is the cleanest way to see the Hertzsprung progression.
-
-Choose which structural coordinate to use on the animation x axis.
-
-{{< tabs items="Radius,Log T,Log tau" >}}
-{{< tab >}}
-{{< lazy-animation
-  src="../plots/lab3/initial_mass_4p5_work_radius_phase_cycle_dark.gif"
-  alt="Short period nonlinear Cepheid structure animation in radius coordinates"
-  button="Load radius animation"
->}}
-{{< /tab >}}
-{{< tab >}}
-{{< lazy-animation
-  src="../plots/lab3/initial_mass_4p5_work_logT_phase_cycle_dark.gif"
-  alt="Short period nonlinear Cepheid structure animation in log temperature coordinates"
-  button="Load log T animation"
->}}
-{{< /tab >}}
-{{< tab >}}
-{{< lazy-animation
-  src="../plots/lab3/initial_mass_4p5_work_logtau_phase_cycle_dark.gif"
-  alt="Short period nonlinear Cepheid structure animation in log optical depth coordinates"
-  button="Load log tau animation"
->}}
-{{< /tab >}}
-{{< /tabs >}}
-
-{{< /details >}}
-
 ## Suggested Reading
 
 - [OGLE Atlas of Variable Star Light Curves, classical Cepheids](https://ogle.astrouw.edu.pl/atlas/classical_Cepheids.html)
