@@ -792,6 +792,11 @@ Any tiny change in our modeling assumptions, changes the outcome of the star dra
 
 We have done many things in this lab to ensure short runtimes. Here are a few suggested exercises you can try towards building a better model. 
 
+| 📋 TASK |
+|:--------|
+| **Download the Lab 3 solutions [here](https://drive.google.com/file/d/13LTiBZxAee_4rQ6w2utercfGI7VEib2b/view?usp=drive_link)**, for $\dot{M}=10^{-6}\,M_{\odot}\,\rm{yr}^{-1}$,`ONeMg2Na.net`, and Suzuki weak rates. **Clean and compile.** |
+
+
 Do **not** attempt these all at once! Your run will be unbearably slow. 
 
 Here we briefly describe what skills you'll learn with each task:
@@ -947,7 +952,7 @@ Now you're ready to run.
 
 | 📋 TASK |
 |:--------|
-| Finally, ``./mk`` , ``./clean`` and ``./rn``. Look at the terminal to find the list of species and reactions in your new net. Observe if the reaction flow behaves differently. |
+| Finally, ``./rn``. Look at the terminal to find the list of species and reactions in your new net. Observe if the reaction flow behaves differently. |
 
 {{< /tab >}}
 
@@ -994,9 +999,6 @@ delta_lgRho_cntr_limit = 5d-3  ! default is 0.05d0
 |:--------|
 | **Add these controls** into your inlist and run MESA again. What values to use? A good starting point is in the ``partial solutions`` above. |
 
-> [!WARNING]
-> Make sure you do ``./clean`` and ``./mk`` first. 
-
 
 #### Limiting changes in nuclear burning luminosity
 
@@ -1041,7 +1043,7 @@ end function L1616_timestep_limit
 {{< /details >}}
 
 > [!TIP]
-> To check if you did this right, do ``./clean`` and ``./mk``. 
+> To check if you did this right, do ``./mk``. 
 
 | 📋 TASK |
 |:--------|
@@ -1380,9 +1382,6 @@ track the mass fraction of particular species and put more resolution where more
 |:--------|
 | **Comment out** the `xa_function*` options in ``inlist_common``, and **run MESA again**. Observe if the number of retries are higher. Note also the shape of the $T-\rho$ profile around the Urca shells. |
 
-> [!WARNING]
-> Be sure to do `./clean` and `./mk` first. 
-
 Hope this exercise helps you appreciate the utility of higher spatial resolution.
 
 #### ``mesh_delta_coeff``
@@ -1415,9 +1414,6 @@ In this lab, we have turned off the Skye EOS, in favor of the HELM EOS. They bot
 |:--------|
 | **Set ``use_Skye = .true.``** in ``inlist_common``, and **run MESA again**. Check if the evolution is any different. |
 
-> [!WARNING]
-> Make sure you do ``./clean`` and ``./mk`` first. 
-
 > [!IMPORTANT]
 > We recommend $\dot{M} > 10^{-7} M_{\odot} \rm{yr}^{-1}$ (``mass_change = 1d-7`` or greater). Lower values will result in hours-long runs because the Coulomb effects are stronger and there are more convergence issues. 
 
@@ -1426,8 +1422,34 @@ In this lab, we have turned off the Skye EOS, in favor of the HELM EOS. They bot
 
 {{< /tab >}}
 
-<!-- bigger nets -->
+<!-- Convection -->
 {{< tab name="Convection" >}}
+
+Throughout this lab, we have turned off convection by setting in the `&controls` section of `inlist_common`
+```fortran
+mlt_option = 'none'
+```
+
+This would matter, for example, when the exothermic ${^{24}\rm{Mg}}-{^{24}\rm{Na}}-{^{24}\rm{Ne}}$ electron capture chain happens and leads to a convective unstable region. Prior cooling from ${^{23}\rm{Na}}-{^{23}\rm{Ne}}$ yields an even more conducive environment for the convective instability. 
+
+We have two reasons to turn off convection:
+- We want to avoid convergence issues and ensure that the lab is quick to run. 
+- More importantly, as convection mixes isotopes out to the critical density at which a weak reaction happens, catastrophic cooling via the weak reactions can happen (which in turn leads to convergence issues). This calls for a reformulation of the standard mixing length theory, which may be addressed with 3D hydrodynamical simulations, way beyond the scope of this school. An example of the hydrodynamical simulations is convective Urca process in accreting carbon-oxygen white dwarfs (ask our lecturer Mike for more). 
+
+Turning off convection gives the limit in which energy is not transported out, and was done in Schwab+ 2017 as well. 
+
+Now we'll attempt to turn on convection, in the limit of efficient energy transport. 
+| 📋 TASK |
+|:--------|
+| In the `&controls` section of `inlist_common`, set the following options, and **run MESA again**. What is the final density of your model?  |
+```fortran
+mlt_option = 'Cox'
+mix_factor = 0d0
+use_Ledoux_criterion = .false.
+```
+
+>[!Note] 
+> Here we turn off mixing to avoid convergence issues. We also ignore the stabilizing effect of the composition gradient by not using the Ledoux criterion for convection. When you're done with the previous task, set `use_Ledoux_criterion = .true.` and run MESA again. 
 
 {{< /tab >}}
 
