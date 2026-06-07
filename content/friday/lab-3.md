@@ -23,7 +23,7 @@ $$
 
 The linear nonadiabatic (LNA) plot below shows the overtone period ratios as a function of the fundamental mode period, $P_0$. It shows why this ratio is useful: the second overtone ratio, $P_2/P_0$, passes through the resonance range near the periods where bump Cepheids become most morphologically interesting.
 
-![Linear period ratios for the selected nonlinear Cepheid grid](../plots/lab3/03_period_ratios_step200_lna_test_lmc_z006_o26.png)
+![Linear period ratios for the selected nonlinear Cepheid grid](../plots/lab3/04_period_ratios_step200_lna_test_lmc_z006_o26.png)
 
 As the stellar structure changes across the instability strip, the bump shifts from the descending branch, through the middle of the cycle, and onto the rising branch. In this lab, you will see that progression directly in nonlinear MESA models.
 
