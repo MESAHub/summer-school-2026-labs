@@ -187,7 +187,7 @@ In `Profile_Panels1`, look for:
 - **Bottom panel** — the neutrino emissivity (`eps_nuc_neu_total`, solid) and thermal neutrino emission (`non_nuc_neu`, dashed).
   A localised peak in the nuclear neutrino emissivity marks the active Urca shell.
 
-![Expected A=23 Urca shell in Profile_Panels1](profile_panels1_000340.png)
+![Expected A=23 Urca shell in Profile_Panels1](lab2_urca_shells.png)
 
 > [!TIP]
 > PNG snapshots of each pgstar frame are saved to `png/` inside your LOGS directory. If you miss a frame or want to compare later, check there.
