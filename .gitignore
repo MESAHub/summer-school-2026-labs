@@ -21,6 +21,7 @@ photos/
 *.avi
 *.mkv
 !content/friday/plots/lab1/cepheid_4p5_hr_lightcurve_structure_animation_dark.mp4
+!content/friday/plots/lab1/lab1_crash_plot.png
 !content/friday/plots/lab3/limit_cycle_delta_mag_logL_interpolated_pchip_250frames_50fps_dark.mp4
 
 # Undefined/junk
