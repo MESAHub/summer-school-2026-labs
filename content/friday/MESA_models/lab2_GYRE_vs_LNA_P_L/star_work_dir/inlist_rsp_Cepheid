@@ -1,0 +1,58 @@
+
+&star_job
+
+      show_log_description_at_start = .false.
+
+      !!! Set up RSP and model numbering
+      create_RSP_model =
+      set_initial_model_number =
+      initial_model_number =
+      
+/ ! end of star_job namelist
+
+&eos
+/ ! end of eos namelist
+
+&kap 
+   Zbase = 0.006d0 ! Keep same Zbase as lab 1
+   use_Type2_opacities = .false.
+/ ! end of kap namelist
+
+&colors
+   !!! Turn on colors
+   use_colors =
+/ ! end of colors namelist
+
+&controls
+    !!! Set parameters using your model to build RSP envelope
+    RSP_mass =
+    RSP_Teff =
+    RSP_L =
+
+    !!! Set using photosphere_X and photosphere_Z
+    RSP_X =
+    RSP_Z =
+
+    !!! Set to match the mixing_length_alpha from lab 1 inlist
+    RSP_alfa =
+
+    !!! Run only LNA
+    RSP_max_num_periods =
+
+
+! solver
+   use_gold2_tolerances = .true.
+
+! output controls
+
+      photo_interval = 1000
+      profile_interval = 4000
+      history_interval = 10
+      terminal_interval = 100
+
+/ ! end of controls namelist
+
+
+
+&pgstar
+/ ! end of pgstar namelist

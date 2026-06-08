@@ -18,7 +18,7 @@ Today, we will learn how to use `MESA/binary` to trace this journey from the fir
 The figure below sketches the  **binary evolution** path that stars can take towards a double black hole (BBH) merger, which provides the overarching narrative for the three labs:
 
 <figure style="text-align: center; margin: 2rem auto;">
-  <img src="../thursday/overview_binarylabs.png"
+  <img src="overview_binarylabs.png"
        alt="Binary black hole formation channel"
        style="max-width: 100%; border-radius: 6px;" />
   <figcaption style="margin-top: 0.75rem; font-size: 0.92em; color: #555;">
