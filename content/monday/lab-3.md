@@ -88,7 +88,7 @@ cat rn1                     #it calls star with 'inlist'
 
 `run_star_extras.f90` already implements the seismic calculations, so you will not need to edit it.
 
-We are going to crowdsource our science as a group. Open the [shared Google Sheet](https://docs.google.com/spreadsheets/d/1C88C5V2siCAaK8-3qgAZoNc9-9IH-RTIqFVetXQc3EM/edit?usp=sharing), add your name to column A, and pick a mass from **0.4, 0.6, 0.8, 0.9, 1.0, 1.1, 1.2** $M_\odot$. You can take more than one mass, but try not to duplicate masses that others have already claimed.
+We are going to crowdsource our science as a group. Open the [shared Google Sheet](https://docs.google.com/spreadsheets/d/1C88C5V2siCAaK8-3qgAZoNc9-9IH-RTIqFVetXQc3EM/edit?usp=sharing), add your name to column A, and pick a mass from **0.5, 0.6, 0.8, 0.9, 1.0, 1.1, 1.2** $M_\odot$. You can take more than one mass, but try not to duplicate masses that others have already claimed.
 
 Once you have chosen a mass, open `inlist_run` and set it:
 

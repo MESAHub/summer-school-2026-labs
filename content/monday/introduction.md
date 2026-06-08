@@ -39,8 +39,9 @@ Physics Concepts
 
 Questions to Address
 
-1. How effective is stellar rotation as an age indicator? Compare typical observational uncertainties in rotation periods with the age precision implied by your calculated gyrochrones.
+1. How effective is stellar rotation as an age indicator? Compare typical observational uncertainties in rotation periods (10%) with the dynamical range implied by your calculated gyrochrones.
 2. Why can stellar rotation serve as a clock at all? What properties of the spin-down law make gyrochronology possible?
+
 
 ⸻
 
@@ -59,8 +60,8 @@ Physics Concepts
 
 Questions to Address
 
-1. How effective are stellar colors and magnitudes as age indicators? Compare typical observational uncertainties with the age precision implied by your calculated isochrones.
-2. How sensitive are your inferred ages to changes in model assumptions? In this regime, do theoretical uncertainties dominate over observational uncertainties?
+1. How effective are stellar colors and magnitudes as age indicators? Compare typical observational uncertainties with the dynamical range implied by your calculated isochrones.
+2. How sensitive are your inferred ages to changes in model assumptions? Do theoretical uncertainties dominate over observational uncertainties?
 
 
 ⸻
@@ -82,8 +83,9 @@ Physics Concepts
 
 Questions to Address
 
-1. How effective is asteroseismology as an age indicator? Compare typical observational uncertainties (∼1 μHz) with the age precision implied by your calculated seismic diagnostics and isochrones.
-2. How sensitive are your inferred ages to changes in model assumptions? In this regime, do theoretical uncertainties dominate over observational uncertainties?
+1. How effective is asteroseismology as an age indicator? Compare typical observational uncertainties (∼1 μHz) with the dynamical range implied by your calculated seismic diagnostics and isochrones.
+2. How sensitive are your inferred ages to changes in model assumptions? Do theoretical uncertainties dominate over observational uncertainties?
+3. Can we detect oscillations for M dwarfs given the current instrument precision? Assume the precision for photometric observation is 60 ppm/hr, and that for RV is 30 cm/s/minute, and a cadence of 1 minute.
 
 
 # Looking Ahead

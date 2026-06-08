@@ -99,7 +99,7 @@ Next, we need to provide the file path to a filter system, stellar atmosphere, a
 
   ```fortran
   instrument = '/data/colors_data/filters/2MASS/2MASS'
-  stellar_atm = '/data/colors_data/stellar_models/Kurucz2003all/'
+  stellar_atm = '/data/colors_data/stellar_models/Kurucz2003all__alpha_04/'
   vega_sed = '/data/colors_data/stellar_models/vega_flam.csv'
   ```
 
@@ -462,7 +462,7 @@ Here is what your inlist should look like! You can also download a copy from [he
       instrument = '/data/colors_data/filters/2MASS/2MASS'
 
       ! Your choice of stellar atmosphere table
-      stellar_atm = '/data/colors_data/stellar_models/Kurucz2003all/' 
+      stellar_atm = '/data/colors_data/stellar_models/Kurucz2003all/'
 
       ! Distance to star in cm for synthetic photometry
       ! If you set the distance to 10 parsecs (3.0857d19), you will have absolute magnitude
