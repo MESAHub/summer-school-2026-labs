@@ -1,27 +1,46 @@
 ---
 weight: 3
-author: Tryston Raecke, Josh Wanninger, Sunny Wong, Michael Zingale
+author: Sunny Wong (lead), Tryston Raecke, Josh Wanninger, Michael Zingale
 math: true
 disableKinds: "rss"
 ---
 # Minilab 3: They all go broke
 
-So far we have changed the nuclear net to include more reactions, and looked at the effect of Urca cooling from the $^{23}\rm{Na}$-$^{23}\rm{Ne}$ pair on the stellar structure. 
+## Introduction
 
-We have been using an accretion rate $\dot{M}= 10^{-6} M_{\odot} \rm{yr}^{-1}$ and weak reaction rates from Suzuki et al. 2016. But what if we have different accretion histories, or reaction rates? 
+Recap of lab 2: So far we have changed the nuclear net to include more reactions, and looked at the effect of Urca cooling from the $^{23}\rm{Na}$-$^{23}\rm{Ne}$ and $^{25}\rm{Mg}$-$^{25}\rm{Na}$-$^{25}\rm{Ne}$ pairs on the stellar structure. 
 
-Now we will do a crowdsourcing to look at how the evolution changes with the accretion rate $\dot{M}$, reaction networks, and reaction rates. 
-The goal is to look at how they change the core properties at the onset of oxygen ignition, because whether an electron-capture supernova undergoes a thermonuclear explosion or core-collapse (implosion) is extremely sensitive to the central density. 
+Now we will expand on lab 2, add more reactions, change their rates, and see how this all affects the final thermal profile of the white dwarf. 
+
+<!-- Now we will vary the reactions -->
+
+>[!Task] <span style="font-size: 25px;">**Science goals**</span>
+> The final fate of an accreting oxygen-neon white dwarf is extrememly sensitive to the core conditions. In this lab, we will do a crowd-source exercise to look at how the core evolution changes with: 
+> - **Accretion rate $\dot{M}$**: this changes the rate of compression of the core, its thermal evolution and in turn when oxygen ignites. 
+> - **Reaction network**: we will include various weak reactions and look at their impact on the core evolution. 
+> - **Reaction rates**: we will grab weak reaction rates from different sources, and see how uncertainties in the reaction rates change the final outcome. 
+
+>[!Note] <span style="font-size: 25px;">**What we want you to think about**</span> 
+> In any MESA run (not just this lab), it's worth considering: 
+> - Are we including all the **important species and reactions**? A larger nuclear net increases the computational costs significantly, but you don't want to neglect any reactions that can change the outcome significantly. 
+> - Are we using the **correct rates**? With new calculations the reaction rates may change in impactful ways. They also come with their own uncertainties. 
+
+>[!Tip] <span style="font-size: 25px;">**MESA skills in this lab**</span> 
+> - *Changing weak reaction rates*. This may matter for modeling core-collapse supernova progenitors, for example. 
+> - More in the bonus labs. 
+
+>[!Warning]  <span style="font-size: 25px;">**Disclaimers**</span> 
+> Our labs are designed to do the *bare minimum* and run as quickly as possible. The bonus labs contain some suggested improvements. 
 
 ## Crowdsourcing
 
 ### Step 0: Start up
 
-| 📋 TASK 1 |
+| 📋 TASK 0 |
 |:--------|
-| **Download** the starting point from the [Google Drive]( https://drive.google.com/file/d/1T7yvdHgni1wipdopA925505jwcPr-MNk/view?usp=drive_link ) to a local working directory. |
+| **Download** the starting point from the [Google Drive](https://drive.google.com/file/d/1_yVXvlbhL-2_DpoGERqPQbPJSgGH1MJS/view?usp=drive_link) to a local working directory. |
 
-The starting point is a very simple setup. It should look like:
+<!-- The starting point is a very simple setup. It should look like:
 
 {{< filetree/container >}}
   {{< filetree/folder name="lab3_start_point" >}} 
@@ -32,25 +51,27 @@ The starting point is a very simple setup. It should look like:
     {{< filetree/file name="inlist_rates" >}} 
     {{< filetree/file name="other things" >}} 
   {{< /filetree/folder >}}
-{{< /filetree/container >}}
+{{< /filetree/container >}} -->
 
 >[!NOTE]
-> In this lab, you will only need to edit `inlist_accrete`, `inlist_net`, and `inlist_rates`. 
+> In this lab, we deviate from previous labs, and split some inlist items from `inlist_accrete` into `inlist_net`, and `inlist_rates`, for organization purposes. 
+> We also provide tables of custom weak reaction rates in `h5` format, in `tables_custom`, and two files called `weak.transitions` and `weak.states` for you to calculate weak reaction rates on-the-fly. These will be part of the crowdsourcing exercise; not everyone will need these items.
+> - `inlist_accrete`: sets the accretion rate and accreted composition.
+> - `inlist_net`: sets the nuclear net.
+> - `inlist_rates`: sets the weak reaction rates, and output directory. 
 
 ### Step 1: Pick a model
 
-| 📋 TASK 2 |
+| 📋 TASK 1 |
 |:--------|
 |  Go to the spreadsheet [here]( https://docs.google.com/spreadsheets/d/15PK9myW3oriuTeZvGFNGRKHqqphOHUFQoOcShtuME-g/edit?gid=0#gid=0 ). Pick any combination of the accretion rate, reaction network and reaction rates provided. Users with more cores should pick more computationally expensive ones. |
 
 
 ### Step 2: Changing the accretion rate
 
-| 📋 TASK 3 |
+| 📋 TASK 2 |
 |:--------|
 | **Edit `inlist_accrete`** to set the accretion rate that you chose. |
-
-
 
 {{< details title="Hint: what inlist option needs to be changed?" closed="true" >}}
 
@@ -68,7 +89,7 @@ In `&controls` of your `inlist_accrete`, set `mass_change = <your value>`.
 
 ### Step 3: Set your network
 
-You've done great work in labs 1 and 2 to implement custom networks, so here we will just supply the networks need. 
+You've done great work in labs 1 and 2 to implement custom networks, so here we will just supply the networks needed. 
 
 | 📋 TASK 3 |
 |:--------|
@@ -81,7 +102,7 @@ grep -r net $MESA_DIR/star/defaults
 ```
 {{< /details >}}
 
-{{< details title="Hint: partial solutions" closed="true" >}}
+{{< details title="Partial solutions" closed="true" >}}
 Add the following in your ``inlist_net``: 
 ```fortran
 change_initial_net = .true.
@@ -89,16 +110,14 @@ new_net_name = 'nets_lab3/<name>.net'
 ```
 {{< /details >}}
 
-#### What are in these nets?
-
-> [!NOTE]
-> In ``ONeMg.net``, ``ONeMgNa.net`` and ``ONeMg2Na.net``, we added the $^{24}\rm{Mg}$ electron capture reactions, which are exothermic. 
+From left to right, the nets get more complicated (but nowhere complete enough). The purpose of these nets is to observe the impacts of different Urca pairs and weak reactions on the core evolution:
 
 {{< tabs items="ONe.net,ONeMg.net,ONeNa.net,ONeMgNa.net,ONeMg2Na.net" >}}
 
-<!-- ONe.net -->
 {{< tab name='ONe.net' >}}
+Observe the exothermic ${^{20}\rm{Ne}}-{^{20}\rm{F}}$ electron capture. 
 
+{{< details title="Brief recap of the main reactions (Not a task)" closed="true" >}}
 Species: ${^{1}\rm{H}}$, ${^{4}\rm{He}}$, ${^{16}\rm{O}}$, ${^{20}\rm{Ne}}$, ${^{20}\rm{F}}$, ${^{20}\rm{O}}$, ${^{23}\rm{Na}}$, ${^{24}\rm{Mg}}$, ${^{25}\rm{Mg}}$, ${^{28}\rm{Si}}$
 
 Reactions: 
@@ -137,11 +156,14 @@ add_reactions(
 ```
 
 {{< /details >}}
-
+{{< /details >}}
 {{< /tab >}}
 
-<!-- ONeMg.net -->
-{{< tab name="ONeMg.net" >}}
+<!--  -->
+{{< tab name='ONeMg.net' >}}
+Observe the exothermic ${^{24}\rm{Mg}}-{^{24}\rm{Na}}-{^{24}\rm{Ne}}$ electron capture chain. This is a new addition compared to previous labs. 
+
+{{< details title="Brief recap of the main reactions (Not a task)" closed="true" >}}
 Species: ${^{1}\rm{H}}$, ${^{4}\rm{He}}$, ${^{16}\rm{O}}$, ${^{20}\rm{Ne}}$, ${^{20}\rm{F}}$, ${^{20}\rm{O}}$, ${^{23}\rm{Na}}$, ${^{24}\rm{Mg}}$, ${^{24}\rm{Na}}$, ${^{24}\rm{Ne}}$, ${^{25}\rm{Mg}}$, ${^{28}\rm{Si}}$
 
 Reactions: 
@@ -190,11 +212,15 @@ add_reactions(
 ```
 
 {{< /details >}}
+{{< /details >}}
+
 {{< /tab >}}
 
-<!-- ONeNa.net -->
-{{< tab name="ONeNa.net" >}}
+<!--  -->
+{{< tab name='ONeNa.net' >}}
+Observe the ${^{23}\rm{Na}}-{^{23}\rm{Ne}}$ Urca cooling. 
 
+{{< details title="Brief recap of the main reactions (Not a task)" closed="true" >}}
 Species to include: ${^{1}\rm{H}}$, ${^{4}\rm{He}}$, ${^{16}\rm{O}}$, ${^{20}\rm{Ne}}$, ${^{20}\rm{F}}$, ${^{20}\rm{O}}$, ${^{23}\rm{Na}}$, ${^{23}\rm{Ne}}$, ${^{24}\rm{Mg}}$, ${^{25}\rm{Mg}}$, ${^{28}\rm{Si}}$
 
 Reactions:
@@ -239,12 +265,15 @@ add_reactions(
 ```
 
 {{< /details >}}
+{{< /details >}}
 
 {{< /tab >}}
 
-<!-- ONeMgNa.net -->
-{{< tab name="ONeMgNa.net" >}}
+<!--  -->
+{{< tab name='ONeMgNa.net' >}}
+Observe the competition between cooling from the ${^{23}\rm{Na}}-{^{23}\rm{Ne}}$ Urca reaction and the exothermic ${^{24}\rm{Mg}}-{^{24}\rm{Na}}-{^{24}\rm{Ne}}$ electron capture chain. 
 
+{{< details title="Brief recap of the main reactions (Not a task)" closed="true" >}}
 Species: ${^{1}\rm{H}}$, ${^{4}\rm{He}}$, ${^{16}\rm{O}}$, ${^{20}\rm{Ne}}$, ${^{20}\rm{F}}$, ${^{20}\rm{O}}$, ${^{23}\rm{Na}}$, ${^{23}\rm{Ne}}$, ${^{24}\rm{Mg}}$, ${^{24}\rm{Na}}$, ${^{24}\rm{Ne}}$, ${^{25}\rm{Mg}}$, ${^{28}\rm{Si}}$
 
 Reactions:
@@ -299,11 +328,15 @@ add_reactions(
 ```
 
 {{< /details >}}
+{{< /details >}}
 
 {{< /tab >}}
 
-<!-- ONeMg2Na.net -->
-{{< tab name="ONeMg2Na.net" >}}
+<!--  -->
+{{< tab name='ONeMg2Na.net' >}}
+Same as `ONeMgNa.net`, but with the addition of the ${^{25}\rm{Mg}}-{^{25}\rm{Na}}-{^{25}\rm{Ne}}$ Urca cooling. 
+
+{{< details title="Brief recap of the main reactions (Not a task)" closed="true" >}}
 
 Species: ${^{1}\rm{H}}$, ${^{4}\rm{He}}$, ${^{16}\rm{O}}$, ${^{20}\rm{Ne}}$, ${^{20}\rm{F}}$, ${^{20}\rm{O}}$, ${^{23}\rm{Na}}$, ${^{23}\rm{Ne}}$, ${^{24}\rm{Mg}}$, ${^{24}\rm{Na}}$, ${^{24}\rm{Ne}}$, ${^{25}\rm{Mg}}$, ${^{25}\rm{Na}}$, ${^{25}\rm{Ne}}$, ${^{28}\rm{Si}}$
 
@@ -368,11 +401,15 @@ add_reactions(
 ```
 
 {{< /details >}}
+{{< /details >}}
 
 {{< /tab >}}
 
-
 {{< /tabs >}}
+
+>[!Note]
+> `ONeMg.net`, `ONeMgNa.net`, and `ONeMg2Na.net` contain the exothermic ${^{24}\rm{Mg}}-{^{24}\rm{Na}}-{^{24}\rm{Ne}}$ electron capture chain. 
+
 
 The largest of these networks appears as:
 
@@ -398,7 +435,7 @@ Check the Google spreadsheet [here](https://docs.google.com/spreadsheets/d/15PK9
 
 #### Step 4: Using Suzuki Rates
 
-| 📋 TASK 5 |
+| 📋 TASK 4 |
 |:--------|
 | **Edit your ``inlist_rates``** to ask MESA to use Suzuki weak rates. |
 
@@ -433,11 +470,11 @@ You can supply your own tabulated weak rates to MESA. Here we will show you how 
 
 #### Step 4a: Tell MESA to use a custom rate table
 
-We first need to tell MESA the location of the directory (which we'll call `tables_custom`) to find the tabulated custom rates. This is an inlist option. 
+We first need to tell MESA the location of the directory to find the tabulated custom rates. This is an inlist option. 
 
 | 📋 TASK 4a |
 |:--------|
-| Edit `inlist_rates` to have it use your custom rate table. |
+| **Edit `inlist_rates`** to have it use weak rates from a directory called `tables_custom`. We have supplied you with `tables_custom` in the starting point. Check to make sure it's there. |
 
 {{< details title="Hint: how to find this inlist option?" closed="true" >}}
 Look up ``rate_table`` in ``$MESA_DIR/star/defaults/``:
@@ -459,35 +496,16 @@ use_suzuki_weak_rates = .false.
 
 {{< /details >}}
 
-#### Step 4b: Download data
+In `tables_custom`, each ``h5`` file contains the rates for each weak reaction, for example, ``on-the-fly_r_f20_wk_o20.h5`` for the electron capture reaction ${^{20}\rm{F} + e^{-} \to {^{20}\rm{O}}}$. 
+
+#### Step 4b: Edit weak_rates.list
+
+Once we point MESA to `tables_custom`, it will look for `rate_list.txt` (for regular reactions, which we won't modify) and `weak_rate_list.txt` (for weak reactions), *if* they exist. 
+These two lists tell MESA the reaction names and the corresponding file names. 
 
 | 📋 TASK 4b |
 |:--------|
-| **Download** the weak rate tables [here](https://drive.google.com/file/d/1R9DOoAh8IkojyJa752aPxKLLUNlwf8nu/view?usp=drive_link) to your working directory and **unzip** it. |
-
-After that, your working directory should look like:
-
-{{< filetree/container >}}
-  {{< filetree/folder name="work directory" >}} .
-    {{< filetree/file name="other things" >}} .
-    {{< filetree/folder name="tables_custom" >}} .
-        {{< filetree/file name="weak_rate_list.txt">}}  .
-        {{< filetree/file name="on-the-fly_r_f20_wk_o20.h5">}} .
-        {{< filetree/file name="other h5 files" >}} .
-    {{< /filetree/folder >}}
-  {{< /filetree/folder >}}
-{{< /filetree/container >}}
-
-Each ``h5`` file contains the rates for each weak reaction, for example, ``on-the-fly_r_f20_wk_o20.h5`` for the electron capture reaction ${^{20}\rm{F} + e^{-} \to {^{20}\rm{O}}}$. 
-
-#### Step 4c: Edit weak_rates.list
-
-Once we point MESA to `rates_dir`, it will look for `rate_list.txt` (for regular reactions, which we won't modify) and `weak_rate_list.txt` (for weak reactions), *if* they exist. 
-These two lists tell MESA the reaction names and the corresponding file names. 
-
-| 📋 TASK 4c |
-|:--------|
-| **Add** the following four reactions to  **`weak_rate_list.txt`**. Take a look at `weak_rate_list.txt` to see what is needed. |
+| **Add** the following four reactions to  **`tables_custom/weak_rate_list.txt`**. Take a look at `weak_rate_list.txt` to see what is needed. Use the files with the header `on-the-fly*` in the title. |
 - ${^{20}\rm{Ne}} + e^{-} \to {^{20}\rm{F}} + \nu_{e}$
 - ${^{20}\rm{F}} \to {^{20}\rm{Ne}} + e^{-} + \bar{\nu}_{e}$
 - ${^{20}\rm{F}} + e^{-} \to {^{20}\rm{O}} + \nu_{e}$
@@ -511,7 +529,7 @@ For beta decay reactions ($Y \to X + e^{-} + \bar{\nu}_{e}$), the format is `r_x
 You need to add the following to `weak_rate_list.txt`: 
 ```fortran
 r_ne20_wk_f20 'on-the-fly_r_ne20_wk_f20.h5'
-r_f20_wk-minus_ne20 'on-the-fly_r_f20_wk-minus_o20.h5'
+r_f20_wk-minus_ne20 'on-the-fly_r_f20_wk-minus_ne20.h5'
 r_f20_wk_o20 'on-the-fly_r_f20_wk_o20.h5'
 r_o20_wk-minus_f20 'on-the-fly_r_o20_wk-minus_f20.h5'
 ```
@@ -533,7 +551,7 @@ This is an inlist option.
 <!-- Edit inlist -->
 | 📋 TASK 4a |
 |:--------|
-| Edit `inlist_rates` to have MESA use special weak rates. |
+| **Edit `inlist_rates`** to have MESA use special weak rates. |
 
 {{< details title="Hint: What inlist option to look for?" closed="true" >}}
 
@@ -562,11 +580,7 @@ use_suzuki_weak_rates = .false.
 
 #### Step 4b: Feeding MESA the states and transitions
 
-For MESA to calculate the weak rates, it needs to know the nuclear states of the isotopes (energies and spins), and the halftimes of the transitions between these states. 
-
-| 📋 TASK 4b |
-|:--------|
-| **Download** the states file and the transition file [here](https://drive.google.com/file/d/1JWbVpgbDwPfDwaaJ_LnmkfExNxZ4BAUY/view?usp=drive_link) and [here](https://drive.google.com/file/d/10wsOlGsfWX_vjepwX9Fk9gjvkix-o6ml/view?usp=drive_link) to your working directory. |
+For MESA to calculate the weak rates, it needs to know the nuclear states of the isotopes (energies and spins), and the halftimes of the transitions between these states. Your starting point should contain a states file called `weak.states` and a transitions file called `weak.transitions`. Check to make sure. 
 
 | 📋 TASK 4c |
 |:--------|
@@ -628,7 +642,7 @@ Now you're ready to go!
 
 | 📋 TASK 6 |
 |:--------|
-| The only thing stopping your white dwarf from getting bankrupt is just you hitting ``./rn``. **Record the central density of your model in the Google spreadsheet [here](https://docs.google.com/spreadsheets/d/15PK9myW3oriuTeZvGFNGRKHqqphOHUFQoOcShtuME-g/edit?gid=0#gid=0)** at the end of the run. |
+| The only thing stopping your white dwarf from getting bankrupt is just you hitting ``./rn``. **Record the central density and temperature of your model in the Google spreadsheet [here](https://docs.google.com/spreadsheets/d/15PK9myW3oriuTeZvGFNGRKHqqphOHUFQoOcShtuME-g/edit?gid=0#gid=0)** at the end of the run. |
 
 > [!TIP]
 > You can do the following sanity check to see if you're using the correct net: 
@@ -636,25 +650,164 @@ Now you're ready to go!
 > Then do ``./rn`` and let MESA run for a few steps. MESA will first print out the species and reactions in the net. 
 
 > [!TIP]
-> If you're using **custom rates**, when MESA first runs, you should see messages like ``reading user weak rate file tables_custom/on-the-fly_r_mg24_wk_na24.h5``. 
+> If you're using **custom rates**, when MESA first runs, you should see messages like ``reading user weak rate file tables_custom/on-the-fly_r_ne20_wk_f20.h5``. 
 
 > [!WARNING]
 > If you haven't yet, do ``./clean && ./mk`` first.
 
+>[!Note]
+> An example solution is provided [here](https://drive.google.com/file/d/1RQiVGEzHokCpAW7ph5aI2CFvd1R4wIu5/view?usp=drive_link), for $\dot{M}=10^{-6}\,M_{\odot}\,\rm{yr}^{-1}$,`ONeMg2Na.net`, and Suzuki weak rates. `inlist_rates` contains the solutions for custom rates and special (on-the-fly) rates too in the comments. 
 
 ## Review reaction flow with pynucastro
 
-We can easily visualize the reaction flow with the ``pynucastro`` python package and build up some intuition. 
-Go to [this](https://drive.google.com/file/d/1I3NQMQpB3Vsf-c8Yd40nggisLtOOTlzF/view?usp=sharing) Google colab notebook and go through the exercises. 
+We will first visualize the reaction flow with the ``pynucastro`` python package and build up some intuition. 
+
+| 📋 TASK 7 |
+|:--------|
+| Go to [this](https://drive.google.com/file/d/1I3NQMQpB3Vsf-c8Yd40nggisLtOOTlzF/view?usp=sharing) Google colab notebook. Click on `File > Open > Google colaboratory` on the top left corner. Once a new tab opens, click on **`File > Save a copy in Drive`** on the top left corner. Modify your own copy, **do not modify the original copy**. Follow the instructions there. |
+
+## Comparing the thermal history of the core
+
+Compare the final central density and temperature of your model to others on the crowdsource spreadsheet. What do you notice? 
+
+Click on the tabs to reveal our suggested answers:
+
+<!--  -->
+{{< details title="Q1: How does the core thermal history change with accretion rate? " closed="true" >}}
+
+Due to the accretion, the core is compressed to higher densities and temperatures. In quasiequilibrium, this *compressional heating* balances *neutrino cooling*, setting the temperature evolution of the core. 
+
+With a lower accretion rate , the core gets compressed less strongly, which in general leads to a *lower core temperature*. 
+
+> [!Note]
+> In fact, for a sufficiently low accretion rate (e.g., $\dot{M}\sim 10^{-8} \,M_{\odot}\,\rm{yr}^{-1}$), Urca cooling plunges the core temperature so low that the core *crystallizes*. This happens when the Coulomb coupling parameter $\Gamma$, the ratio between Coulomb potential energy and thermal energy for ions, reaches $\approx 175$. The Skye EOS does this much more properly than the HELM EOS used in this lab, but we turned it off for timing considerations. One of the bonus tasks invites you to look into this. 
+
+![landscape](/wednesday/Lab3_Mdot_ONeMg2Na.png)
+*Evolution of central temperature-density, for models accreting at $10^{-6} - 10^{-8}\,M_{\odot}\,\rm{yr}^{-1}$ using ONeMg2Na.net and Suzuki weak rates. Dashed line shows the regime where the core is expected to crystallize. 
+
+{{< /details >}}
+
+<!--  -->
+{{< details title="Q2: How do the different networks change the core evolution?" closed="true" >}}
+
+Click through the different tabs to see how the central temperature-density evolution changes as we add more and more reactions in the network. We take a model accreting at $10^{-6}\,M_{\odot}\,\rm{yr}^{-1}$ using Suzuki weak rates. Dashed line shows roughly where important weak reactions kick in. 
+
+
+<!--  -->
+{{< tabs items="ONe.net,ONeNa.net,ONeMg.net,ONeMgNa.net,ONeMg2Na.net" >}}
+
+<!-- ONe.net -->
+{{< tab >}}
+
+*Note that for ${^{20}\rm{Ne}}-{^{20}\rm{F}}$, this is at a lower density than with the custom/special weak rates, because of differences in the rate (see next question). 
+![landscape](/wednesday/Lab3_nets_ONe.png)
+
+
+{{< /tab >}}
+
+<!-- ONeNa.net -->
+{{< tab >}}
+
+*We highlight the ${^{23}\rm{Na}}-{^{23}\rm{Ne}}$ Urca reaction in orange, which cools the core. 
+![landscape](/wednesday/Lab3_nets_ONeNa.png)
+
+{{< /tab >}}
+
+<!-- ONeMg.net -->
+{{< tab >}}
+
+*We highlight the ${^{24}\rm{Mg}}-{^{24}\rm{Na}}$ reaction in orange, which heats the core up. The reaction ${^{24}\rm{Na}}-{^{24}\rm{Ne}}$ also happens, but its effects are not visible in this plot, for this particular accretion rate. 
+![landscape](/wednesday/Lab3_nets_ONeMg.png)
+
+{{< /tab >}}
+
+<!-- ONeMgNa.net -->
+{{< tab >}}
+
+*We highlight the ${^{24}\rm{Na}}-{^{24}\rm{Ne}}$ reaction in orange, which heats the core up. Its effects are not visible in the ``ONeMg.net`` plot, for this particular accretion rate. 
+![landscape](/wednesday/Lab3_nets_ONeMgNa.png)
+
+{{< /tab >}}
+
+<!-- ONeMg2Na.net -->
+{{< tab >}}
+
+*We highlight the ${^{25}\rm{Mg}}-{^{25}\rm{Na}}$ and ${^{25}\rm{Na}}-{^{25}\rm{Ne}}$ reactions in orange, which cool the core. 
+![landscape](/wednesday/Lab3_nets_ONeMg2Na.png)
+
+{{< /tab >}}
+
+
+{{< /tabs >}}
+
+
+{{< /details >}}
+
+
+<!--  -->
+{{< details title="Q3: How do the different weak rates change the core evolution?" closed="true" >}}
+
+Most of the custom weak rates are actually taken from the outputs of the special (on-the-fly) weak rates, so these should give roughly the same evolution. The only exceptions are the ${^{25}\rm{Mg}}-{^{25}\rm{Na}}$ and ${^{23}\rm{Na}}-{^{23}\rm{Ne}}$ Urca reactions, where the custom weak rates are taken from the Suzuki weak rates. 
+
+The plot below shows the central temperature-density evolution of models accreting at $\dot{M}=10^{-6}\,M_{\odot}\,\rm{yr}^{-1}$ using the ``ONeMg2Na.net``. You'll notice that there are a few differences due to the following reactions:
+- ${^{25}\rm{Mg}}-{^{25}\rm{Na}}$ and ${^{23}\rm{Na}}-{^{23}\rm{Ne}}$ Urca reactions: For these two reactions, the custom rates are taken from Suzuki rates, and both of these differ very slightly from the special weak rates. The main reason is that the Suzuki/custom tables are a little too sparse. 
+- ${^{20}\rm{Ne}}-{^{20}\rm{F}}$: the Suzuki weak rates differ significantly from the custom/special weak rates. The reason is that the latter do not account for an additional transition between the ground states of ${^{20}\rm{Ne}}$ and ${^{20}\rm{F}}$, whose rate was not well determined until about 2019. The Suzuki weak rates from 2016 only accounted for this transition at its upper experimental limit. *Neither is correct*. Subsequent work by Kirsebom et al. 2019 determined the rate of this transition and its astrophysical impact, which you can read about [here](https://arxiv.org/abs/1905.09407). Its effect is to slightly favor an explosion and not a collapse. 
+![landscape](/wednesday/Lab3_rates_ONeMg2Na.png)
+
+{{< /details >}}
+
+<!--  -->
+{{< details title="Q4: What is the final fate of these mdoels?" closed="true" >}}
+
+Let's go back to this plot from Lab 1, taken from Holas+ 2026:
+![landscape](/wednesday/Holas+26_Fig8.png)
+*Figure 8, from Holas+26: Outcomes of 3D hydrodynamic simulations by ignition location and central density at ignition. The dashed and dotted lines indicate the transition from explosion to collapse for the TW92 and S20 flame speeds, respectively.*
+
+Assuming central ignition and the S20 model, we see that the critical density is about $\log_{10}\rho_{c} \approx 9.95 - 10.01$. Above this critical density, the star tends to collapse. Below this critical density, the star tends to explode. 
+
+Looking at the crowdsourcing spreadsheet, you'll notice that the ones that are favored to explode ($\log_{10}\rho_{c} < 9.95$), tend to be ones that don't account for Urca cooling (e.g. `ONe.net`, or `ONeMg.net`), or have high accretion rates (e.g. $\dot{M}\approx 10^{-6}\,M_{\odot}\,\rm{yr}^{-1}$), or use the Suzuki weak rates which try to account for a particular transition in the exothermic ${^{20}\rm{Ne}}-{^{20}\rm{F}}$ electron capture. 
+
+What's very interesting, is that most of our models lie in the density range between $\log_{10}\rho_{c} \approx 9.95 - 10.01$, where it's ambiguous whether the star collapses or explodes! 
+
+Any tiny change in our modeling assumptions, changes the outcome of the star dramatically! 
+
+{{< /details >}}
+
+## Takeaways
+
+{{< details title="Click here for spoilers" closed="true" >}}
+
+- The thermal history of an accreting oxygen-neon white dwarf depends on its accretion rate. A higher accretion rate leads to stronger compressional heating and in turn a higher core temperature. 
+- Urca reactions like the ${^{23}\rm{Na}}-{^{23}\rm{Ne}}$ pair cool the core by emitting neutrinos, and very slightly increase the core density at oxygen ignition. 
+- This normally wouldn't change the final outcome, but here our models lie right at the boundary between collapse and explosion, so you need to be careful about all your modeling assumptions. (We haven't even touched convection yet! See bonus lab for more.)
+- We played around with different weak reaction rates. In particular, the uncertain ${^{20}\rm{Ne}}-{^{20}\rm{F}}$ electron capture may change the final outcome. This was addressed in Kirsebom et al. 2019. 
+- All these ingredients are important in producing electron-capture supernova progenitors with realistic temperature and composition profiles, and determining the final outcome. 
+
+{{< /details >}}
+
+
+
 
 ## Bonus exercises 
 
 We have done many things in this lab to ensure short runtimes. Here are a few suggested exercises you can try towards building a better model. 
 
+| 📋 TASK |
+|:--------|
+| **Download the Lab 3 solutions [here](https://drive.google.com/file/d/1RQiVGEzHokCpAW7ph5aI2CFvd1R4wIu5/view?usp=drive_link)**, for $\dot{M}=10^{-6}\,M_{\odot}\,\rm{yr}^{-1}$,`ONeMg2Na.net`, and Suzuki weak rates. **Clean and compile.** |
+
+
 Do **not** attempt these all at once! Your run will be unbearably slow. 
 
+Here we briefly describe what skills you'll learn with each task:
+- *Bigger reaction network*: using ``pynucastro`` and modifying nuclear net. Take advantage of Mike being around!
+- *Soft-wired net*: modifying nuclear net. 
+- *Time resolution*: using run_star_extras. Takes longer than the others to implement. 
+- *Spatial resolution*: modifying inlist options. 
+- *Skye EOS*: modifying inlist options. The run may be long. 
+- *Convection*: modifying inlist options. 
 
-{{< tabs items="Bigger Net,Soft-wired Net,Time Resolution,Spatial Resolution,Skye EOS,Name Your Bison" >}}
+{{< tabs items="Bigger Net,Soft-wired Net,Time Resolution,Spatial Resolution,Skye EOS,Convection,Name Your Bison" >}}
 
 <!-- bigger nets -->
 {{< tab name="bigger net" >}}
@@ -693,7 +846,8 @@ o16+o16 => a + si28, a and p
 
 The ${^{16}\rm{O}} + {^{16}\rm{O}}$ reaction doesn't always give an alpha particle ($^{4}\rm{He}$) and ${^{28}\rm{Si}}$ as products. It sometimes returns a proton as a product (${^{16}\rm{O}} + {^{16}\rm{O}} \to {p} + {^{31}\rm{P}}$). To keep our nuclear net small, we purposely left out $^{31}\rm{P}$. The `r1616` rate combines both the `a` and `p` channels, but uses ${^{28}\rm{Si}}$ as the end point. This is also what built-in nets like ``co_burn.net`` do. 
 
-An obvious improvement would be to include ${^{31}\rm{P}}$ in our net and add the reactions that connect it to ${^{16}\rm{O}} $. This will be covered in the next part. 
+An obvious improvement would be to include ${^{31}\rm{P}}$ in our net and add the reactions that connect it to ${^{16}\rm{O}} $. 
+<!-- This will be covered in the next part.  -->
 
 #### Other important reactions
 
@@ -701,12 +855,75 @@ What other important reactions have we missed? Here we will use ``pynucastro`` t
 
 | 📋 TASK |
 |:--------|
-| **Go to [placeholder]() Google collab**. **Use ``pynucastro``** to find out what isotopes and reactions are missing. **Edit your net** accordingly. |
+| **Go to [this](https://zingale.github.io/mesa-labs/mesa-missing-rates.html#check-nuclei-for-other-branches)** part of the lecture. **Use ``pynucastro``** to find out what isotopes and reactions are missing. **Edit your net** accordingly. |
 
+>[!Note]
+> We recommend that you just add the reactions from the ``filtered_rates`` list, for the sake of time. However, if you really want to, try implementing the missing isotopes and reactions from the ``possibly_important`` list. 
+
+{{< details title="Partial solutions" closed="true" >}}
+
+Here we will build on `ONeMg2Na.net` add the following reactions:
+- ${^{20}\rm{Ne}} + \alpha \to {^{23}\rm{Na}} + p$
+- ${^{20}\rm{O}} + \alpha \to {^{24}\rm{Ne}} + \gamma$
+- ${^{20}\rm{F}} + \alpha \to {^{23}\rm{Ne}} + p$
+- ${^{16}\rm{O}} + \alpha \to {^{20}\rm{Ne}} + \gamma$
+- ${^{20}\rm{Ne}} + \alpha \to {^{24}\rm{Mg}} + \gamma$
+- ${^{20}\rm{F}} + \alpha \to {^{24}\rm{Na}} + \gamma$
+
+Copy `ONeMg2Na.net` to `new.net`, and add the following to `new.net`, within the `add_reactions( )` section:
+```fortran
+r_ne20_ap_na23
+r_o20_ag_ne24
+r_f20_ap_ne23
+r_o16_ag_ne20
+r_ne20_ag_mg24
+r_f20_ag_na24
+```
+
+The general rules is that reactions that take in a ${^{4}\rm{He}}$ ($\alpha$) particle and spit out a proton are named `r_<input>_ap_<output>`, and those that spit out a photon instead are named `r_<input>_ag_<output>`. 
+
+Next, edit `inlist_net` and set 
+```fortran
+new_net_name = 'nets_lab3/new.net'
+```
+
+Now you're ready to run. 
+
+{{< /details >}}
+
+
+>[!Tip]
+> Before running, add the following to your `inlist_pgstar`:
+```fortran
+power_win_flag = .true.
+power_xaxis_name = 'logRho'
+power_xmin = 9.8d0
+Power_legend_txt_scale_factor = 1.0
+```
+
+This will open up another pgstar window, that shows the nuclear energy generation rate from each reaction category as a function of density. You won't see anything until the central density hits about $\log_{10}\rho_{c} = 9.8$. 
 
 | 📋 TASK |
 |:--------|
-| Finally, ``./mk`` , ``./clean`` and ``./rn``. Observe if the reaction flow behaves differently. |
+| Finally, ``./rn``. Observe the power window, and check if the final central density at ignition is different. |
+
+<!--  -->
+{{< details title="What do you see?" closed="true" >}}
+
+Here's the additional pgstar window you should see:
+![landscape](/wednesday/Lab3_bonus_big_net_pgstar.png)
+
+It shows that we successfully added the alpha-capture reactions, and that the alpha-captures onto oxygen and neon could be comparable to the ${^{16}\rm{O}}-{^{16}\rm{O}}$ reaction. 
+
+The following plot compares the central temperature-density evolution between our old `ONeMg2Na.net` and our newly created `new.net`:
+![landscape](/wednesday/Lab3_rates_new_net.png)
+
+Interestingly, our newly added reactions don't seem to affect the core evolution significantly, but you never know! 
+
+{{< /details >}}
+
+
+
 
 {{< /tab >}}
 
@@ -796,7 +1013,7 @@ Now you're ready to run.
 
 | 📋 TASK |
 |:--------|
-| Finally, ``./mk`` , ``./clean`` and ``./rn``. Look at the terminal to find the list of species and reactions in your new net. Observe if the reaction flow behaves differently. |
+| Finally, ``./rn``. Look at the terminal to find the list of species and reactions in your new net. Observe if the reaction flow behaves differently. |
 
 {{< /tab >}}
 
@@ -843,9 +1060,6 @@ delta_lgRho_cntr_limit = 5d-3  ! default is 0.05d0
 |:--------|
 | **Add these controls** into your inlist and run MESA again. What values to use? A good starting point is in the ``partial solutions`` above. |
 
-> [!WARNING]
-> Make sure you do ``./clean`` and ``./mk`` first. 
-
 
 #### Limiting changes in nuclear burning luminosity
 
@@ -890,7 +1104,7 @@ end function L1616_timestep_limit
 {{< /details >}}
 
 > [!TIP]
-> To check if you did this right, do ``./clean`` and ``./mk``. 
+> To check if you did this right, do ``./mk``. 
 
 | 📋 TASK |
 |:--------|
@@ -1229,9 +1443,6 @@ track the mass fraction of particular species and put more resolution where more
 |:--------|
 | **Comment out** the `xa_function*` options in ``inlist_common``, and **run MESA again**. Observe if the number of retries are higher. Note also the shape of the $T-\rho$ profile around the Urca shells. |
 
-> [!WARNING]
-> Be sure to do `./clean` and `./mk` first. 
-
 Hope this exercise helps you appreciate the utility of higher spatial resolution.
 
 #### ``mesh_delta_coeff``
@@ -1264,9 +1475,6 @@ In this lab, we have turned off the Skye EOS, in favor of the HELM EOS. They bot
 |:--------|
 | **Set ``use_Skye = .true.``** in ``inlist_common``, and **run MESA again**. Check if the evolution is any different. |
 
-> [!WARNING]
-> Make sure you do ``./clean`` and ``./mk`` first. 
-
 > [!IMPORTANT]
 > We recommend $\dot{M} > 10^{-7} M_{\odot} \rm{yr}^{-1}$ (``mass_change = 1d-7`` or greater). Lower values will result in hours-long runs because the Coulomb effects are stronger and there are more convergence issues. 
 
@@ -1275,13 +1483,50 @@ In this lab, we have turned off the Skye EOS, in favor of the HELM EOS. They bot
 
 {{< /tab >}}
 
+<!-- Convection -->
+{{< tab name="Convection" >}}
+
+Throughout this lab, we have turned off convection by setting in the `&controls` section of `inlist_common`
+```fortran
+mlt_option = 'none'
+```
+
+This would matter, for example, when the exothermic ${^{24}\rm{Mg}}-{^{24}\rm{Na}}-{^{24}\rm{Ne}}$ electron capture chain happens and leads to a convective unstable region. Prior cooling from ${^{23}\rm{Na}}-{^{23}\rm{Ne}}$ yields an even more conducive environment for the convective instability. 
+
+We have two reasons to turn off convection:
+- We want to avoid convergence issues and ensure that the lab is quick to run. 
+- More importantly, as convection mixes isotopes out to the critical density at which a weak reaction happens, catastrophic cooling via the weak reactions can happen (which in turn leads to convergence issues). This calls for a reformulation of the standard mixing length theory, which may be addressed with 3D hydrodynamical simulations, way beyond the scope of this school. An example of the hydrodynamical simulations is convective Urca process in accreting carbon-oxygen white dwarfs (ask our lecturer Mike for more). 
+
+Turning off convection gives the limit in which energy is not transported out, and was done in Schwab+ 2017 as well. 
+
+Now we'll attempt to turn on convection, in the limit of efficient energy transport. 
+| 📋 TASK |
+|:--------|
+| In the `&controls` section of `inlist_common`, set the following options, and **run MESA again**. What is the final density of your model?  |
+```fortran
+mlt_option = 'Cox'
+mix_factor = 0d0
+use_Ledoux_criterion = .false.
+```
+
+>[!Note] 
+> Here we turn off mixing to avoid convergence issues. We also ignore the stabilizing effect of the composition gradient by not using the Ledoux criterion for convection. When you're done with the previous task, set `use_Ledoux_criterion = .true.` and run MESA again. 
+
+{{< /tab >}}
+
 <!-- Name your bison -->
 {{< tab name="Name your bison" >}}
 
-Go to the Google spreadsheet [here](https://docs.google.com/spreadsheets/d/15PK9myW3oriuTeZvGFNGRKHqqphOHUFQoOcShtuME-g/edit?usp=sharing) and add names of your bison. Our lecturer Mike will reward valuable MESA summer school points for his favorite name(s). 
+You may see some bisons later today. If you had to give one a name, what would it be? Go to the Google spreadsheet [here](https://docs.google.com/spreadsheets/d/15PK9myW3oriuTeZvGFNGRKHqqphOHUFQoOcShtuME-g/edit?usp=sharing) and add your bison's name. Our lecturer Mike will reward valuable MESA summer school points for his favorite name(s). 
+
+
+>[!Caution]
+> Do not pet the bison!!!
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
 
+<!-- ## References
+[^Holas26]: Holas, Alexander, Samuel W. Jones, Friedrich K. Röpke, Rüdiger Pakmor, Christina Fakiola, Giovanni Leidi, Raphael Hirschi, and Ken J. Shen. "Drawing the line between explosion and collapse in electron-capture supernovae." (2026). https://www.aanda.org/articles/aa/pdf/2026/03/aa57910-25.pdf. -->

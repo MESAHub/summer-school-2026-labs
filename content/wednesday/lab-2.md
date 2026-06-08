@@ -1,6 +1,6 @@
 ---
 weight: 2
-author: TODO
+author: Tryston Raecke, Josh Wanninger, Sunny Wong, Michael Zingale
 math: true
 disableKinds: "rss"
 ---
@@ -12,30 +12,17 @@ In Lab 1 you built a minimal nuclear network for an accreting ONe white dwarf an
 But there is important physics we left out: **the Urca process**.
 
 In sufficiently degenerate matter, certain nuclei can undergo cyclic electron captures and beta decays at a specific **threshold density** — a so-called *Urca shell*.
-Each cycle emits two neutrinos that carry energy directly out of the star, providing a potentially significant cooling (or heating) mechanism that depends sensitively on the accretion rate.
+The name comes from the Urca Casino in Rio de Janeiro: neutrinos carry energy out of the star as quickly as money vanishes at the tables.
+Each cycle emits two neutrinos, providing a potentially significant cooling mechanism that is sensitive to the accretion rate.
 
 In this lab you will:
 1. Add the **A=23 Urca pair** (${^{23}\rm{Na}}$ ↔ ${^{23}\rm{Ne}}$) to your nuclear network and observe the Urca shell in real time with pgstar.
-2. Add the **A=25 Urca pair** (${^{25}\rm{Mg}}$ → ${^{25}\rm{Na}}$ → ${^{25}\rm{Ne}}$) and compare its effect against the A=23 run using pgstar plots and terminal history output.
+2. Add the **A=25 Urca pair** (${^{25}\rm{Mg}}$ ↔ ${^{25}\rm{Na}}$ ↔ ${^{25}\rm{Ne}}$) and compare its effect against the A=23 run using pgstar plots and terminal history output.
 3. Estimate the **compressional heating and Urca cooling timescales** of the white dwarf.
 
-### Helpful Links
-
-The general Google Drive for these Wednesday labs can be found [HERE](https://drive.google.com/drive/folders/1OkVI_D5ilrETjjRzcqswcafA9bwROWfV?usp=drive_link).
-
-More specifically, the files for Lab 2 can be found [HERE](https://drive.google.com/drive/folders/1AIM4g5PDbi5xV7wByY-F9xBA317evdMB?usp=drive_link).
-The drive contains the starting point, partial solutions, and a full solution.
+The files for this lab can be found in the [Lab 2 Google Drive folder](https://drive.google.com/drive/folders/1AIM4g5PDbi5xV7wByY-F9xBA317evdMB?usp=drive_link) (starting point, partial solutions, and full solution).
 
 Consult the [MESA documentation](https://docs.mesastar.org/en/latest/) throughout this lab.
-
-> [!NOTE]
-> As in Lab 1, tasks are formatted as:
->
-> | 📋 TASK N |
-> |:--------|
-> | (task description) |
->
-> Values that need to be altered in the files are generally marked with `!!!!!`.
 
 ---
 
@@ -45,9 +32,9 @@ Consult the [MESA documentation](https://docs.mesastar.org/en/latest/) throughou
 
 | 📋 TASK 1 |
 |:--------|
-| **Download** the Lab 2 starting point from the [Google Drive](https://drive.google.com/file/d/1V68deP8I-exN8hjD3N-BFnvtl8AkZr91/view?usp=sharing) to a local working directory. |
+| **Download** the Lab 2 starting point from the [Google Drive](https://drive.google.com/file/d/1G-BdTQD5t76uFWeSdFA3hd-5cF0-bPxE/view?usp=sharing) and **unzip** it to a local working directory. |
 
-The starting point is your completed Lab 1 setup, now configured to load a 1.1 M<sub>&#9737;</sub> O-Ne-Na white dwarf model.
+The starting point is similar to your completed Lab 1 setup, but now configured to load a 1.1 M<sub>&#9737;</sub> O-Ne-Na white dwarf model.
 
 After downloading, your working directory should look like:
 
@@ -65,6 +52,7 @@ After downloading, your working directory should look like:
     {{< filetree/file name="inlist_pgstar" >}}
     {{< filetree/file name="ONe.net" >}}
     {{< filetree/file name="1.1Msun_ONeNa.mod" >}}
+    {{< filetree/file name="1.1Msun_ONeMg2Na.mod" >}}  
     {{< filetree/folder name="src" state="open" >}}
       {{< filetree/file name="run.f90" >}}
       {{< filetree/file name="run_star_extras.f90" >}}
@@ -75,8 +63,15 @@ After downloading, your working directory should look like:
 > [!NOTE]
 > `run_star_extras.f90` has been updated from Lab 1. It now computes the A=23 electron capture and beta decay rates ($\lambda_{\rm Na23 \to Ne23}$ and $\lambda_{\rm Ne23 \to Na23}$) as extra profile columns used by pgstar to show the Urca shell.
 
+> [!TIP]
+> After unzipping, verify your directory matches the listing above by running `ls` (Linux/Mac) or `dir` (Windows) in the working directory.
+
 
 ### Step 1: Build the ONeNa Network
+
+A **nuclear network** defines which isotopes and reactions MESA tracks during a simulation.
+By default, reactions not in the network are ignored even if they could occur at the conditions being modelled.
+To study the A=23 Urca shell we need the network to know about $^{23}\mathrm{Na}$ and $^{23}\mathrm{Ne}$ and the weak reactions connecting them.
 
 The starting network (`ONe.net`) contains the ²⁰Ne→²⁰F→²⁰O electron capture chain and ¹⁶O burning, but no ²³Na or ²³Ne.
 To model the A=23 Urca pair we need to add both isotopes and their connecting weak reactions.
@@ -84,6 +79,9 @@ To model the A=23 Urca pair we need to add both isotopes and their connecting we
 | 📋 TASK 2 |
 |:--------|
 | **Create a new file `ONeNa.net`** in your working directory. Starting from `ONe.net`, **add $^{23}\mathrm{Na}$, $^{23}\mathrm{Ne}$** and the two Urca reactions that connect them. |
+
+> [!NOTE]
+> MESA reaction names follow the pattern `r_<lhs>_wk_<rhs>` (electron capture) and `r_<lhs>_wk-minus_<rhs>` (beta decay). A full list of available weak reactions can be found under `$MESA_DIR/data/rates_data/weakreactions.tables`.
 
 > [!NOTE]
 > The A=23 Urca pair consists of:
@@ -184,10 +182,15 @@ In `&controls`, update the accretion block:
 You should see two windows open: the main grid overview (`Grid2`) and the Urca shell profile plot (`Profile_Panels1`).
 
 In `Profile_Panels1`, look for:
-- **Top panel** — the electron capture rate ($\lambda_{\rm Na23 \to Ne23}$, blue) and beta decay rate ($\lambda_{\rm Ne23 \to Na23}$, red) as functions of $\log\rho$.
+- **Top panel** — the electron capture rate ($\lambda_{\rm Na23 \to Ne23}$) and beta decay rate ($\lambda_{\rm Ne23 \to Na23}$) as functions of $\log\rho$.
   The **Urca shell** is located where these two rates are equal ($\lambda_{\rm EC} = \lambda_{\rm BD}$), corresponding to the threshold density.
 - **Bottom panel** — the neutrino emissivity (`eps_nuc_neu_total`, solid) and thermal neutrino emission (`non_nuc_neu`, dashed).
   A localised peak in the nuclear neutrino emissivity marks the active Urca shell.
+
+![Expected A=23 Urca shell in Profile_Panels1](profile_panels1_000340.png)
+
+> [!TIP]
+> PNG snapshots of each pgstar frame are saved to `png/` inside your LOGS directory. If you miss a frame or want to compare later, check there.
 
 > [!NOTE]
 > At what log density does the A=23 Urca shell sit? You can compare this to the theoretical threshold:
@@ -216,6 +219,10 @@ Visually, this network appears as:
 ![ONeNaMg net](onenamg-net.png)
 
 ### Step 4: Build the ONeNaMg25 Network
+
+ONeMg white dwarfs accrete material that includes $^{24}\mathrm{Mg}$ and $^{25}\mathrm{Mg}$ from their envelopes.
+$^{25}\mathrm{Mg}$ undergoes a two-step electron capture chain at densities slightly above the A=23 Urca shell, making it the next natural Urca pair to add.
+$^{24}\mathrm{Mg}$ does not have an Urca pair in this density range but is still accreted and should be tracked.
 
 | 📋 TASK 5 |
 |:--------|
@@ -284,6 +291,9 @@ add_reactions(
 |:--------|
 | Update `inlist_accrete` to use `ONeNaMg25.net`, load the `1.1Msun_ONeMg2Na.mod` starting model, set the LOGS directory to `LOGS_ONeNaMg25_1d-6`, and update the accretion composition to include ²⁴Mg (5%) and ²⁵Mg (1%). |
 
+> [!NOTE]
+> We want all accreted mass fractions to sum to 1. Adding Mg24 (5%) and Mg25 (1%) means reducing something else by 6%. We reduce $^{20}$Ne: it is the most abundant species in the mix, and because Ne ignites (via electron capture) at a higher density than O, its exact initial abundance matters less for the dynamics we are studying here. The true initial composition of an ONe white dwarf would need to be determined through full stellar evolution calculations.
+
 {{< details title="Partial Solution" closed="true" >}}
 ```fortran
 ! in &star_job
@@ -295,7 +305,7 @@ add_reactions(
     accretion_species_id(1) = 'o16'
     accretion_species_xa(1) = 0.50d0
     accretion_species_id(2) = 'ne20'
-    accretion_species_xa(2) = 0.39d0   !!!!!
+    accretion_species_xa(2) = 0.39d0   !!!!!  (reduced from 0.45 to make room for Mg24+Mg25)
     accretion_species_id(3) = 'na23'
     accretion_species_xa(3) = 0.05d0
     accretion_species_id(4) = 'mg24'   !!!!!
@@ -307,10 +317,9 @@ add_reactions(
 ```
 {{< /details >}}
 
-> [!NOTE]
-> Before running the A=25 case, two updates are needed:
-> 1. **`run_star_extras.f90`**: extend the rate computation to include the A=25 pair (4 profile columns instead of 2). You **will** need to recompile with `./mk`.
-> 2. **`inlist_pgstar`**: expand `Profile_Panels1` to 3 panels — A=23 rates (panel 1), A=25 rates (panel 2), and the neutrino emissivity (panel 3).
+| 📋 TASK 7 |
+|:--------|
+| In `src/run_star_extras.f90`, extend the rate computation to include the A=25 pair: change to **4 profile columns** and add the Mg25/Na25 species pair. Recompile with `./clean && ./mk`. |
 
 {{< details title="Hint: run_star_extras.f90 — changes for A=25 rates" closed="true" >}}
 In `how_many_extra_profile_columns`, change `2` to `4`.
@@ -336,13 +345,18 @@ weak_lhs(4) = 'na25'; weak_rhs(4) = 'mg25'
 ```
 {{< /details >}}
 
+| 📋 TASK 8 |
+|:--------|
+| In `inlist_pgstar`, expand `Profile_Panels1` to **3 panels**: A=23 rates (panel 1), A=25 rates (panel 2), and the neutrino emissivity (panel 3). No recompile needed. |
+
 {{< details title="Hint: inlist_pgstar — expand to 3 panels" closed="true" >}}
-Change `profile_panels1_num_panels = 2` to `3` and update the title. Then add panel 2 (A=25 rates) and renumber the neutrino emissivity to panel 3:
+Change `profile_panels1_num_panels = 2` to `3` and update the title.
+Insert a new panel 2 block for the A=25 rates, and update the neutrino emissivity block from index `(2)` to `(3)`:
 ```fortran
 profile_panels1_num_panels = 3
 profile_panels1_title = 'Urca Shells'
 
-! Panel 2: A=25 pair — Mg25 e-capture (left) vs Na25 beta-decay (right)
+! Panel 2: A=25 pair — Mg25 e-capture (left axis) vs Na25 beta-decay (right axis)
 profile_panels1_yaxis_name(2) = 'lambda_mg25_na25'
 profile_panels1_yaxis_log(2) = .true.
 profile_panels1_ymin(2) = -40d0
@@ -352,7 +366,7 @@ profile_panels1_other_yaxis_log(2) = .true.
 profile_panels1_other_ymin(2) = -40d0
 profile_panels1_other_ymax(2) = 5d0
 
-! Panel 3: neutrino emissivity (was panel 2 — update both index and name)
+! Panel 3: neutrino emissivity — change all (2) indices below to (3)
 profile_panels1_yaxis_name(3) = 'eps_nuc_neu_total'
 profile_panels1_yaxis_log(3) = .true.
 profile_panels1_ymin(3) = -5d0
@@ -362,19 +376,21 @@ profile_panels1_other_yaxis_log(3) = .true.
 profile_panels1_other_ymin(3) = -5d0
 profile_panels1_other_ymax(3) = 10d0
 ```
-Also delete or comment out the old `profile_panels1_yaxis_name(2)` block that pointed to `eps_nuc_neu_total`.
 {{< /details >}}
 
 
 ### Step 6: Run and Compare with pgstar
 
-| 📋 TASK 7 |
+| 📋 TASK 9 |
 |:--------|
 | Run the A=25 case (`./rn`) and observe the **`Profile_Panels1`** window — it now shows three panels: A=23 rates (panel 1), A=25 rates (panel 2), and the combined neutrino emissivity (panel 3). |
 
 Look for:
 - A second Urca shell appearing at a **lower density** than the A=23 shell, and a third shell appearing at a higher density than the A=23 shell. 
 - Any change in the neutrino emissivity profile — do the A=25 shells contribute noticeably?
+
+> [!TIP]
+> If you want to compare frames from the two runs side-by-side, check the `png/` subdirectory inside each LOGS directory. MESA saves a PNG of every pgstar frame there.
 
 > [!NOTE]
 > Theoretical threshold density for the A=25 shells:
@@ -384,14 +400,21 @@ Look for:
 
 ### Step 7: Compare the Two Runs
 
-| 📋 TASK 8 |
+| 📋 TASK 10 |
 |:--------|
-| Compare your A=23-only run against the A=23+A=25 run using the pgstar windows and terminal output. Look at the central temperature and density evolution — does adding the second Urca pair make a measurable difference to the thermal history? |
+| Compare your A=23-only run against the A=23+A=25 run. Open the `png/` subdirectory inside each LOGS directory and compare the final pgstar frames side-by-side. Look at the central temperature and density evolution — does adding the second Urca pair produce a noticeable difference in the thermal history? |
 
 Things to compare:
 - Central temperature $T_c$ and density $\rho_c$ at the end of the run.
 - Neutrino luminosity (`log_Lneu`) from your history file.
 - The density at which the A=25 Urca shell becomes active compared to A=23.
+
+{{< details title="Discussion: what to expect" closed="true" >}}
+The A=25 Urca pairs add new cooling shells, but since $^{25}\mathrm{Mg}$ makes up only 1% of the accreted material, their effect on the global thermal history is modest.
+Both runs should track each other closely, with the A=23+25 run showing slightly enhanced neutrino luminosity near $\log\rho \approx 9.1$.
+The dominant cooler for this composition is still the A=23 pair because Na23 is accreted at 5%.
+This is a preview of the systematic survey you will carry out in Lab 3, where you will vary the composition to see how each Urca pair changes the ignition conditions.
+{{< /details >}}
 
 ---
 
@@ -413,7 +436,7 @@ Three timescales capture this competition:
 | $\tau_\nu$ | $c_v T \,/\, \epsilon_\nu$ | Thermal energy content divided by neutrino loss rate |
 
 Here $\eta = \mu_e / k_B T$ is the electron degeneracy parameter and $\epsilon_\nu$ is the net neutrino energy loss rate per gram.
-All three timescales are accessible at each timestep through the `star_info` pointer `s`.
+These timescales can be computed using variables stored in the `star_info` pointer `s` at each timestep.
 
 ### Bonus Step 1: Add timescale history columns
 
@@ -422,9 +445,24 @@ MESA lets you log custom quantities by implementing two functions in `run_star_e
 - `how_many_extra_history_columns` — returns the number of extra columns
 - `data_for_extra_history_columns` — fills in the column names and values
 
-Open `src/run_star_extras.f90`. You will find both functions already stubbed out (the history counterparts of the profile lambda columns you added in Part 1).
+Open `src/run_star_extras.f90`. You will find both functions already stubbed out (the history counterparts of the profile lambda columns you added in Part 1). The stub looks like:
 
-The `star_info` fields you need are all evaluated at zone index `s% nz` (the innermost zone, i.e. the stellar centre):
+```fortran
+integer function how_many_extra_history_columns(id)
+   ...
+   how_many_extra_history_columns = 0   ! !!!!! bonus: change to 3
+end function how_many_extra_history_columns
+
+subroutine data_for_extra_history_columns(id, n, names, vals, ierr)
+   integer, intent(in) :: id, n
+   character (len=maxlen_history_column_name) :: names(n)
+   real(dp) :: vals(n)
+   ...
+   ! !!!!! bonus: fill in names and values here
+end subroutine data_for_extra_history_columns
+```
+
+The three timescales require quantities evaluated at a single zone. We use zone index `s% nz`, which is the innermost zone (the stellar centre). All per-zone quantities in `star_info` are arrays indexed by zone; using `s% nz` picks out the central value:
 
 | Field | Units | Quantity |
 |:------|:------|:---------|
@@ -438,7 +476,7 @@ The `star_info` fields you need are all evaluated at zone index `s% nz` (the inn
 
 | 📋 BONUS TASK 1 |
 |:--------|
-| In `run_star_extras.f90`, change `how_many_extra_history_columns` to return **3**. Then populate `data_for_extra_history_columns` with names `'tau_rho'`, `'tau_cross'`, and `'tau_cool'` (in years). Recompile with `./mk`. |
+| In `run_star_extras.f90`, change `how_many_extra_history_columns` to return **3**. Then populate `data_for_extra_history_columns` with **names and computed values** for `'tau_rho'`, `'tau_cross'`, and `'tau_cool'` (output in years). Recompile with `./mk`. |
 
 {{< details title="Hint: code for data_for_extra_history_columns" closed="true" >}}
 ```fortran
@@ -518,7 +556,7 @@ Add a `History_Panels1` block to `inlist_pgstar` that shows the three timescales
 
 | 📋 BONUS TASK 3 |
 |:--------|
-| At late times ($\log\rho_c \gtrsim 9$), which timescale is shortest: $\tau_\rho$, $\tau_\times$, or $\tau_\nu$? What does the ordering imply for whether the Urca shells can efficiently regulate the core temperature? |
+| Run with `./rn`. At late times ($\log\rho_c \gtrsim 9$), which timescale is shortest: $\tau_\rho$, $\tau_\times$, or $\tau_\nu$? What does the ordering imply for whether the Urca shells can efficiently regulate the core temperature? |
 
 {{< details title="Discussion hint" closed="true" >}}
 - If $\tau_\nu \ll \tau_\times$: the Urca shells cool the WD faster than compression heats it — the core temperature plummets.
@@ -532,8 +570,8 @@ This balance is sensitive to $\dot{M}$ and the Urca pair threshold densities —
 
 ## Solution / End Point
 
-The end-of-Part-2 solution for Lab 2 (which also serves as a starting point for Lab 3) can be downloaded [HERE](https://drive.google.com/file/d/FIXLINK_LAB2_END/view?usp=sharing).
+The end-of-Part-2 solution for Lab 2 (which also serves as a starting point for Lab 3) can be downloaded [HERE](https://drive.google.com/file/d/1vlbxquOjileIJY7UogjK0uygmGJMzJjn/view?usp=sharing).
 
-If you also completed the bonus section, the full bonus solution can be downloaded [HERE](https://drive.google.com/file/d/FIXLINK_LAB2_BONUS_END/view?usp=sharing).
+If you also completed the bonus section, the full bonus solution can be downloaded [HERE](https://drive.google.com/file/d/1LDzAf6e-YG44iHIwmgbG3UDjS5NDOTK9/view?usp=sharing).
 
 [^1]: Suzuki et al. 2016, ApJ 817, 163 — sd-shell electron capture and β-decay rates at stellar densities.
