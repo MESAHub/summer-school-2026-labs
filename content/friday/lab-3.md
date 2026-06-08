@@ -51,7 +51,11 @@ For this lab you will start from a good Cepheid model, run the nonlinear setup, 
 
 ## Setting up the work directory
 
-Download `lab3_work_dir.zip` from this [Google Drive](https://drive.google.com/file/d/11S0DjI8fPOw3Szli0Zpn-k8VdDDfP7YQ/view?usp=sharing), unzip it into some empty directory, and `cd` into the resulting `lab3_work_dir/` directory. You'll see that it already contains the inlists you will need. However, we need to provide TDC with a starting model to make an envelope model from and track the pulsations, just as we did with RSP in Lab 2. To that end, copy the `.mod` files you created in Lab 1:
+Download `lab3_work_dir.zip` from this [Google Drive](https://drive.google.com/file/d/11S0DjI8fPOw3Szli0Zpn-k8VdDDfP7YQ/view?usp=sharing), unzip it into some empty directory, and `cd` into the resulting `lab3_work_dir/` directory. You'll see that it already contains the inlists you will need. However, we need to provide TDC with a starting model to initialize the nonlinear run.
+
+We want to use a Lab 1 `.mod` file, ideally the one you identified during Lab 2, whose GYRE fundamental mode is unstable and is growing faster than the second overtone: `F_growth > 0` and `F_growth > O2_growth`. Ideally, the fundamental mode also grows faster than the first overtone, `F_growth > O1_growth`, and the model is closer to the red edge of the instability strip. If you cannot find a model with `F_growth > O1_growth`, use a redder model with `F_growth > 0` and `F_growth > O2_growth`. Models closer to the blue edge are more likely to switch into an overtone during the nonlinear run.
+
+Copy your Lab 1 `.mod` files into the Lab 3 work directory:
 
 ```bash
 cp -r /path/to/your/lab1/mod_dir/ .
@@ -80,6 +84,74 @@ modelNumber_currentMass_effectiveTemperature_luminosity.mod
 
 If you are using the Lab 3 nonlinear start model files instead of your own Lab 1 `mod_dir/`, the selected files have a longer name with the period and initial mass prepended. In those filenames, the final four underscore separated fields before `.mod` are still the Lab 1 model number, current mass, effective temperature, and luminosity.
 
+{{< details title="Show Table 1: Optional example models for each mass" closed="true" >}}
+
+Table 1 lists one selected example saved model for each initial mass in the shared Lab 3 sample. These models were chosen from the redder side of the instability strip, visually about 10-30% of the plotted strip width in from the red edge.
+
+If you do not have a useful saved model from Lab 1, use these [Lab 3 nonlinear start model files](https://drive.google.com/file/d/1bTVVwBIyBsIVBZUVmIxXKwcFWXTSjcUj/view?usp=share_link). The downloaded filenames include the period and initial mass at the front; the final four underscore separated fields before `.mod` are still the Lab 1 model number, current mass, effective temperature, and luminosity.
+
+| Minit | model | M | Teff | L | P0 | growth |
+| --- | --- | --- | --- | --- | --- | --- |
+| 3.9 | 358 | 3.854 | 5553 | 1049 | 4.2104 | 0.002001 |
+| 4 | 405 | 3.9511 | 5522 | 1167 | 4.6231 | 0.0039758 |
+| 4.1 | 408 | 4.0477 | 5488 | 1287 | 5.055 | 0.0042498 |
+| 4.2 | 406 | 4.1454 | 5517 | 1413 | 5.2906 | 0.0073861 |
+| 4.3 | 383 | 4.2429 | 5480 | 1541 | 5.7269 | 0.013038 |
+| 4.4 | 417 | 4.3406 | 5461 | 1674 | 6.1264 | 0.0084876 |
+| 4.5 | 382 | 4.4381 | 5490 | 1822 | 6.3553 | 0.024002 |
+| 4.6 | 362 | 4.5354 | 5434 | 1967 | 6.9485 | 0.014852 |
+| 4.7 | 337 | 4.6313 | 5358 | 2127 | 7.7118 | 0.014443 |
+| 4.8 | 326 | 4.7295 | 5492 | 2302 | 7.4145 | 0.040702 |
+| 4.9 | 325 | 4.8268 | 5450 | 2480 | 8.0179 | 0.018694 |
+| 5 | 324 | 4.9236 | 5400 | 2661 | 8.6847 | 0.030977 |
+| 5.1 | 320 | 5.0218 | 5265 | 2834 | 10.08 | 0.052909 |
+| 5.2 | 245 | 5.1333 | 5225 | 2665 | 9.5959 | 0.0054239 |
+| 5.3 | 248 | 5.2322 | 5382 | 2858 | 8.9897 | 0.05625 |
+| 5.4 | 320 | 5.3124 | 5484 | 3491 | 9.9291 | 0.1059 |
+| 5.5 | 251 | 5.427 | 5275 | 3254 | 10.573 | 0.037957 |
+| 5.6 | 322 | 5.5062 | 5317 | 3927 | 12.083 | 0.10817 |
+| 5.7 | 248 | 5.6213 | 5230 | 3689 | 11.891 | 0.05177 |
+| 5.8 | 251 | 5.72 | 5296 | 3911 | 11.745 | 0.062656 |
+| 5.9 | 330 | 5.7985 | 5292 | 4654 | 13.561 | 0.025517 |
+| 6 | 336 | 5.8957 | 5294 | 4931 | 14.053 | 0.041635 |
+| 6.1 | 249 | 6.012 | 5228 | 4661 | 13.889 | 0.059128 |
+| 6.2 | 246 | 6.1102 | 5195 | 4918 | 14.755 | 0.073988 |
+| 6.3 | 328 | 6.1851 | 5233 | 5759 | 16.391 | 0.077703 |
+| 6.4 | 323 | 6.2831 | 5175 | 6056 | 17.802 | 0.15068 |
+| 6.5 | 324 | 6.3794 | 5237 | 6356 | 17.523 | 0.1441 |
+| 6.6 | 331 | 6.476 | 5111 | 6618 | 19.566 | 0.024603 |
+| 6.7 | 322 | 6.5724 | 5115 | 6966 | 20.508 | 0.065634 |
+| 6.8 | 330 | 6.6685 | 5099 | 7293 | 21.366 | 0.097282 |
+| 6.9 | 338 | 6.7661 | 5138 | 7619 | 21.028 | 0.036579 |
+| 7 | 337 | 6.8676 | 5123 | 7931 | 22.006 | 0.09578 |
+| 7.1 | 250 | 6.9844 | 5015 | 7855 | 23.684 | 0.20211 |
+| 7.2 | 335 | 7.0584 | 4934 | 8514 | 27.117 | 0.092097 |
+| 7.3 | 331 | 7.1539 | 4955 | 8920 | 27.551 | 0.077469 |
+| 7.4 | 247 | 7.2753 | 4902 | 9037 | 28.158 | 0.10547 |
+| 7.5 | 247 | 7.3715 | 4866 | 9451 | 30.562 | 0.1905 |
+| 7.6 | 333 | 7.4452 | 4895 | 10035 | 31.284 | 0.11722 |
+| 7.7 | 335 | 7.5406 | 4889 | 10478 | 32.444 | 0.13049 |
+| 7.8 | 333 | 7.6346 | 4904 | 11049 | 33.29 | 0.12951 |
+| 7.9 | 337 | 7.7362 | 4878 | 11279 | 34.351 | 0.14845 |
+| 8 | 247 | 7.8529 | 4869 | 11810 | 34.674 | 0.0051594 |
+| 8.1 | 338 | 7.9267 | 4913 | 12322 | 35.018 | 0.076185 |
+| 8.2 | 328 | 8.0193 | 4933 | 12882 | 35.755 | 0.15895 |
+| 8.3 | 335 | 8.1155 | 4821 | 13261 | 40.443 | 0.18995 |
+| 8.4 | 326 | 8.2107 | 4872 | 13828 | 39.582 | 0.2245 |
+| 8.5 | 328 | 8.3075 | 4843 | 14273 | 41.582 | 0.26344 |
+| 8.6 | 336 | 8.4078 | 4835 | 14753 | 42.817 | 0.24125 |
+| 8.7 | 333 | 8.5029 | 4879 | 15318 | 42.194 | 0.30491 |
+| 8.8 | 325 | 8.5939 | 4845 | 15842 | 44.594 | 0.29118 |
+| 8.9 | 328 | 8.6872 | 4925 | 16484 | 42.687 | 0.30096 |
+| 9 | 331 | 8.7831 | 4830 | 16931 | 47.224 | 0.31013 |
+| 9.1 | 331 | 8.8803 | 4883 | 17606 | 46.332 | 0.34419 |
+| 9.2 | 264 | 8.9989 | 4846 | 18752 | 48.428 | 0.036197 |
+| 9.3 | 267 | 9.0907 | 4827 | 19394 | 51.824 | 0.39692 |
+| 9.4 | 330 | 9.1655 | 4871 | 19250 | 49.314 | 0.31887 |
+
+{{< /details >}}
+
+
 **Question:** What would make an interesting model to simulate in further detail using TDC?
 
 {{< details title="Click here to open the hint" closed="true" >}}
@@ -88,12 +160,12 @@ Choose a model that:
 
 - is in the Cepheid part of the blue loop
 - is on the redder side of the instability strip, visually about 10-30% of the plotted strip width in from the red edge
-- preferably showed positive fundamental mode growth in Lab 1 or in the Lab 2 Table 2 comparison
+- preferably showed positive fundamental mode growth in Lab 1
 - is part of the shared class sample, so different groups cover different periods
 
-For this lab, the redder edge is a safer place to start because the nonlinear run is more likely to stay in the fundamental mode instead of switching into an overtone. Table 2 in Lab 2 lists the redder selected models used for the shared Lab 3 sample. Some of those rows have negative RSP-LNA growth rates even though the other linear checks mark the fundamental mode as unstable; that is a useful reminder that different linear tools do not always make the same stability call for the same model. In particular, RSP builds its own envelope model and uses different boundary conditions and eddy viscous damping, so disagreement with the Lab 1 GYRE result is expected near the edges of the strip.
+For this lab, the redder edge is a safer place to start because the nonlinear run is more likely to stay in the fundamental mode instead of switching into an overtone. Table 1 lists the redder selected models used for the shared Lab 3 sample. The distance from the red edge is a visual guide on the HR diagram, not a formal temperature criterion.
 
-If you completed Lab 2, an especially good choice is a model with a relatively large fundamental mode growth rate in the selected model comparison. If you also estimated that $P_2/P_0$ is close to $0.5$, that makes the model even more interesting for this lab.
+An especially good choice is a model with a relatively large fundamental mode growth rate. If you also estimated that $P_2/P_0$ is close to $0.5$, that makes the model even more interesting for this lab.
 
 This choice is partly about mode selection. A model can have more than one linearly unstable radial mode. The final nonlinear state is then not determined by the largest linear growth rate alone. The initial perturbation, saturation, damping, and mode coupling can all matter. For this lab we deliberately choose models and kicks that favor a stable fundamental mode pulsator.
 

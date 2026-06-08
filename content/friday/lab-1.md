@@ -348,32 +348,7 @@ With all that out of the way go ahead and restart your run from the most recentl
 
 A few time steps into your run, the model should crash and leave you with an error message like:
 
-```none
- ABORT at line 280 of /home/lbuchele/mesa-26.04.1/gyre/gyre/src/lib/gyre_mesa_m.fypp
- assertion ASSOCIATED(ml_m) failed with message No model provided"
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-ERROR STOP
-
-Error termination. Backtrace:
-#0  0x75055b22915e in ???
-#1  0x75055b229d99 in ???
-#2  0x75055b22b155 in ???
-#3  0x7e547b in ???
-#4  0x408054 in __run_star_extras_MOD_extras_finish_step
-	at ../src/run_star_extras.f90:375
-#5  0x43d028 in __run_star_support_MOD_after_step_loop
-	at ../job/run_star_support.f90:733
-#6  0x44021c in __run_star_support_MOD_do_evolve_one_step
-	at ../job/run_star_support.f90:176
-#7  0x440a95 in __run_star_support_MOD_run1_star
-	at ../job/run_star_support.f90:113
-#8  0x4093dd in __run_star_MOD_do_run_star
-	at /home/lbuchele/mesa-26.04.1//star/job/run_star.f90:44
-#9  0x40944a in run
-	at ../src/run.f90:13
-#10  0x40948c in main
-	at ../src/run.f90:2
-```
+![MESA GYRE crash output](../plots/lab1/lab1_crash_plot.png)
 
 <!-- Mathijs: I worry that this is too much text without any interaction from the students, which may turn them off. Can you think of some way to add some questions, little tasks (like the one about looking up the meaning of the star_get_pulse_data input variables)... in between. For example, make them look up the meanings of x_integer_ctrl(i) in the inlist or something -->
 <!-- Mathijs: Also, a flowchart figure that summarises what happens with GYRE in the run_star_extras would be very helpful! -->
@@ -535,7 +510,7 @@ Then, if we need to call GYRE there's some further set up necessary. GYRE needs 
 **Task 5.2** This routine has three logical input parameters, take a moment to search the code base and try to figure out what each parameter controls.
 
 > [!TIP]
-> To find the source code, you can use `shmesa grep star_get_pulse_data`. This searches all the MESA source code regardless of whether you are in `$MESA_DIR`.
+> To find the source code, you can use [`shmesa grep star_get_pulse_data`](https://github.com/MESAHub/mesa/tree/main/scripts/shmesa). This searches all the MESA source code regardless of whether you are in `$MESA_DIR`.
 
 {{< details title="Answer 5.2" closed="true" >}}
 
@@ -572,6 +547,9 @@ After making the changes for Tasks 5.1 and 5.3, rebuild the executable and resta
 ./mk
 ./re
 ```
+
+> [!NOTE]
+> When no photo is specified, MESA restarts from the last saved photo.
 
 We then write a header to the terminal so that you know what information is being printed, set a few parameters we'll discuss in a moment and
 
