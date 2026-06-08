@@ -891,15 +891,39 @@ Now you're ready to run.
 
 {{< /details >}}
 
+
+>[!Tip]
+> Before running, add the following to your `inlist_pgstar`:
+```fortran
+power_win_flag = .true.
+power_xaxis_name = 'logRho'
+power_xmin = 9.8d0
+Power_legend_txt_scale_factor = 1.0
+```
+
+This will open up another pgstar window, that shows the nuclear energy generation rate from each reaction category as a function of density. You won't see anything until the central density hits about $\log_{10}\rho_{c} = 9.8$. 
+
+| 📋 TASK |
+|:--------|
+| Finally, ``./rn``. Observe the power window, and check if the final central density at ignition is different. |
+
 <!--  -->
 {{< details title="What do you see?" closed="true" >}}
+
+Here's the additional pgstar window you should see:
+![landscape](/wednesday/Lab3_bonus_big_net_pgstar.png)
+
+It shows that we successfully added the alpha-capture reactions, and that the alpha-captures onto oxygen and neon could be comparable to the ${^{16}\rm{O}}-{^{16}\rm{O}}$ reaction. 
+
+The following plot compares the central temperature-density evolution between our old `ONeMg2Na.net` and our newly created `new.net`:
+![landscape](/wednesday/Lab3_rates_new_net.png)
+
+Interestingly, our newly added reactions don't seem to affect the core evolution significantly, but you never know! 
 
 {{< /details >}}
 
 
-| 📋 TASK |
-|:--------|
-| Finally, ``./mk`` , ``./clean`` and ``./rn``. Observe if the reaction flow behaves differently. |
+
 
 {{< /tab >}}
 
@@ -1494,6 +1518,10 @@ use_Ledoux_criterion = .false.
 {{< tab name="Name your bison" >}}
 
 You may see some bisons later today. If you had to give one a name, what would it be? Go to the Google spreadsheet [here](https://docs.google.com/spreadsheets/d/15PK9myW3oriuTeZvGFNGRKHqqphOHUFQoOcShtuME-g/edit?usp=sharing) and add your bison's name. Our lecturer Mike will reward valuable MESA summer school points for his favorite name(s). 
+
+
+>[!Caution]
+> Do not pet the bison!!!
 
 {{< /tab >}}
 
