@@ -31,7 +31,7 @@ If you are unfamiliar with Fortran, see Georgia Tech's [Aerospace Engineering Re
 Lastly, it will be helpful to consult the [MESA documentation](https://docs.mesastar.org/en/latest/) throughout this lab.
 
 
-## How to destroy a White Dwarf in 7(ish) easy steps!
+## How to destroy a White Dwarf in 8(ish) easy steps!
 
 
 ### Step 0: Start Up
@@ -221,7 +221,7 @@ The minimal structure of a reaction network uses two commands to build a set of 
 |:--------|
 | **Open `$MESA_DIR/data/net_data/nets/basic.net`**, peruse the included isotopes and reactions, and take note of the format. |
 
-In pursuit of our central question, "implode or explode", the critical physics is whether and where our ONe white dwarf enters thermal runaway. This balance requires a nuclear network that accounts for the critical electron-capture (EC) chain Neon-20 -> Fluorine-20 -> Oxygen-20 and the burning of Oxygen-16 to Silicon-28. This electron capture chain follows the logic of an Urca pair, in that it involves cyclic weak reactions between isobars (nuclides with the same mass number, A). However, opposed to traditional Urca pairs, the electron capture reaction on Neon-20 can actually result in local heating! An overview of each of these reactions is below:
+In pursuit of our central question, "implode or explode", the critical physics is whether and where our ONe white dwarf enters thermal runaway. This balance requires a nuclear network that accounts for the critical electron-capture (EC) chain Neon-20 -> Fluorine-20 -> Oxygen-20 and the burning of Oxygen-16 to Silicon-28. An overview of each of these reactions is below: 
 | Reaction                     | Equation                                                         |
 |------------------------------|------------------------------------------------------------------|
 | $EC$ : Ne-20 -> F-20      | $$\ce{^{20}_{10}Ne + e- -> ^{20}_{9}F + \nu_e}$$                 |
@@ -442,7 +442,10 @@ integer function how_many_extra_profile_columns(id)
 ```
 {{< /details >}}
 
-Now, we can add new data to these profile columns in `data_for_extra_profile_columns`. 
+Now, we can add new data to these profile columns in `data_for_extra_profile_columns`. Try to compile the code by running `.mk`. You should receive an error like the following indicating that we have not yet set a variety of variables. 
+
+![ExpectedError](/wednesday/Expected_Error.png)
+
 
 Starting at the top of the subroutine, the set of necessary pointers, arrays, doubles, and integers are defined for use following the standard boilerplate seen in other MESA subroutines. Next, the names of the new profile columns need to be set to match the values expected in `inlist_pgstar` and the names of the product/reactant species for each of the reactions need to be identified explicitly. This weak_lhs/weak_rhs structure is meant to be trivially extensible, so that more reaction profiles can be added by simply listing more product/reactant pairs.
 
@@ -534,13 +537,13 @@ With all the inlists complete, we can finally answer the age old question: **Wil
 | **Run** the model! Do not forget to `./clean`, then `./mk`, then `./rn`. Note, the abundance window may take a few steps to update due to the bounds in pgstar. 
 |Observe the behavior and evolution of the star up to oxygen ignition. Does the balance of lambda values make sense? 
 Does the crossing point agree with Figure 4 from Pinedo+14[^MartinezPinedo14] (below)? |
-![landscape](/wednesday/Pinedo+14_Fig4.png)
+![Pinedo+14 Plot](/wednesday/Pinedo+14_Fig4.png)
 *Figure 4, from Pinedo+14: Electron capture and beta decay rates on $\ce{^{20}Ne<->^{20}F}$ with and without screening. Top panel log(T[K]) = 8.6. Bottom panel log(T[K]) = 9.0.[^MartinezPinedo14]. The x-axis in this plot is density, $\rho$, multiplied by the electron fraction, $Y_e$. For our ONe white dwarf, $Y_e$ is 0.5. Additionally, as briefly mentioned in [this](#aside-on-miscellaneous-variable-choices-in-inlist_common) aside on the miscellaneous variable choices in `inlist_common`, the rates we are using **are** accounting for screening effects, so you only need to look at the red lines in the plot. The dashed line is our electron capture rate ($\lambda_{^{20}Ne->^{20}F}$), while the solid line is our $\beta$ rate ($\lambda_{^{20}F->^{20}Ne}$).*
 
 {{< details title="Answer: What you should see" closed="true" >}}
 Note: This gif stacks both the pgstar plots, but they will be separate during the run!
 
-![landscape](/wednesday/Lab1_CombinedPGstar.gif)
+![Expected PGSTAR](/wednesday/Lab1_CombinedPGstar.gif)
 {{< /details >}}
 
 {{< details title="Answer: Does the lambda balance make sense?" closed="true" >}}
@@ -549,7 +552,7 @@ Yes! Broadly, we should expect $\lambda_{^{20}Ne->^{20}F}$ to be greater than $\
 Further, the crossing point of the two curves generally agrees with the work of Pinedo+14 when looking at the values in the associated profile columns (or by eye). The profile columns provide a crossing point at log($\rho$) ~ 9.86 and log(T)~8.9. With a simple interpolation on the two panels of figure 4 from Pinedo+14, we can suspect that with log(T)~8.9, this matches the crossing point. (Note: Ye = 0.5 for our ONe white dwarf)
 
 Final lambda plot:
-![landscape](/wednesday/Lab1_FinalLambda.png)
+![Expected Lambda](/wednesday/Lab1_FinalLambda.png)
 {{< /details >}}
 
 
@@ -561,7 +564,7 @@ Upon oxygen ignition, a deflagration front (the "flame") will form within the wh
 | **Review** the central density of the model at ignition by looking at the pgstar plot or in `profile.data`. Using this value and Figure 8 from Holas+26[^Holas26] (below), assuming that ignition is perfectly centered, does your model explode or implode? 
 What if you use the radius of ignition given from the profile? You can find the radius of ignition by looking in the `profile.data` for the radius corresponding to the highest temperature in the model. 
 Does the assumption of flame speed or radius of ignition change the result for our model? |
-![landscape](/wednesday/Holas+26_Fig8.png)
+![Holas+26 Fig 8](/wednesday/Holas+26_Fig8.png)
 *Figure 8, from Holas+26: Outcomes of 3D hydrodynamic simulations by ignition location and central density at ignition. The dashed and dotted lines indicate the transition from explosion to collapse for the TW92 and S20 flame speeds, respectively. [^Holas26]*
 
 {{< details title="Hint: How do I interpret this plot?" closed="true" >}}
@@ -573,7 +576,6 @@ Also, note the scale of $log(\rho_c^{ini})$. The separations here are fractions 
 
 {{< details title="Answer: Does it blow up?" closed="true" >}}
 Yes! The central density at ignition should be ~ $10^{9.924}$ cgs. This is firmly within the purely explosive regime (ie. will result in a tECSN) below ~ $10^{9.97}$ cgs for any radius or flame speed. Looking to the profile columns, the peak temperature does not occur in the center, but at a radius of ~ 65 km, making the required densities for collapse greater. Despite choices of flame speed and the degree to which the ignition location is off-center, these 3D simulations suggest that our model would have exploded. 
-
 
 
 Of course, there are a number of caveats in that the MESA models in this lab are just toy models with quite a bit of softening to reduce runtimes. This necessarily changes the physics in question alongside the massively reduced nuclear network used in this lab. 
@@ -591,7 +593,7 @@ If you have time, try to gather the same information about the lambda balance fo
 {{< details title="What you should see" closed="true" >}}
 Yes, there is a relationship to temperature! At sufficiently high temperature, the rate of beta decay begins to increase again with contributions from forbidden transitions and a reduction in pauli blocking. 
 
-![landscape](/wednesday/Lab1_BONUS1.gif)
+![Expected Bonus Lambda Plot](/wednesday/Lab1_BONUS1.gif)
 {{< /details >}}
 
 
