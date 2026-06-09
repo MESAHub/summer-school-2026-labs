@@ -1,6 +1,6 @@
 ---
 weight: 2
-author: Tryston Raecke, Josh Wanninger, Sunny Wong, Michael Zingale
+author: Josh Wanninger (Lead), Sunny Wong, Tryston Raecke, Michael Zingale
 math: true
 disableKinds: "rss"
 ---
