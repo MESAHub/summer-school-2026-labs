@@ -28,6 +28,8 @@ linkTitle: Lab 1
 ## Scientific Background
 
 Stars can oscillate in many different ways, much like a musical instrument. These oscillations carry information about the star's internal structure and can therefore be used to probe regions that cannot be observed directly.
+Slides can be found here: 
+![Lab 1 Background slides](downloads/lab1/260609_mesaschool-lab1.pdf)
 
 Today, we focus on **gravity modes (g-modes)**. These are oscillations for which buoyancy acts as the restoring force. G-modes propagate in stably stratified (radiative) regions of a star and are particularly sensitive to conditions near the stellar core. 
 
