@@ -310,7 +310,7 @@ With the isotopes added, we may now move to add our specific reactions. Again, t
 {{< details title="Hint: What is the format of the standard 1-to-1 weak reactions?" closed="true" >}}
 1-to-1 Z-decreasing reactions (positron emission or electron capture) between reactant x and product y follow the naming `r_x_wk_y`.
 
-1-to-1 Z-increasing reactons (electron emission or positron capture) between reactant x and product y follow the naming `r_wk-minus_y`.
+1-to-1 Z-increasing reactons (electron emission or positron capture) between reactant x and product y follow the naming `r_x_wk-minus_y`.
 
 Note, x and y are the abbreviated isotope names (ie. Uranium-238 would be `u238`)
 {{< /details >}}
