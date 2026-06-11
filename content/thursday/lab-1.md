@@ -116,7 +116,7 @@ Let's see what this does to the rotation rate of the stars in this system.
 Look and search through the [inlist defaults](https://docs.mesastar.org/en/latest/reference.html) to set up the following:
 
 - Set the initial period to 3 days.
-- Enable the effects of tidal synchronization. Then, set the `sync_mode` of both stars' tidal prescription to `Orb_period`.
+- Enable the effects of tidal synchronization. Then, set the `sync_type` of both stars' tidal prescription to `Orb_period`.
 - Load the initial stellar models, `zams35.mod` and `zams25.mod`, in the `&star_job` sections of `inlist1` and `inlist2`, respectively *(ZAMS = zero-age main sequence = star at birth)*.
 
 {{< details title="Solution" closed="true" >}}
@@ -263,7 +263,7 @@ Either expand the `History_panels1` in `&pgbinary` by one panel, and plot the `e
 {{< details title="Hint" closed="true" >}}
 The terminal output should write things like: `fix w > w_crit: change mdot and redo`. Why would MESA write this?
 {{< details title="Explanation" closed="true" >}}
-MESA is changing the accretion rate of the secondary so that its rotation rate remains below $\\Omega_{\rm crit}$. The donor is supplying a certain amount of mass per unit time, and MESA needs to figure out how much of it to accept to keep the secondary star from spinning so fast that it starts tearing itself apart (ejecting the rest as a fast wind).
+MESA is changing the accretion rate of the secondary so that its rotation rate remains below $\Omega_{\rm crit}$. The donor is supplying a certain amount of mass per unit time, and MESA needs to figure out how much of it to accept to keep the secondary star from spinning so fast that it starts tearing itself apart (ejecting the rest as a fast wind).
 {{< /details >}}
 {{< /details >}}
 
