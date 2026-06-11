@@ -63,7 +63,7 @@ During this second part of the run, you will also save some models (called `.mod
 
 **Task 1.1**: Download and unzip the initial working directory.
 
-We have already prepared an input directory to get you started with this lab: you can find it [here](https://drive.google.com/file/d/1UxLMBFTgl3q63SNrQwWSEsRIFm6O1v87/view?usp=drive_link).
+We have already prepared an input directory to get you started with this lab: you can find it [here](https://drive.google.com/file/d/196gtAItc9zFDhdp8AbkaD9AYRsGrg9lA/view?usp=drive_link).
 
 Download the work directory, move it to your location of choice and unpack it.
 
@@ -247,7 +247,7 @@ During this first run you will see the star evolving through the main sequence a
 At this point, the star has reached the base of the RGB. Now we want it to evolve until the end of He burning.
 To that end, we need to **choose and implement a different stopping condition**!
 
-**Task 1**: Comment or remove the previous stopping condition.
+**Task 3.1**: Comment or remove the previous stopping condition.
 
 Open ```run_star_extras.f90``` again and look for the stopping condition you just implemented. Once you find it, take extra care in commenting (or deleting) every line that you wrote!
 
