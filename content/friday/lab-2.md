@@ -51,9 +51,7 @@ For the fundamental mode model choice, use `F_logKE_per_cycle > 0` and `F_logKE_
 
 Recall that in lab 1 we saved the GYRE results for the fundamental radial mode and the first and second overtones in the history file. We'll now use that information to look for models where we expect pulsations in the fundamental mode to be excited. These are the modes with positive growth rates.
 
-For the fundamental mode model choice, use a model where the fundamental mode has positive growth and is growing faster than the second overtone: `F_growth > 0` and `F_growth > O2_growth`. For a first overtone comparison, use the analogous condition `O1_growth > 0` and `O1_growth > O2_growth`. This extra check is useful because the GYRE calculation does not include the same eddy viscous damping of overtone modes that we will use in RSP. If you are using the compact `gyre_in_mesa.data` table instead, use the equivalent columns listed in the optional drop-down above.
-
-For the `.mod` file you may carry into Lab 3, the ideal GYRE choice has the fundamental mode growing faster than both overtones: `F_growth > 0`, `F_growth > O1_growth`, and `F_growth > O2_growth`. If you cannot find a model with `F_growth > O1_growth`, that is fine; choose a model with `F_growth > 0` and `F_growth > O2_growth` that is closer to the red edge of the instability strip. A model closer to the blue edge is more likely to switch into an overtone during the nonlinear Lab 3 run.
+For the model we will use for Lab 3, the ideal choice is where the fundamental mode has a positive growth rate and is growing faster than both overtones. Using the GRYE results from lab 1 this means `F_growth > 0`, `F_growth > O1_growth`, and `F_growth > O2_growth`. If you cannot find a model where `F_growth` is larger than both `O1_growth` and `O2  _growth`, then use one where `F_growth > O2_growth` that's near the red edge of the instability strip (use the HR diagram in the pgplots from lab 1 to check this). If you are using the compact `gyre_in_mesa.data` table instead, use the equivalent columns listed in the optional drop-down above.
 
 #### Task: Find a model and add your information to the spreadsheet
 
@@ -63,7 +61,7 @@ As more people add their models, we should see a clear relationship between the 
 
 #### Task: Set up RSP work directory
 
-Now that we have the results from GYRE in the spreadsheet, we want to get values from RSP-LNA as a comparison. Although we are using the results of lab 1, we want to create a new working directory since we'll be using different inlists to run RSP. You can find the [starting working directory here](https://drive.google.com/file/d/1MFZ4UsVcrvNBqcccYJmqZQhli_A8DGjP/view?usp=share_link).
+Now that we have the results from GYRE in the spreadsheet, we want to get values from RSP-LNA as a comparison. Although we are using the results of lab 1, we want to create a new working directory since we'll be using different inlists to run RSP. You can find the [starting working directory here](https://drive.google.com/file/d/1XCUndO59Ot-oXJRCCWQjvd0M7jff_yyY/view?usp=drive_link).
 
 Download and unzip this file into a new working directory (not into your lab 1 working directory).
 
@@ -263,11 +261,10 @@ If you receive the following error:
  do_before_evolve_loop ierr          -1
 ```
 
-then try following the suggestion made in the error message and increase `RSP_T_anchor_tolerance` to `1d-4`. If this still doesn't work, then you are likely trying to build a model outside of the regime that RSP's model builder can handle. Please pick another model and try again.
-
+then try following the suggestion made in the error message and increase `RSP_T_anchor_tolerance` to `1d-4`. If this still doesn't work, then you are likely trying to build a model outside of the regime that RSP's model builder can handle.
 {{< /details >}}
 
-If you have tried two models and have not gotten RSP to converge, please pick another model from your Lab 1 output or ask a TA for a fallback model.
+If you have tried two models and have not gotten RSP to converge, please consult [this spreadsheet](https://docs.google.com/spreadsheets/d/1NbtHjDkhbWrm0fYE1KxyxwTmi8jecaQbngwcu1uTB-Q/edit?usp=sharing) to find a good model number for your initial mass from Lab 1.
 
 ### Understanding the output of a successful RSP LNA run
 
@@ -340,12 +337,10 @@ To fill in our diagrams a little bit more, repeat this process (changing the inl
 > [!NOTE]
 > Take a look at your original `history.data` file from lab 1. Do you need to change the values of `RSP_X` and `RSP_Z` when running a new model?
 
-You should aim to run 2-3 models. For Lab 3, when we'll evolve the pulsations, note down model numbers that worked cleanly and showed positive fundamental mode growth. If the fundamental growth rate was negative, try choosing a model in the middle of the instability strip for your next run.
+You should aim to run 2-3 models. This will help us fill in the diagrams in the google sheet. As you do this, note down any model numbers which worked cleanly and showed positive fundamental mode growth, these might make good starting points for Lab 3. If the fundamental growth rate was negative, try choosing a model closer to the red edge of the instability strip.
 
 >[!TIP]
-> You can use the png output saved from lab 1 to easily check which models are in the instability strip.
-
-If your second model also has a negative growth rate, try a model closer to the middle of the instability strip or ask a TA for a fallback choice.
+> You can use the png output saved from Lab 1 to easily check which models are in the instability strip.
 
 ### As the spreadsheet fills in discuss the following questions at your table
 
@@ -357,7 +352,6 @@ If your second model also has a negative growth rate, try a model closer to the 
 ### Bonus task: Batch running RSP
 
 After setting up RSP for several different parameter combinations, you might notice that doing this manually is a little bit tedious (and if you're anything like me, very prone to human error). For the bonus task, you can try your hand at automating these runs. For this, focus first on the RSP information.
-
 
 Depending on how you're feeling halfway through Friday, there are a few different difficulty levels that you can choose from, see below. Regardless of your chosen difficulty level, once you have your results please add the luminosity, Wesenheit index, RSP period and RSP growth rate data to the shared spreadsheet. When you do this, please add your information at the bottom of the spreadsheet to avoid overwriting other people's values.
 

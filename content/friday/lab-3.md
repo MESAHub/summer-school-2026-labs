@@ -70,7 +70,7 @@ Alternatively, you can download the models from the [Lab 1 mod file solutions](h
 > Lab 3 uses a saved `.mod` file from Lab 1. It does **not** use a `photos/` restart file from Lab 1.
 
 > [!NOTE]
-> Depending on how your downloaded files were unpacked, you may need to fix permissions before opening or copying the model folders. If needed, you can use `chmod` on the extracted mass directory and its contents.
+> Depending on how your downloaded files were unpacked, you may need to fix permissions before opening or copying the model folders. If needed, you can use `chmod` on the extracted mass directory and its contents. Here is a [guide to `chmod`](https://cets.seas.upenn.edu/answers/chmod.html) if you need a refresher.
 
 ## Task 1: Choose a Starting Model
 
@@ -269,7 +269,11 @@ For the purpose of this lab, the run is useful once you can see that the kick ha
 - still clearly growing
 - or close to a repeating finite amplitude cycle
 
-For a research quality nonlinear pulsation calculation, the standard is stricter. A true limit cycle means the initial transient has died away and the model has settled into a repeating finite amplitude pulsation. In practice, you would check the last several cycles and look for:
+In the drop down, we provide some information on what standard should be applied to research quality nonlinear runs. Feel free to read this *after* starting your model.
+
+{{< details title="Standards for coherent pulsations in research quality runs" closed="true" >}}
+
+For a research quality nonlinear pulsation calculation, the standard is stricter that what we have used in this lab. A true limit cycle means the initial transient has died away and the model has settled into a repeating finite amplitude pulsation. In practice, you would check the last several cycles and look for:
 
 - a stable period from one cycle to the next
 - stable maximum and minimum radius, luminosity, magnitude, and velocity
@@ -281,6 +285,8 @@ Positive growth is useful early in the run because it tells you the kick has exc
 In this lab, we are using a looser practical standard. You do not need to prove that the model has reached a fully converged limit cycle. You only need a developed enough waveform to identify where the bump appears in the cycle.
 
 The limit cycle test above is also specific to stable single mode pulsation. If a model settles into two persistent periods, switches mode, alternates cycle shapes, or keeps changing in a structured way, that is not just a failed single mode limit cycle. It may be a different nonlinear solution. In real work you would report that behavior, check whether it is physical or numerical, and then decide whether the model belongs in a single mode Cepheid sample.
+
+{{< /details >}}
 
 Signs that the run is doing the right thing:
 
@@ -306,7 +312,6 @@ The four panels labeled with a red number are the most relevant. They show:
 2. effective temperature variation over time in blue and luminosity variation in solar luminosity over time, also called the *light curve*, in yellow. This example is clearly not purely sinusoidal as the peak is too thin and there's a subtle bump just before the peak. Any bumps are usually relatively easy to identify in this panel. You can see other examples of these light curves in the figure in the introduction or at [the OGLE catalog](https://ogle.astrouw.edu.pl/atlas/classical_Cepheids.html).
 3. radial variation and surface radial velocity over time in yellow and blue, respectively. Once again, neither curve is sinusoidal, although the bump is not clearly visible here.
 4. radial velocity profile against optical depth as a proxy of depth from the surface. The initial kick should be plainly visible here after a few hundred time steps.
-
 
 Signs that you should stop and rethink:
 
@@ -408,7 +413,7 @@ At minimum, record:
 - bump classification
 - a short note such as `clear bump`, `weak bump`, or `needed restart`
 
-Once the class table starts to fill up, sort the entries by period and look for the bump progression across the sample.
+Once the class table starts to fill up, switch to the "Lab 3: Sorted by Period" tab on the google sheets and look for the bump progression across the sample.
 
 ## Questions for Discussion
 
