@@ -1082,7 +1082,7 @@ end function find_L2
 
 {{< details title="Solution for `inlist_project`" closed="true" >}}
 ```fortran
-&controls
+&binary_controls
   ...
   ! transfer efficiency controls
    limit_retention_by_mdot_edd = .false.
