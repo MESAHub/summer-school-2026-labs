@@ -6,7 +6,7 @@ math: true
 toc: true
 ---
 
-<span style="color: #e7876c;">Timing: approximately 1 hour</span>
+<!-- <span style="color: #e7876c;">Timing: approximately 1 hour</span> -->
 
 ## Overview
 

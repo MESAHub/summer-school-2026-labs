@@ -11,7 +11,7 @@ toc: true
 <!-- # Lab 3: Stable relationships -->
 
 
-<span style="color: #e7876c;">Timing: approximately 2 hours divided into 2 x 1 hour blocks </span>
+<!-- <span style="color: #e7876c;">Timing: approximately 2 hours divided into 2 x 1 hour blocks </span> -->
 
 *This lab renders better with the light theme!*
 
