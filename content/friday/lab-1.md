@@ -117,7 +117,7 @@ Great, now MESA knows what mass we should _start_ to simulate. However, a MESA r
 
 **Task 2.2**: Implement a custom stopping condition in ```run_star_extras.f90```.
 
-In this first part of the run, we want to stop the simulation before the star starts pulsating. A good way to do this is to terminate the run at the **onset of core He burning**. When the simulation is completed, your star will be at the base of the Red Giant Branch (RGB), which is a mostly vertical structure on the Hertzsprung-Russell diagram (HRD), as may be seen on the figure below where the RGB is highlighted in red.
+In this first part of the run, we want to stop the simulation before the star starts pulsating. A good way to do this is to terminate the run at the **onset of core He burning**. When the simulation is completed, your star will be at the tip of the Red Giant Branch (RGB), which is a mostly vertical structure on the Hertzsprung-Russell diagram (HRD), as may be seen on the figure below where the RGB is highlighted in red.
 
 ![mesa output](../plots/lab1/HRD_MS_RGB.png)
 
@@ -155,7 +155,7 @@ Now try to code up that stopping condition! You can find some useful bits of cod
 
 While coding in the ```run_star_extras``` you will be using quantities and variables that are contained in the structure of the star.
 
-To access all the information in the star's structure you first need to define a pointer (which is already done in the code for you). You can find all the variables available in the stellar structure at ```$MESA_DIR/star_data/public/star_data_step_work.inc```!
+To access all the information in the star's structure you first need to define a pointer (which is already done in the code for you). You can find all the variables available in the stellar structure using the files in ```$MESA_DIR/star_data/public/```! We'll specifically use the variables in ```star_data_step_input.inc``` and ```star_data_step_work.inc```. 
 
 {{< details title="How to get the central H amount and the power from He burning" closed="true" >}}
 
